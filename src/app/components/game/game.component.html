@@ -1,0 +1,11 @@
+<p>{{round}}::{{play}}</p>
+<!-- <p>{{currentWord}}::{{decodedWord}}</p> -->
+
+<div class="game-board">
+  <div class="row" *ngFor="let r of board">
+    <div class="column" *ngFor="let c of r">
+      <app-letter-block [char]="c"></app-letter-block>
+    </div>
+  </div>
+</div>
+<app-keyboard (onClick)="refreshLetters($event)"></app-keyboard>

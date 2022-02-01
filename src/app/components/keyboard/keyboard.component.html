@@ -1,0 +1,9 @@
+<div class="keyboard">
+  <div class="keyboard__row" *ngFor="let t of keys">
+    <div class="keyboard__key" (click)="onLetter(k)" *ngFor="let k of t" [ngClass]="{'keyboard__key--selected': sequence.includes(k)}">
+      <div class="keyboard__key--inner">
+        <div class="keyboard__key--char">{{k}}</div>
+      </div>
+    </div>
+  </div>
+</div>

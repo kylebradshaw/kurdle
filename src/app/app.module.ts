@@ -3,16 +3,25 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { GameComponent } from './components/game/game.component';
+import { WordService } from './services/word.service';
+import { LetterBlockComponent } from './components/letter-block/letter-block.component';
+import { KeyboardComponent } from './components/keyboard/keyboard.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    GameComponent,
+    LetterBlockComponent,
+    KeyboardComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule
   ],
-  providers: [],
+  providers: [
+    WordService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
