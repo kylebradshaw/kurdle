@@ -1,3 +1,5 @@
+@import "./../../../stylings/_theme.scss";
+
 .char {
   display: flex;
   justify-content: center;
@@ -22,16 +24,16 @@
     background-color: cyan;
   }
   &--used {
-    background-color: #333;
+    background-color: $slate;
     color: #efefef;
   }
   &--match {
     opacity: 1;
-    background-color: greenyellow;
+    background-color: $green;
   }
   &--mismatch {
     opacity: 1;
-    background-color: yellow;
+    background-color: $yellow;
     color: #333;
   }
 }

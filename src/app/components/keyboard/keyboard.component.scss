@@ -1,3 +1,5 @@
+@import "./../../../stylings/_theme.scss";
+
 .keyboard {
   display: flex;
   flex-direction: column;
@@ -26,6 +28,7 @@
     text-transform: uppercase;
     color: #333;
     margin: 0.1rem;
+    cursor: pointer;
     &--inner {
       padding: 0.1rem;
     }
@@ -45,14 +48,14 @@
       background-color: #efefef;
     }
     &--used {
-      background-color: #333;
+      background-color: $slate;
       color: #efefef;
     }
     &--match {
-      background-color: greenyellow;
+      background-color: $green;
     }
     &--mismatch {
-      background-color: yellow;
+      background-color: $yellow;
     }
   }
 }
