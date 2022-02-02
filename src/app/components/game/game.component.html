@@ -1,11 +1,14 @@
-<p>{{round}}::{{play}}</p>
-<!-- <p>{{currentWord}}::{{decodedWord}}</p> -->
-
+<p>Kurdle</p>
 <div class="game-board">
-  <div class="row" *ngFor="let r of board">
-    <div class="column" *ngFor="let c of r">
-      <app-letter-block [char]="c"></app-letter-block>
+  <div class="row" *ngFor="let r of board; let rIdx=index">
+    <div class="column" *ngFor="let c of r; let cIdx=index">
+      <app-letter-block [char]="c" [letterClass]="classBoard[rIdx][cIdx]"></app-letter-block>
     </div>
   </div>
 </div>
 <app-keyboard (onClick)="refreshLetters($event)"></app-keyboard>
+
+
+<p>{{round}}::{{play}}</p>
+<p>{{currentWord}}::{{decodedWord}}</p>
+

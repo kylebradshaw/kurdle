@@ -12,12 +12,19 @@ export class WordService {
   }
 
   public compare(play: string, obfuscated: string): boolean {
-    console.log(play, obfuscated);
     return play === atob(obfuscated);
   }
 
   public decode(word: string): string {
     return atob(word);
+  }
+
+  public inDict(word: string): boolean {
+    return this.dict.includes(btoa(word));
+  }
+
+  public lettersMatch(): number[] {
+    return [0, 1, 2, 3, 4]
   }
 
   private get dict(): string[] {

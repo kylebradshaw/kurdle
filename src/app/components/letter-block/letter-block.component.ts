@@ -7,6 +7,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 })
 export class LetterBlockComponent implements OnInit {
   @Input() char: string = "";
+  @Input() letterClass: string = "";
   selected = false;
 
   constructor() {}

@@ -16,14 +16,25 @@ export class GameComponent implements OnInit {
     ['', '', '', '', ''],
     ['', '', '', '', '']
   ];
+  classBoard: string[][] = [
+    ['default', 'default', 'default', 'default', 'default'],
+    ['default', 'default', 'default', 'default', 'default'],
+    ['default', 'default', 'default', 'default', 'default'],
+    ['default', 'default', 'default', 'default', 'default'],
+    ['default', 'default', 'default', 'default', 'default'],
+    ['default', 'default', 'default', 'default', 'default']
+  ];
   currentWord = "";
   decodedWord = "";
+  solved = false;
   private _play: string = '';
 
   constructor(
     private wordService: WordService
   ) {
-    this.currentWord = this.wordService.seedWord();
+    // this.currentWord = btoa('light');
+    this.currentWord = btoa('state'); //
+    this.wordService.seedWord();
     this.decodedWord = this.wordService.decode(this.currentWord);
   }
 
@@ -33,15 +44,15 @@ export class GameComponent implements OnInit {
 
   @HostListener('window:keyup', ['$event'])
   keyEvent($event: KeyboardEvent): void {
-    console.log($event.key, 'event key', $event);
+    // console.log($event.key, 'event key', $event);
     if ($event.code === 'Backspace') {
-      console.log(this.play);
+      // console.log(this.play);
       this.removeLastSequenceLetter(this.play);
-      console.log(this.play, `after removal`);
+      // console.log(this.play, `after removal`);
     } else if ($event.code === 'Enter') {
       this.submitRound(this.round, this.play, this.round === 6);
     } else {
-      this.play += $event.key && $event.key.toLowerCase() || '';
+      this.play += $event.key && $event.key.match(/[A-Z]/i) && $event.key.toLowerCase() || ''; // no numbers, no spaces
       this.refreshLetters(this.play);
     }
   }
@@ -62,8 +73,34 @@ export class GameComponent implements OnInit {
 
   submitRound(round: number, sequence: string, final?: boolean): void {
     if (sequence.length !== 5) { return }
-    this.play = '';
-    this.round = this.round + 1;
+    if (this.wordService.inDict(sequence)) {
+      // window.alert('Valid word!');
+      const classBoardRow = this.matchedLetters(sequence, this.currentWord);
+      this.classBoard[round - 1] = classBoardRow;
+      this.play = '';
+      this.round = this.round + 1;
+    }
+  }
+
+  matchedLetters(sequence: string, solutionWord: string) {
+    console.log(sequence, this.wordService.decode(solutionWord), `guess+solution`);
+    const solution = this.wordService.decode(solutionWord);
+    // find matched characters
+    const validChars = [...sequence].map((letter, idx) => {
+      const guessArr = solution.indexOf(letter);
+      return guessArr;
+    });
+    const lettersMatchArr = this.wordService.lettersMatch();
+    console.log(validChars, `valid chars`);
+    // find matched indexes.
+    // solution: [0, 1, 2, 3, 4]
+    // mismatch: [-1, -1, -1, -1, -1]
+    // match(es): [0, -1, 2, -1, -1]
+    return validChars.map((idxMatch, slot) => {
+      if (idxMatch === -1) { return 'used'; }
+      else if (idxMatch === slot) { return 'match';}
+      else { return 'mismatch'; } //(idxMatch !== slot)
+    });
   }
 
   get play(): string {
@@ -71,7 +108,11 @@ export class GameComponent implements OnInit {
   }
 
   set play(sequence: string) {
-    if (sequence.length > 5) { return }
+    if (sequence.length > 5) { return; }
+    if (!sequence.match(/[A-Z]/i)) {
+      console.log(sequence, `invalid sequence`);
+      return;
+    }
     this._play = sequence;
   }
 }
