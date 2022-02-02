@@ -15,6 +15,10 @@ export class WordService {
     return play === atob(obfuscated);
   }
 
+  public getIndices(word: string, letter:string ): number[] {
+    return [...word].flatMap((char, i) => (char === letter ? i : []));
+  };
+
   public decode(word: string): string {
     return atob(word);
   }
