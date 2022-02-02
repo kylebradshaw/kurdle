@@ -1,7 +1,7 @@
-import { GuessAction } from './../../models/guess';
 import { Component, OnInit, HostListener } from '@angular/core';
 import { WordService } from 'src/app/services/word.service';
-import { GuessClass, AlphaDict } from 'src/app/models/guess';
+import { GuessClass, GuessAction, AlphaDict } from 'src/app/models/guess';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-game',
@@ -30,15 +30,22 @@ export class GameComponent implements OnInit {
   decodedWord = "";
   solved = false;
   alphabetClass: AlphaDict = {};
+  debugMode: boolean = false;
   private _play: string = '';
 
   constructor(
+    private activatedRoute: ActivatedRoute,
     private wordService: WordService
   ) {
     // this.currentWord = btoa('light');
     // this.currentWord = btoa('state'); //
     this.currentWord = this.wordService.seedWord();
     this.decodedWord = this.wordService.decode(this.currentWord);
+    this.activatedRoute.queryParams.subscribe(params => {
+      if (params[`debug`] !== undefined) {
+        this.debugMode = true;
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -79,9 +86,6 @@ export class GameComponent implements OnInit {
     }
     this.play = sequence;
     this.board[this.round - 1] = this.board[this.round - 1].map((_, idx) => this.play.split('')[idx]);
-    // console.log(sequence, `the most recent click`, this.board[0]);
-    // check endswith return, then move to next row, increment round, lock in sequence for row index
-
   }
 
   submitRound(round: number, sequence: string, final?: boolean): void {
@@ -100,7 +104,6 @@ export class GameComponent implements OnInit {
       this.play = '';
       this.round = this.incrementRound(this.round);
 
-      // populate alphaDict accordingly (can be simplified?)
       this.populateAlphabetDict([...sequence], classBoardRow);
     } else {
       window.alert('Invalid word!');
@@ -143,6 +146,10 @@ export class GameComponent implements OnInit {
 
   incrementRound(round: number): number {
     return round < 6 ? round + 1 : 1;
+  }
+
+  attribution(): void {
+    window.alert(`Built by @ky`);
   }
 
   get play(): string {

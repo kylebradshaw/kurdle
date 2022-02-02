@@ -1,14 +1,21 @@
-<p>Kurdle</p>
-<div class="game-board">
-  <div class="row" *ngFor="let r of board; let rIdx=index">
-    <div class="column" *ngFor="let c of r; let cIdx=index">
-      <app-letter-block [char]="c" [letterClass]="classBoard[rIdx][cIdx]"></app-letter-block>
+<div class="app">
+  <header>
+    <button class="bare" (click)="attribution()">︖</button>
+    <h1>Kurdle</h1>
+    <button class="bare">☺︎</button>
+  </header>
+  <main>
+    <div class="row" *ngFor="let r of board; let rIdx=index">
+      <div class="column" *ngFor="let c of r; let cIdx=index">
+        <app-letter-block [char]="c" [letterClass]="classBoard[rIdx][cIdx]"></app-letter-block>
+      </div>
     </div>
-  </div>
+  </main>
+  <section *ngIf="debugMode">
+    <p>{{round}}::{{play}}</p>
+    <p>{{currentWord}}::{{decodedWord}}</p>
+  </section>
+  <footer>
+    <app-keyboard [alphabetClass]="alphabetClass" (onClick)="refreshLetters($event)"></app-keyboard>
+  </footer>
 </div>
-<app-keyboard [alphabetClass]="alphabetClass" (onClick)="refreshLetters($event)"></app-keyboard>
-
-
-<p class="white">{{round}}::{{play}}</p>
-<p class="white">{{currentWord}}::{{decodedWord}}</p>
-
