@@ -6,7 +6,7 @@
     </div>
   </div>
 </div>
-<app-keyboard (onClick)="refreshLetters($event)"></app-keyboard>
+<app-keyboard [alphabetClass]="alphabetClass" (onClick)="refreshLetters($event)"></app-keyboard>
 
 
 <p class="white">{{round}}::{{play}}</p>

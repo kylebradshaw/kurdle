@@ -1,5 +1,5 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { Letter } from 'src/app/models/guess';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { AlphaDict, GuessAction } from 'src/app/models/guess';
 
 @Component({
   selector: 'app-keyboard',
@@ -7,6 +7,7 @@ import { Letter } from 'src/app/models/guess';
   styleUrls: ['./keyboard.component.scss']
 })
 export class KeyboardComponent implements OnInit {
+  @Input() alphabetClass: AlphaDict = {};
   @Output() onClick = new EventEmitter<string>();
   keys: string[][];
   sequence: string[] = [];
@@ -24,11 +25,15 @@ export class KeyboardComponent implements OnInit {
 
   onLetter(letter: any): void {
     console.log(letter);
-    if (letter === '⌫') {
+    if (letter === GuessAction.DEL) {
       this.sequence.length = (this.sequence.length > 0) ? this.sequence.length - 1 : 0;
     } else {
       this.sequence.push(letter);
     }
     this.onClick.emit(this.sequence.join(''));
+    // reset sequence
+    if (letter === GuessAction.ENTER) {
+      this.sequence = [];
+    }
   }
 }

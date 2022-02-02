@@ -4,13 +4,16 @@
   align-items: center;
   min-width: 15vw;
   min-height: 8vh;
-  margin: 0.1rem;
+  margin: 0.4rem 0.2rem;
   display: flex;
   font-size: 3rem;
   font-weight: bold;
   border: 2px solid rgba(0, 0, 0, 0.8);
   background-color: #fff;
   text-transform: uppercase;
+  &--default {
+    border: 2px solid rgba(0, 0, 0, 0.6);
+  }
   &--inner {
     // background-color: #fff;
     padding: 0.1rem;

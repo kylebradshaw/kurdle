@@ -1,5 +1,7 @@
+import { GuessAction } from './../../models/guess';
 import { Component, OnInit, HostListener } from '@angular/core';
 import { WordService } from 'src/app/services/word.service';
+import { GuessClass, AlphaDict } from 'src/app/models/guess';
 
 @Component({
   selector: 'app-game',
@@ -17,16 +19,17 @@ export class GameComponent implements OnInit {
     ['', '', '', '', '']
   ];
   classBoard: string[][] = [
-    ['default', 'default', 'default', 'default', 'default'],
-    ['default', 'default', 'default', 'default', 'default'],
-    ['default', 'default', 'default', 'default', 'default'],
-    ['default', 'default', 'default', 'default', 'default'],
-    ['default', 'default', 'default', 'default', 'default'],
-    ['default', 'default', 'default', 'default', 'default']
+    [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
+    [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
+    [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
+    [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
+    [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
+    [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT]
   ];
   currentWord = "";
   decodedWord = "";
   solved = false;
+  alphabetClass: AlphaDict = {};
   private _play: string = '';
 
   constructor(
@@ -40,6 +43,10 @@ export class GameComponent implements OnInit {
 
   ngOnInit(): void {
     this.play = ""
+    console.log(this.alphabetClass, `alphabetClass`);
+    [...'abcdefghijklmnopqrstuvwxyz'].forEach(letter => {
+      this.alphabetClass[letter] = GuessClass.DEFAULT;
+    });
   }
 
   @HostListener('window:keyup', ['$event'])
@@ -64,6 +71,12 @@ export class GameComponent implements OnInit {
   }
 
   refreshLetters(sequence: string): void {
+    if (sequence.endsWith(GuessAction.ENTER)) {
+      return this.submitRound(this.round, this.play, this.round === 6);
+    }
+    if (sequence.endsWith(GuessAction.DEL)) {
+      return this.removeLastSequenceLetter(this.play);
+    }
     this.play = sequence;
     this.board[this.round - 1] = this.board[this.round - 1].map((_, idx) => this.play.split('')[idx]);
     // console.log(sequence, `the most recent click`, this.board[0]);
@@ -80,13 +93,25 @@ export class GameComponent implements OnInit {
       setTimeout(() => {
         if (classBoardRow.every(letter => letter === 'match')) {
           window.alert('YOU WIN!');
-        } else if (this.round === 7) {
+        } else if (final) {
           window.alert('YOU LOSE!');
         }
       }, 1000);
       this.play = '';
       this.round = this.incrementRound(this.round);
+
+      // populate alphaDict accordingly (can be simplified?)
+      this.populateAlphabetDict([...sequence], classBoardRow);
+    } else {
+      window.alert('Invalid word!');
     }
+  }
+
+  populateAlphabetDict(sequence: string[], classes: string[]): void {
+    sequence.forEach((letter, idx) => {
+      this.alphabetClass[letter] = classes[idx];
+    });
+    console.log(this.alphabetClass, `alphabetClass populated.`);
   }
 
   matchedLetters(sequence: string, solutionWord: string) {

@@ -24,21 +24,35 @@
     justify-content: center;
     margin: 0.05rem;
     text-transform: uppercase;
-    &--selected {
-      background-color: red;
-      color: #fff !important;
-    }
+    color: #333;
+    margin: 0.1rem;
     &--inner {
       padding: 0.1rem;
     }
     &--char {
-      border: 2px solid #ccc;
-      background-color: #efefef;
-      color: #000;
+      // border: 2px solid #ccc;
+      // background-color: #efefef;
+      // color: #000;
       padding: 0.35rem;
       font-size: 6vw;
       min-width: 1rem;
       text-align: center;
+    }
+    &--undefined {
+      background-color: #d5d5d5;
+    }
+    &--default {
+      background-color: #efefef;
+    }
+    &--used {
+      background-color: #333;
+      color: #efefef;
+    }
+    &--match {
+      background-color: greenyellow;
+    }
+    &--mismatch {
+      background-color: yellow;
     }
   }
 }
