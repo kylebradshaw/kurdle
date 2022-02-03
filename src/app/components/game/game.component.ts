@@ -45,9 +45,6 @@ export class GameComponent implements OnInit {
     this.initTheme();
     this.resetBoard();
     this.play = "";
-    [...'abcdefghijklmnopqrstuvwxyz'].forEach(letter => {
-      this.alphabetClass[letter] = GuessClass.DEFAULT;
-    });
 
     this.wordService.seedWordFromFunc('rando').subscribe((response: FuncWord) => {
       this.currentWord = response.word;
@@ -197,6 +194,10 @@ export class GameComponent implements OnInit {
   }
 
   resetBoard(): void {
+    [...'abcdefghijklmnopqrstuvwxyz'].forEach(letter => {
+      this.alphabetClass[letter] = GuessClass.DEFAULT;
+    });
+
     this.board = [
       ['', '', '', '', ''],
       ['', '', '', '', ''],
