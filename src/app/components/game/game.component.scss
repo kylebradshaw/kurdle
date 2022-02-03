@@ -10,7 +10,7 @@
   outline: none;
   border: none;
   color: theme-var($--theme-on-surface);
-  font-size: 1.5rem;
+  font-size: 4vw;
 }
 header {
   display: flex;
@@ -19,7 +19,8 @@ header {
   align-items: center;
   h1 {
     text-transform: uppercase;
-    letter-spacing: 0.2rem;
+    font-size: 6vw;
+    letter-spacing: 2vw;
     padding: 0;
     margin: 0;
   }
@@ -53,7 +54,7 @@ main {
   flex-direction: column;
   flex-grow: 1;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   .row {
     display: flex;
     flex-direction: row;
@@ -66,5 +67,5 @@ main {
   }
 }
 footer {
-  padding-bottom: 2rem;
+  min-height: 1rem;
 }

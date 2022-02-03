@@ -1,3 +1,4 @@
+import { StorageService } from './../../services/storage.service';
 import { FuncWord } from './../../services/word.service';
 import { Component, OnInit, HostListener } from '@angular/core';
 import { WordService } from 'src/app/services/word.service';
@@ -12,22 +13,8 @@ import { ThemeService } from '@bcodes/ngx-theme-service';
 })
 export class GameComponent implements OnInit {
   round: number = 1;
-  board: string[][] = [
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['', '', '', '', '']
-  ];
-  classBoard: string[][] = [
-    [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
-    [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
-    [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
-    [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
-    [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
-    [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT]
-  ];
+  board: string[][] = [[]];
+  classBoard: string[][] = [[]];
   currentWord = "";
   decodedWord = "";
   solved = false;
@@ -41,6 +28,7 @@ export class GameComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private wordService: WordService,
     private themeService: ThemeService,
+    private storageService: StorageService,
   ) {
     // this.currentWord = btoa('light');
     // this.currentWord = btoa('state'); //
@@ -54,12 +42,8 @@ export class GameComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (window.matchMedia('prefers-color-scheme: dark').matches) {
-      this.switchTheme('light'); // opposite of current theme
-    } else {
-      this.switchTheme('dark');// opposite of current theme
-    }
-
+    this.initTheme();
+    this.resetBoard();
     this.play = "";
     [...'abcdefghijklmnopqrstuvwxyz'].forEach(letter => {
       this.alphabetClass[letter] = GuessClass.DEFAULT;
@@ -68,13 +52,32 @@ export class GameComponent implements OnInit {
     this.wordService.seedWordFromFunc('rando').subscribe((response: FuncWord) => {
       this.currentWord = response.word;
     });
-
-    this.themeService.selectedTheme$.subscribe(theme => this.currentTheme = theme);
   }
 
-  switchTheme(previousTheme: string): void {
-    let nextTheme = (previousTheme === 'light') ? 'dark' : 'light';
+  /**
+   * Inits theme
+   * picks up native theme preference if available on first visit
+   * otherwise we set our own
+   */
+  initTheme(): void  {
+    const theme = this.storageService.get('theme');
+    if (theme !== null) {
+      this.currentTheme = theme;
+      this.switchTheme(theme);
+    } else {
+      if (window.matchMedia('prefers-color-scheme: dark').matches) {
+        this.switchTheme('light'); // opposite of current theme
+      } else {
+        this.switchTheme('dark');// opposite of current theme
+      }
+    }
+  }
+
+  switchTheme(previousTheme: string, flip = false): void {
+    let nextTheme = (flip) ? this.intendedTheme(previousTheme) : previousTheme;
     this.themeService.switchTheme(nextTheme);
+    this.storageService.set('theme', nextTheme);
+    this.currentTheme = nextTheme;
   }
 
   @HostListener('window:keyup', ['$event'])
@@ -111,7 +114,6 @@ export class GameComponent implements OnInit {
   submitRound(round: number, sequence: string, final?: boolean): void {
     if (sequence.length !== 5) { return }
     if (this.wordService.inDict(sequence)) {
-      // this.toggleNotice('Valid word!', 'good');
       const classBoardRow = this.matchedLetters(sequence, this.currentWord);
       this.classBoard[round - 1] = classBoardRow;
       setTimeout(() => {
@@ -123,9 +125,9 @@ export class GameComponent implements OnInit {
       }, 1000);
       this.play = '';
       this.round = this.incrementRound(this.round);
-
+      this.storageService.set('round', `${this.round}`);
       this.populateAlphabetDict([...sequence], classBoardRow);
-      console.log(this.classBoard, this.board, this.alphabetClass);
+
     } else {
       this.toggleNotice('Invalid word!', 'warn');
     }
@@ -192,5 +194,29 @@ export class GameComponent implements OnInit {
     if (sequence.length > 5) { return; }
     // if (!sequence.match(/[A-Z]/i) || sequence.length === 1) { return; }
     this._play = sequence;
+  }
+
+  resetBoard(): void {
+    this.board = [
+      ['', '', '', '', ''],
+      ['', '', '', '', ''],
+      ['', '', '', '', ''],
+      ['', '', '', '', ''],
+      ['', '', '', '', ''],
+      ['', '', '', '', '']
+    ];
+    this.classBoard = [
+      [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
+      [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
+      [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
+      [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
+      [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
+      [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT]
+    ];
+    this.round = 1;
+  }
+
+  private intendedTheme(currentTheme: string) {
+    return (currentTheme === 'light') ? 'dark' : 'light';
   }
 }

@@ -8,6 +8,7 @@ import { GameComponent } from './components/game/game.component';
 import { WordService } from './services/word.service';
 import { LetterBlockComponent } from './components/letter-block/letter-block.component';
 import { KeyboardComponent } from './components/keyboard/keyboard.component';
+import { StorageService } from './services/storage.service';
 
 const themeServiceConfig: ThemeServiceConfig = {
   themes: ['light', 'dark'],
@@ -32,6 +33,7 @@ const themeServiceConfig: ThemeServiceConfig = {
   ],
   providers: [
     WordService,
+    StorageService,
     {
       provide: THEME_CONFIG,
       useValue: themeServiceConfig

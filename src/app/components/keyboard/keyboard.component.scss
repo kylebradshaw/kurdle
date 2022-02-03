@@ -46,20 +46,16 @@
 
     &.char {
       border: 1px solid theme-var($--theme-on-default);
-      // background-color: #efefef;
       color: theme-var($--theme-on-default);
-      // padding: 0.8rem 0.5rem;
       padding: 0.8rem 2vw;
       font-size: 5vw;
       min-width: 1rem;
       text-align: center;
       &--undefined {
-        // background-color: darken(#efefef, 5%);
         color: theme-var($--theme-on-default);
         background: theme-var($--theme-default);
         padding: 0.8rem 4.4vw;
-        // border: none;
-        font-size: 1.5rem;
+        font-size: 5vw;
         color: theme-var($--theme-on-primary);
       }
       &--default {

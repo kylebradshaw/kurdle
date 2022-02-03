@@ -1,8 +1,9 @@
 <div class="app">
   <header>
-    <button class="bare" (click)="attribution()">︖</button>
+    <!-- <button class="bare" (click)="attribution()">&#xFFFD;</button> -->
+    <button class="bare" (click)="resetBoard()">&#x267B;</button>
     <h1>Kurdle</h1>
-    <button class="bare" (click)="switchTheme(currentTheme)">☺︎</button>
+    <button class="bare" (click)="switchTheme(currentTheme, true)">☺︎</button>
   </header>
   <div class="flash" [class]="notice.type" [innerHTML]="notice.message"></div>
   <main>
@@ -16,7 +17,6 @@
     <p>{{round}}::{{play}}</p>
     <p>{{currentWord}}::{{decodedWord}}</p>
   </section>
-  <footer>
-    <app-keyboard [alphabetClass]="alphabetClass" (onClick)="refreshLetters($event)"></app-keyboard>
-  </footer>
+  <app-keyboard [alphabetClass]="alphabetClass" (onClick)="refreshLetters($event)"></app-keyboard>
+  <footer></footer>
 </div>
