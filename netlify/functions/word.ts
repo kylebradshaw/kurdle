@@ -1,5 +1,6 @@
 import { DICTIONARY } from './dict';
-import { Handler } from "@netlify/functions";
+import { Handler } from '@netlify/functions';
+import * as base64 from 'base-64';
 
 const handler: Handler = async (event, context) => {
 
@@ -40,7 +41,7 @@ const handler: Handler = async (event, context) => {
     statusCode: 200,
     body: JSON.stringify({
       word: (rawQuery.includes('rando')) ? chooseRandom : periodicWord,
-      wordText: (rawQuery.includes('rando')) ? atob(chooseRandom) : atob(periodicWord),
+      wordText: (rawQuery.includes('rando')) ? base64.decode(chooseRandom) : base64.decode(periodicWord),
       // context,
       // event
      }),
