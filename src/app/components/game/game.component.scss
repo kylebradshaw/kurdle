@@ -32,7 +32,8 @@ header {
   color: #000;
   font-size: 1rem;
   font-weight: bold;
-  color: theme-var($--theme-on-surface);
+  letter-spacing: 0.1rem;
+  color: theme-var($--theme-surface);
   &.good {
     background-color: theme-var($--theme-good);
   }
@@ -44,6 +45,7 @@ header {
   }
   &.default {
     background-color: transparent;
+    color: theme-var($--theme-on-surface);
   }
 }
 main {

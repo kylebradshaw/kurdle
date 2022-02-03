@@ -3,6 +3,7 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { WordService } from 'src/app/services/word.service';
 import { GuessClass, GuessAction, AlphaDict } from 'src/app/models/guess';
 import { ActivatedRoute } from '@angular/router';
+import { ThemeService } from '@bcodes/ngx-theme-service';
 
 @Component({
   selector: 'app-game',
@@ -33,11 +34,13 @@ export class GameComponent implements OnInit {
   alphabetClass: AlphaDict = {};
   debugMode: boolean = false;
   notice: {message: string, type: string} = {message: '', type: ''};
+  currentTheme = '';
   private _play: string = '';
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private wordService: WordService
+    private wordService: WordService,
+    private themeService: ThemeService,
   ) {
     // this.currentWord = btoa('light');
     // this.currentWord = btoa('state'); //
@@ -58,9 +61,14 @@ export class GameComponent implements OnInit {
 
     this.wordService.seedWordFromFunc('rando').subscribe((response: FuncWord) => {
       this.currentWord = response.word;
-      console.log(response.wordText, btoa('divvy'));
-      this.currentWord = btoa('divvy');
     });
+
+    this.themeService.selectedTheme$.subscribe(theme => this.currentTheme = theme);
+  }
+
+  switchTheme($event: MouseEvent, previousTheme: string): void {
+    let nextTheme = (previousTheme === 'light') ? 'dark' : 'light';
+    this.themeService.switchTheme(nextTheme);
   }
 
   @HostListener('window:keyup', ['$event'])
@@ -156,7 +164,7 @@ export class GameComponent implements OnInit {
   }
 
   attribution(): void {
-    this.toggleNotice(`Built by @ky`, 'default');
+    this.toggleNotice(`Built by&nbsp;<a target="_blank" href="https://twitter.com/ky">@ky</a>`, 'default');
   }
 
   toggleNotice(message: string, type: string): void {
@@ -164,7 +172,7 @@ export class GameComponent implements OnInit {
     this.clearNotice();
   }
 
-  clearNotice(timeout = 5000): void {
+  clearNotice(timeout = 1500): void {
     setTimeout(() => {
       this.notice = {message: '', type: ''};
     }, timeout);

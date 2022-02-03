@@ -2,11 +2,9 @@
   <header>
     <button class="bare" (click)="attribution()">︖</button>
     <h1>Kurdle</h1>
-    <button class="bare">☺︎</button>
+    <button class="bare" (click)="switchTheme($event, currentTheme)">☺︎</button>
   </header>
-  <div class="flash" [class]="notice.type">
-    {{notice.message}}
-  </div>
+  <div class="flash" [class]="notice.type" [innerHTML]="notice.message"></div>
   <main>
     <div class="row" *ngFor="let r of board; let rIdx=index">
       <div class="column" *ngFor="let c of r; let cIdx=index">
