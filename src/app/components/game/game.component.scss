@@ -48,7 +48,7 @@ main {
   flex-direction: column;
   flex-grow: 1;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   .row {
     display: flex;
     flex-direction: row;

@@ -29,6 +29,12 @@
     color: #333;
     margin: 0.1rem;
     cursor: pointer;
+    // prevent annoying copy prompt
+    -webkit-touch-callout: none; /* Safari */
+    -webkit-user-select: none; /* Chrome */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none;
     &--inner {
       padding: 0.1rem;
     }
@@ -37,7 +43,7 @@
       // background-color: #efefef;
       // color: #000;
       padding: 0.35rem;
-      font-size: 6vw;
+      font-size: 8vw;
       min-width: 1rem;
       text-align: center;
     }
