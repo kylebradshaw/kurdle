@@ -32,17 +32,18 @@ header {
   color: #000;
   font-size: 1rem;
   font-weight: bold;
+  color: theme-var($--theme-on-surface);
   &.good {
-    color: $green;
+    background-color: theme-var($--theme-good);
   }
   &.bad {
-    color: $red;
+    background-color: theme-var($--theme-bad);
   }
   &.warn {
-    color: $yellow;
+    background-color: theme-var($--theme-warn);
   }
   &.default {
-    color: $slate;
+    background-color: transparent;
   }
 }
 main {

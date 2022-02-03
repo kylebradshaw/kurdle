@@ -59,6 +59,9 @@
         color: theme-var($--theme-on-default);
         background: theme-var($--theme-default);
         padding: 0.8rem 4.4vw;
+        // border: none;
+        font-size: 1.5rem;
+        color: theme-var($--theme-on-primary);
       }
       &--default {
         color: theme-var($--theme-on-default);
