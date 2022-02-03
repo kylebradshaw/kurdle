@@ -63,14 +63,15 @@ export class GameComponent implements OnInit {
   @HostListener('window:keyup', ['$event'])
   keyEvent($event: KeyboardEvent): void {
     // console.log($event.key, 'event key', $event);
+    console.log($event.key);
     if ($event.code === 'Backspace') {
       // console.log(this.play);
       this.removeLastSequenceLetter(this.play);
       // console.log(this.play, `after removal`);
     } else if ($event.code === 'Enter') {
       this.submitRound(this.round, this.play, this.round === 6);
-    } else {
-      this.play += $event.key && $event.key.match(/[A-Z]/i) && $event.key.toLowerCase() || ''; // no numbers, no spaces
+    } else if ($event.code.startsWith('Key')) {
+      this.play +=  $event.key.toLowerCase(); // no numbers, no spaces
       this.refreshLetters(this.play);
     }
   }
