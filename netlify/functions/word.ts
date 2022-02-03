@@ -34,12 +34,13 @@ const handler: Handler = async (event, context) => {
   }
 
   const rawQuery = event.rawQuery;
+  const chooseRandom = randomWord();
 
   return {
     statusCode: 200,
     body: JSON.stringify({
-      word: (rawQuery.includes('rando')) ? randomWord() : periodicWord,
-      wordText: (rawQuery.includes('rando')) ? atob(randomWord()) : atob(periodicWord),
+      word: (rawQuery.includes('rando')) ? chooseRandom : periodicWord,
+      wordText: (rawQuery.includes('rando')) ? atob(chooseRandom) : atob(periodicWord),
       // context,
       // event
      }),
