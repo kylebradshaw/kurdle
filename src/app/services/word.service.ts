@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 
 export interface FuncWord {
   word: string;
-  time: Date;
+  wordText: string;
 }
 @Injectable({
   providedIn: 'root'

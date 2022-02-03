@@ -58,13 +58,12 @@ export class GameComponent implements OnInit {
 
     this.wordService.seedWordFromFunc('rando').subscribe((response: FuncWord) => {
       this.currentWord = response.word;
+      console.log(response.wordText);
     });
   }
 
   @HostListener('window:keyup', ['$event'])
   keyEvent($event: KeyboardEvent): void {
-    // console.log($event.key, 'event key', $event);
-    console.log($event.key);
     if ($event.code === 'Backspace') {
       // console.log(this.play);
       this.removeLastSequenceLetter(this.play);
@@ -111,6 +110,7 @@ export class GameComponent implements OnInit {
       this.round = this.incrementRound(this.round);
 
       this.populateAlphabetDict([...sequence], classBoardRow);
+      console.log(this.classBoard, this.board, this.alphabetClass);
     } else {
       this.toggleNotice('Invalid word!', 'warn');
     }

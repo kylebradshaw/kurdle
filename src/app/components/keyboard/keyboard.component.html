@@ -2,10 +2,10 @@
   <div class="keyboard__row" *ngFor="let t of keys">
     <div class="keyboard__key" (click)="onLetter(k)" *ngFor="let k of t"
       [class]="'keyboard__key--' + alphabetClass[k]"
-      [ngClass]="{'keyboard__key--used': sequence.includes(k)}"
       >
-      <div class="keyboard__key--inner">
-        <div class="keyboard__key--char">{{k}}</div>
+      <!-- [ngClass]="{'keyboard__key--used': sequence.includes(k)}" -->
+      <div class="keyboard__key__inner">
+        <div class="keyboard__key__char">{{k}}</div>
       </div>
     </div>
   </div>

@@ -1,0 +1,53 @@
+$--theme-primary: --theme-primary;
+$--theme-on-primary: --theme-on-primary;
+$--theme-secondary: --theme-secondary;
+$--theme-on-secondary: --theme-on-secondary;
+$--theme-surface: --theme-surface;
+$--theme-on-surface: --theme-on-surface;
+$--theme-background: --theme-background;
+$--theme-match: --theme-match;
+$--theme-on-match: --theme-on-match;
+$--theme-mismatch: --theme-mismatch;
+$--theme-on-mismatch: --theme-on-mismatch;
+$--theme-used: --theme-used;
+$--theme-on-used: --theme-on-used;
+$--theme-default: --theme-default;
+$--theme-on-default: --theme-on-default;
+
+// Default theme
+$theme-map-light: (
+  $--theme-primary: #0ba5c4,
+  $--theme-on-primary: #0a0a0a,
+  $--theme-secondary: #d5d5d5,
+  $--theme-on-secondary: #444,
+  $--theme-surface: #fff,
+  $--theme-on-surface: #0a0a0a,
+  $--theme-background: #fafafa,
+  $--theme-match: #08b306,
+  $--theme-on-match: #fff,
+  $--theme-mismatch: #f7c910,
+  $--theme-on-mismatch: #fff,
+  $--theme-used: #383735,
+  $--theme-on-used: #fff,
+  $--theme-default: inherit,
+  $--theme-on-default: #383735,
+);
+
+// Override the default light theme
+$theme-map-dark: (
+  $--theme-primary: #0ad7ff,
+  $--theme-on-primary: #fff,
+  $--theme-secondary: #444,
+  $--theme-on-secondary: #d5d5d5,
+  $--theme-surface: #0a0a0a,
+  $--theme-on-surface: #fafafa,
+  $--theme-background: #010101,
+  $--theme-match: #08b306,
+  $--theme-on-match: #fff,
+  $--theme-mismatch: #f7c910,
+  $--theme-on-mismatch: #fff,
+  $--theme-used: #383735,
+  $--theme-on-used: #fff,
+  $--theme-default: inherit,
+  $--theme-on-default: #fafafa,
+);

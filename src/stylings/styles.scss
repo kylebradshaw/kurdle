@@ -1,0 +1,8 @@
+@import "themes";
+
+html,
+body {
+  padding: 0;
+  background-color: theme-var($--theme-surface);
+  color: theme-var($--theme-on-surface);
+}

@@ -1,0 +1,24 @@
+@import "variables";
+@import "mixins";
+
+// https://bcodes.io/blog/post/theming-css-variables-in-scss
+:root.theme-transition,
+:root.theme-transition * {
+  transition: background-color 1000ms !important;
+  transition-delay: 0s !important;
+}
+
+:root.light {
+  @include spread-map($theme-map-light);
+}
+:root.dark {
+  @include spread-map($theme-map-dark);
+}
+
+$green: #08b306;
+$yellow: #fccf21;
+$slate: #383735;
+$red: #cd1e1eee;
+
+// https://www.colourlovers.com/palette/2971057/Wordle_CTPS
+// #000000,#27C839,#0AD7FF,#FFFC4F,#FF0AB6,#000000,#27C839,#0AD7FF

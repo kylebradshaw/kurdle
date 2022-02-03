@@ -1,4 +1,4 @@
-@import "./../../../stylings/_theme.scss";
+@import "./../../../stylings/themes.scss";
 
 .char {
   display: flex;
@@ -11,29 +11,27 @@
   font-size: 3rem;
   font-weight: bold;
   border: 2px solid rgba(0, 0, 0, 0.8);
-  background-color: #fff;
   text-transform: uppercase;
-  &--default {
-    border: 2px solid rgba(0, 0, 0, 0.6);
-  }
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
   &--inner {
     // background-color: #fff;
     padding: 0.1rem;
   }
-  &--selected {
-    background-color: cyan;
+  &--default {
+    border: 2px solid theme-var($--theme-on-default);
+    color: theme-var($--theme-on-default);
+    background: theme-var($--theme-default);
   }
   &--used {
-    background-color: $slate;
-    color: #efefef;
+    color: theme-var($--theme-on-used);
+    background: theme-var($--theme-used);
   }
   &--match {
-    opacity: 1;
-    background-color: $green;
+    color: theme-var($--theme-on-match);
+    background: theme-var($--theme-match);
   }
   &--mismatch {
-    opacity: 1;
-    background-color: $yellow;
-    color: #333;
+    color: theme-var($--theme-on-mismatch);
+    background: theme-var($--theme-mismatch);
   }
 }

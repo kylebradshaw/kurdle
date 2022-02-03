@@ -1,4 +1,4 @@
-@import "./../../../stylings/_theme.scss";
+@import "./../../../stylings/themes.scss";
 
 .keyboard {
   display: flex;
@@ -10,13 +10,21 @@
     flex-direction: row;
     justify-content: center;
     &:nth-of-type(1) {
-      width: 98%;
+      width: 100%;
     }
     &:nth-of-type(2) {
-      width: 92%;
+      width: 100%;
     }
     &:nth-of-type(3) {
-      width: 90%;
+      width: 100%;
+      > div:first-of-type * {
+        color: theme-var($--theme-on-secondary);
+        background-color: theme-var($--theme-secondary);
+      }
+      > div:last-of-type * {
+        color: theme-var($--theme-on-secondary);
+        background-color: theme-var($--theme-secondary);
+      }
     }
   }
   &__key {
@@ -35,33 +43,41 @@
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* Internet Explorer/Edge */
     user-select: none;
-    &--inner {
+    &__inner {
       padding: 0.1rem;
     }
-    &--char {
-      // border: 2px solid #ccc;
+    &__char {
+      border: 1px solid theme-var($--theme-on-default);
       // background-color: #efefef;
-      // color: #000;
-      padding: 0.35rem;
-      font-size: 8vw;
+      color: theme-var($--theme-on-default);
+      // padding: 0.8rem 0.5rem;
+      padding: 0.8rem 2vw;
+      font-size: 5vw;
       min-width: 1rem;
       text-align: center;
+      text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
     }
     &--undefined {
-      background-color: #d5d5d5;
+      // background-color: darken(#efefef, 5%);
+      color: theme-var($--theme-on-default);
+      background: theme-var($--theme-default);
     }
     &--default {
-      background-color: #efefef;
+      color: theme-var($--theme-on-default);
+      background: theme-var($--theme-default);
     }
     &--used {
-      background-color: $slate;
-      color: #efefef;
+      color: theme-var($--theme-on-used) !important;
+      background: theme-var($--theme-used);
+      border: 1px solid transparent !important;
     }
     &--match {
-      background-color: $green;
+      color: theme-var($--theme-on-match);
+      background: theme-var($--theme-match);
     }
     &--mismatch {
-      background-color: $yellow;
+      color: theme-var($--theme-on-mismatch);
+      background: theme-var($--theme-mismatch);
     }
   }
 }
