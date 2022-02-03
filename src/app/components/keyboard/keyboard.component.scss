@@ -43,10 +43,8 @@
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* Internet Explorer/Edge */
     user-select: none;
-    &__inner {
-      padding: 0.1rem;
-    }
-    &__char {
+
+    &.char {
       border: 1px solid theme-var($--theme-on-default);
       // background-color: #efefef;
       color: theme-var($--theme-on-default);
@@ -56,28 +54,28 @@
       min-width: 1rem;
       text-align: center;
       text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
-    }
-    &--undefined {
-      // background-color: darken(#efefef, 5%);
-      color: theme-var($--theme-on-default);
-      background: theme-var($--theme-default);
-    }
-    &--default {
-      color: theme-var($--theme-on-default);
-      background: theme-var($--theme-default);
-    }
-    &--used {
-      color: theme-var($--theme-on-used) !important;
-      background: theme-var($--theme-used);
-      border: 1px solid transparent !important;
-    }
-    &--match {
-      color: theme-var($--theme-on-match);
-      background: theme-var($--theme-match);
-    }
-    &--mismatch {
-      color: theme-var($--theme-on-mismatch);
-      background: theme-var($--theme-mismatch);
+      &--undefined {
+        // background-color: darken(#efefef, 5%);
+        color: theme-var($--theme-on-default);
+        background: theme-var($--theme-default);
+      }
+      &--default {
+        color: theme-var($--theme-on-default);
+        background: theme-var($--theme-default);
+      }
+      &--used {
+        color: theme-var($--theme-on-used) !important;
+        background: theme-var($--theme-used);
+        border: 1px solid transparent !important;
+      }
+      &--match {
+        color: theme-var($--theme-on-match);
+        background: theme-var($--theme-match);
+      }
+      &--mismatch {
+        color: theme-var($--theme-on-mismatch);
+        background: theme-var($--theme-mismatch);
+      }
     }
   }
 }
