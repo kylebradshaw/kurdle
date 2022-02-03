@@ -1,3 +1,4 @@
+import { FuncWord } from './../../services/word.service';
 import { Component, OnInit, HostListener } from '@angular/core';
 import { WordService } from 'src/app/services/word.service';
 import { GuessClass, GuessAction, AlphaDict } from 'src/app/models/guess';
@@ -39,7 +40,7 @@ export class GameComponent implements OnInit {
   ) {
     // this.currentWord = btoa('light');
     // this.currentWord = btoa('state'); //
-    this.currentWord = this.wordService.seedWord();
+    // this.currentWord = this.wordService.seedWord();
     this.decodedWord = this.wordService.decode(this.currentWord);
     this.activatedRoute.queryParams.subscribe(params => {
       if (params[`debug`] !== undefined) {
@@ -49,10 +50,13 @@ export class GameComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.play = ""
-    console.log(this.alphabetClass, `alphabetClass`);
+    this.play = "";
     [...'abcdefghijklmnopqrstuvwxyz'].forEach(letter => {
       this.alphabetClass[letter] = GuessClass.DEFAULT;
+    });
+
+    this.wordService.seedWordFromFunc('rando').subscribe((response: FuncWord) => {
+      this.currentWord = response.word;
     });
   }
 

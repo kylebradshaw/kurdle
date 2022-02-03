@@ -1,11 +1,25 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
+export interface FuncWord {
+  word: string;
+  time: Date;
+}
 @Injectable({
   providedIn: 'root'
 })
 export class WordService {
 
-  constructor() { }
+  constructor (
+    private http: HttpClient,
+  ) { }
+
+  public seedWordFromFunc(query: string): Observable<FuncWord> {
+    const url = `/.netlify/functions/word?=${query}`;
+    return this.http.get(url).pipe(map((response: any) => response));
+  }
 
   public seedWord(index?: number): string {
     return (index) ? this.dict[index] : this.dict[Math.floor(Math.random() * this.dict.length)];

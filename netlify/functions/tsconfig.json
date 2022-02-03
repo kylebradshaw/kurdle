@@ -1,0 +1,15 @@
+{
+  "extends": "./../../tsconfig.json",
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "outDir": "./",
+    "types": []
+  },
+  "files": [
+    "word.ts",
+  ],
+  "include": [
+    "src/**/*.d.ts"
+  ]
+}
