@@ -58,6 +58,7 @@
         // background-color: darken(#efefef, 5%);
         color: theme-var($--theme-on-default);
         background: theme-var($--theme-default);
+        padding: 0.8rem 4.4vw;
       }
       &--default {
         color: theme-var($--theme-on-default);
@@ -71,10 +72,12 @@
       &--match {
         color: theme-var($--theme-on-match);
         background: theme-var($--theme-match);
+        border: 1px solid transparent !important;
       }
       &--mismatch {
         color: theme-var($--theme-on-mismatch);
         background: theme-var($--theme-mismatch);
+        border: 1px solid transparent !important;
       }
     }
   }

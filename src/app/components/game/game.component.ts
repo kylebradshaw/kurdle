@@ -58,7 +58,8 @@ export class GameComponent implements OnInit {
 
     this.wordService.seedWordFromFunc('rando').subscribe((response: FuncWord) => {
       this.currentWord = response.word;
-      console.log(response.wordText);
+      console.log(response.wordText, btoa('divvy'));
+      this.currentWord = btoa('divvy');
     });
   }
 

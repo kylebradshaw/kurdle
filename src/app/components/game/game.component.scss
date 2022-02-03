@@ -9,7 +9,7 @@
   background: none;
   outline: none;
   border: none;
-  color: #000;
+  color: theme-var($--theme-on-surface);
   font-size: 1.5rem;
 }
 header {
@@ -20,6 +20,8 @@ header {
   h1 {
     text-transform: uppercase;
     letter-spacing: 0.2rem;
+    padding: 0;
+    margin: 0;
   }
 }
 .flash {

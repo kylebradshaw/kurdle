@@ -6,11 +6,11 @@
   align-items: center;
   min-width: 15vw;
   min-height: 8vh;
-  margin: 0.4rem 0.2rem;
+  margin: 0.2rem 0.1rem;
   display: flex;
-  font-size: 3rem;
+  font-size: 2rem;
   font-weight: bold;
-  border: 2px solid rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.8);
   text-transform: uppercase;
   text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
   &--inner {
@@ -18,7 +18,7 @@
     padding: 0.1rem;
   }
   &--default {
-    border: 2px solid theme-var($--theme-on-default);
+    border: 1px solid theme-var($--theme-on-default);
     color: theme-var($--theme-on-default);
     background: theme-var($--theme-default);
   }
