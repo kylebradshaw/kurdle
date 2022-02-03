@@ -2,7 +2,7 @@
   <header>
     <button class="bare" (click)="attribution()">︖</button>
     <h1>Kurdle</h1>
-    <button class="bare" (click)="switchTheme($event, currentTheme)">☺︎</button>
+    <button class="bare" (click)="switchTheme(currentTheme)">☺︎</button>
   </header>
   <div class="flash" [class]="notice.type" [innerHTML]="notice.message"></div>
   <main>

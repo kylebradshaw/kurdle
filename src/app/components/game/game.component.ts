@@ -54,6 +54,12 @@ export class GameComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (window.matchMedia('prefers-color-scheme: dark').matches) {
+      this.switchTheme('light'); // opposite of current theme
+    } else {
+      this.switchTheme('dark');// opposite of current theme
+    }
+
     this.play = "";
     [...'abcdefghijklmnopqrstuvwxyz'].forEach(letter => {
       this.alphabetClass[letter] = GuessClass.DEFAULT;
@@ -66,7 +72,7 @@ export class GameComponent implements OnInit {
     this.themeService.selectedTheme$.subscribe(theme => this.currentTheme = theme);
   }
 
-  switchTheme($event: MouseEvent, previousTheme: string): void {
+  switchTheme(previousTheme: string): void {
     let nextTheme = (previousTheme === 'light') ? 'dark' : 'light';
     this.themeService.switchTheme(nextTheme);
   }
