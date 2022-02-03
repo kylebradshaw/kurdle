@@ -32,6 +32,7 @@ export class GameComponent implements OnInit {
   solved = false;
   alphabetClass: AlphaDict = {};
   debugMode: boolean = false;
+  notice: {message: string, type: string} = {message: '', type: ''};
   private _play: string = '';
 
   constructor(
@@ -96,14 +97,14 @@ export class GameComponent implements OnInit {
   submitRound(round: number, sequence: string, final?: boolean): void {
     if (sequence.length !== 5) { return }
     if (this.wordService.inDict(sequence)) {
-      // window.alert('Valid word!');
+      // this.toggleNotice('Valid word!', 'good');
       const classBoardRow = this.matchedLetters(sequence, this.currentWord);
       this.classBoard[round - 1] = classBoardRow;
       setTimeout(() => {
         if (classBoardRow.every(letter => letter === 'match')) {
-          window.alert('YOU WIN!');
+          this.toggleNotice('YOU WIN!', 'good');
         } else if (final) {
-          window.alert('YOU LOSE!');
+          this.toggleNotice('YOU LOSE!', 'bad');
         }
       }, 1000);
       this.play = '';
@@ -111,7 +112,7 @@ export class GameComponent implements OnInit {
 
       this.populateAlphabetDict([...sequence], classBoardRow);
     } else {
-      window.alert('Invalid word!');
+      this.toggleNotice('Invalid word!', 'warn');
     }
   }
 
@@ -154,7 +155,18 @@ export class GameComponent implements OnInit {
   }
 
   attribution(): void {
-    window.alert(`Built by @ky`);
+    this.toggleNotice(`Built by @ky`, 'default');
+  }
+
+  toggleNotice(message: string, type: string): void {
+    this.notice = {message, type};
+    this.clearNotice();
+  }
+
+  clearNotice(timeout = 5000): void {
+    setTimeout(() => {
+      this.notice = {message: '', type: ''};
+    }, timeout);
   }
 
   get play(): string {
