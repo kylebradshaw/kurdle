@@ -45,7 +45,7 @@ export class GameComponent implements OnInit {
   ngOnInit(): void {
     this.initTheme();
     this.setupGame();
-    if (this.navigator.share) {
+    if (this.navigator?.share) {
       this.isShareable = true;
     }
   }

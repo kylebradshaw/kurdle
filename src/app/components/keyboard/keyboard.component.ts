@@ -25,13 +25,13 @@ export class KeyboardComponent implements OnInit {
 
   onLetter(letter: any): void {
     console.log(letter);
-    // if (letter === GuessAction.DEL) {
-    //   this.sequence.length = (this.sequence.length > 0) ? this.sequence.length - 1 : 0;
-    // } else {
-    //   this.sequence.push(letter);
-    // }
+    if (letter === GuessAction.DEL) {
+      this.sequence.length = (this.sequence.length > 0) ? this.sequence.length - 1 : 0;
+    } else {
+      this.sequence.push(letter);
+    }
     this.onClick.emit(this.sequence.join(''));
-    // reset sequence
+    // reset sequence (but not for invalid [(sequence)] binding will fix this)
     if (letter === GuessAction.ENTER) {
       this.sequence = [];
     }
