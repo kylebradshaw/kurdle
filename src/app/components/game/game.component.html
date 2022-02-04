@@ -8,6 +8,7 @@
   <div class="flash" [class]="notice.type">
     <span [innerHTML]="notice.message"></span>
     <span *ngIf="notice.again">&nbsp;<button (click)="reloadGame()">Play again?</button></span>
+    <span *ngIf="isShareable">&nbsp;<button (click)="shareGame()">&#83;&#104;&#97;&#114;&#101;&#33;</button></span>
   </div>
   <main>
     <div class="row" *ngFor="let r of board; let rIdx=index">
@@ -17,9 +18,18 @@
     </div>
   </main>
   <section *ngIf="debugMode">
-    <p>{{round}}::{{play}}</p>
-    <p>{{currentWord}}::{{decodedWord}}</p>
+    <code>
+      <pre>
+        round::{{round}}
+        play::{{play}}
+        currentWord::{{currentWord}}
+        decodedWord::{{decodedWord}}
+      </pre>
+      <pre>
+        {{navigator | json}}
+      </pre>
+    </code>
   </section>
-  <app-keyboard [alphabetClass]="alphabetClass" (onClick)="refreshLetters($event)"></app-keyboard>
+  <app-keyboard [alphabetClass]="alphabetClass" (onClick)="refreshLetters($event)"></app-keyboard><!--  [(sequence)])="play" -->
   <footer></footer>
 </div>

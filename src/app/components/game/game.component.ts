@@ -24,6 +24,9 @@ export class GameComponent implements OnInit {
   notice: Notice = {message: '', type: '', again: false};
   currentTheme = '';
   endState = false;
+  buffer = '';
+  navigator: any;
+  isShareable = false;
   private _play: string = '';
 
   constructor(
@@ -42,6 +45,9 @@ export class GameComponent implements OnInit {
   ngOnInit(): void {
     this.initTheme();
     this.setupGame();
+    if (this.navigator.share) {
+      this.isShareable = true;
+    }
   }
 
   /**
@@ -61,6 +67,37 @@ export class GameComponent implements OnInit {
         this.switchTheme('dark');// opposite of current theme
       }
     }
+  }
+
+  /**
+   * Shares game, share board matrix and link
+   */
+  shareGame(): void {
+    if (this.navigator?.share) {
+      this.navigator.share({
+        title: 'KURDLE',
+        text: 'text\n' + this.boardMatrix().map(r => r.join(' ')).join('\n'),
+        url: 'https://kurdle.netlify.app',
+      })
+        .then(() => console.log('Successful share'))
+        .catch((error: any) => console.log('Error sharing', error));
+    }
+  }
+
+  boardMatrix(): string[][] {
+    return this.classBoard.map((r) => {
+      return r.map((c) => {
+        if (c === GuessClass.MISMATCH) {
+          return '🟨';
+        } else if (c === GuessClass.MATCH) {
+          return '🟩';
+        } else if (c === GuessClass.USED) {
+          return '⬛';
+        } else {
+          return '🤷🏻';
+        }
+      });
+    }) as string[][];
   }
 
   /**
@@ -125,9 +162,20 @@ export class GameComponent implements OnInit {
     } else if ($event.code === 'Enter') {
       this.submitRound(this.round, this.play, this.round === 6);
     } else if ($event.code.startsWith('Key')) {
+      this.buffer += $event.key.toLowerCase();
       this.play +=  $event.key.toLowerCase(); // no numbers, no spaces
       this.refreshLetters(this.play);
     }
+    this.buffer = this.bufferListener(this.buffer);
+  }
+
+  bufferListener(buffer: string): string {
+    if (buffer === 'ddd') {
+      this.debugMode = true;
+    } else if (buffer === 'xxx') {
+      this.debugMode = false;
+    }
+    return this.buffer.slice(-5);
   }
 
   removeLastSequenceLetter(play: string): void {
@@ -153,10 +201,10 @@ export class GameComponent implements OnInit {
       this.classBoard[round - 1] = classBoardRow;
       setTimeout(() => {
         if (classBoardRow.every(letter => letter === 'match')) {
-          this.toggleNotice('YOU WIN!', 'good', true, 36e6);
+          this.toggleNotice('You won!', 'good', true, 36e6);
           this.endState = true;
         } else if (final) {
-          this.toggleNotice('YOU LOSE!', 'bad', true, 36e6);
+          this.toggleNotice(`${this.decodedWord.toUpperCase()} was the answer.`, 'bad', true, 36e6);
           this.endState = true;
         }
         if (this.endState) {
@@ -169,7 +217,7 @@ export class GameComponent implements OnInit {
       this.storageService.set('round', `${this.round}`);
       this.populateAlphabetDict([...sequence], classBoardRow);
     } else {
-      this.toggleNotice('Invalid word!', 'warn');
+      this.toggleNotice('The word is not the dictionary. Try again.', 'warn');
     }
   }
 
