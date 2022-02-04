@@ -1,11 +1,14 @@
 <div class="app">
   <header>
     <!-- <button class="bare" (click)="attribution()">&#xFFFD;</button> -->
-    <button class="bare" (click)="resetBoard()">&#x267B;</button>
+    <button class="bare" (click)="reloadGame()">&#x267B;</button>
     <h1>Kurdle</h1>
     <button class="bare" (click)="switchTheme(currentTheme, true)">☺︎</button>
   </header>
-  <div class="flash" [class]="notice.type" [innerHTML]="notice.message"></div>
+  <div class="flash" [class]="notice.type">
+    <span [innerHTML]="notice.message"></span>
+    <span *ngIf="notice.again">&nbsp;<button (click)="reloadGame()">Play again?</button></span>
+  </div>
   <main>
     <div class="row" *ngFor="let r of board; let rIdx=index">
       <div class="column" *ngFor="let c of r; let cIdx=index">

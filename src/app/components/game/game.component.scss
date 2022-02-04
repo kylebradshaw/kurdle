@@ -26,6 +26,7 @@ header {
   }
 }
 .flash {
+  margin: 0.5rem -1rem;
   min-height: 2rem;
   display: flex;
   align-items: center;
@@ -48,6 +49,14 @@ header {
     background-color: transparent;
     color: theme-var($--theme-on-surface);
   }
+  button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    color: theme-var($--theme-surface);
+    font-size: 1rem;
+  }
 }
 main {
   display: flex;
@@ -67,5 +76,5 @@ main {
   }
 }
 footer {
-  min-height: 1rem;
+  min-height: 3rem;
 }

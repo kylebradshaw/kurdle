@@ -3,6 +3,7 @@ import { FuncWord } from './../../services/word.service';
 import { Component, OnInit, HostListener } from '@angular/core';
 import { WordService } from 'src/app/services/word.service';
 import { GuessClass, GuessAction, AlphaDict } from 'src/app/models/guess';
+import { Notice } from 'src/app/models/notice';
 import { ActivatedRoute } from '@angular/router';
 import { ThemeService } from '@bcodes/ngx-theme-service';
 
@@ -20,8 +21,9 @@ export class GameComponent implements OnInit {
   solved = false;
   alphabetClass: AlphaDict = {};
   debugMode: boolean = false;
-  notice: {message: string, type: string} = {message: '', type: ''};
+  notice: Notice = {message: '', type: '', again: false};
   currentTheme = '';
+  endState = false;
   private _play: string = '';
 
   constructor(
@@ -30,10 +32,6 @@ export class GameComponent implements OnInit {
     private themeService: ThemeService,
     private storageService: StorageService,
   ) {
-    // this.currentWord = btoa('light');
-    // this.currentWord = btoa('state'); //
-    // this.currentWord = this.wordService.seedWord();
-    this.decodedWord = this.wordService.decode(this.currentWord);
     this.activatedRoute.queryParams.subscribe(params => {
       if (params[`debug`] !== undefined) {
         this.debugMode = true;
@@ -43,12 +41,7 @@ export class GameComponent implements OnInit {
 
   ngOnInit(): void {
     this.initTheme();
-    this.resetBoard();
-    this.play = "";
-
-    this.wordService.seedWordFromFunc('rando').subscribe((response: FuncWord) => {
-      this.currentWord = response.word;
-    });
+    this.setupGame();
   }
 
   /**
@@ -70,6 +63,52 @@ export class GameComponent implements OnInit {
     }
   }
 
+  /**
+   * Reloads game
+   * Gross but a mouse click that fires setupGame() has downstream issues ¯\_(ツ)_/¯
+   */
+  reloadGame(): void {
+    location.reload();
+  }
+
+  /**
+   * Sets Up Game
+   * only works properly when toggled from keyboard (shift + ~), not mouse click ¯\_(ツ)_/¯
+   */
+  setupGame(): void {
+    this.endState = false;
+    this.round = 1;
+    this.play = '';
+
+    this.wordService.seedWordFromFunc('rando').subscribe((response: FuncWord) => {
+      this.currentWord = response.word;
+      // this.currentWord = btoa('model');
+      this.decodedWord = this.wordService.decode(this.currentWord);
+    });
+
+    [...'abcdefghijklmnopqrstuvwxyz'].forEach(letter => {
+      this.alphabetClass[letter] = GuessClass.DEFAULT;
+    });
+
+    this.board = [
+      ['', '', '', '', ''],
+      ['', '', '', '', ''],
+      ['', '', '', '', ''],
+      ['', '', '', '', ''],
+      ['', '', '', '', ''],
+      ['', '', '', '', '']
+    ];
+
+    this.classBoard = [
+      [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
+      [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
+      [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
+      [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
+      [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
+      [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT]
+    ];
+  }
+
   switchTheme(previousTheme: string, flip = false): void {
     let nextTheme = (flip) ? this.intendedTheme(previousTheme) : previousTheme;
     this.themeService.switchTheme(nextTheme);
@@ -79,10 +118,10 @@ export class GameComponent implements OnInit {
 
   @HostListener('window:keyup', ['$event'])
   keyEvent($event: KeyboardEvent): void {
-    if ($event.code === 'Backspace') {
-      // console.log(this.play);
+    if ($event.code === 'Backquote' && $event.shiftKey === true) {
+      this.setupGame();
+    } else if ($event.code === 'Backspace') {
       this.removeLastSequenceLetter(this.play);
-      // console.log(this.play, `after removal`);
     } else if ($event.code === 'Enter') {
       this.submitRound(this.round, this.play, this.round === 6);
     } else if ($event.code.startsWith('Key')) {
@@ -92,7 +131,6 @@ export class GameComponent implements OnInit {
   }
 
   removeLastSequenceLetter(play: string): void {
-    // make sure this goes down to keyboard?
     this.play = play.slice(0, -1);
     this.refreshLetters(this.play);
   }
@@ -115,16 +153,21 @@ export class GameComponent implements OnInit {
       this.classBoard[round - 1] = classBoardRow;
       setTimeout(() => {
         if (classBoardRow.every(letter => letter === 'match')) {
-          this.toggleNotice('YOU WIN!', 'good');
+          this.toggleNotice('YOU WIN!', 'good', true, 36e6);
+          this.endState = true;
         } else if (final) {
-          this.toggleNotice('YOU LOSE!', 'bad');
+          this.toggleNotice('YOU LOSE!', 'bad', true, 36e6);
+          this.endState = true;
+        }
+        if (this.endState) {
+          // this.recordStats()
+          // this.showStats();
         }
       }, 1000);
       this.play = '';
       this.round = this.incrementRound(this.round);
       this.storageService.set('round', `${this.round}`);
       this.populateAlphabetDict([...sequence], classBoardRow);
-
     } else {
       this.toggleNotice('Invalid word!', 'warn');
     }
@@ -134,35 +177,52 @@ export class GameComponent implements OnInit {
     sequence.forEach((letter, idx) => {
       this.alphabetClass[letter] = classes[idx];
     });
-    console.log(this.alphabetClass, `alphabetClass populated.`);
   }
 
   matchedLetters(sequence: string, solutionWord: string) {
-    console.log(sequence, this.wordService.decode(solutionWord), `guess+solution`);
+    // console.log(sequence, this.wordService.decode(solutionWord), `guess+solution`);
     const solution = this.wordService.decode(solutionWord);
-    let duplicateIndicies: number[] = [];
-    // find matched characters
+    let solutionDuplicateIndicies: number[] = [];
     let validChars = [...sequence].map((letter, idx) => {
-      const duplicateIdx = this.wordService.getIndices(solution, letter);
-      if (duplicateIdx.length > 1) {
-        duplicateIndicies = duplicateIdx;
+      // finds repeat letters in the solution word
+      const solutionDuplicateIdx = this.wordService.getIndices(solution, letter);
+      if (solutionDuplicateIdx.length > 1) {
+        solutionDuplicateIndicies = solutionDuplicateIdx;
       }
-      const guessArr = solution.indexOf(letter); // can't handle more than one instances of a letter in a word. ex: 'state'
-      return guessArr;
+      return solution.indexOf(letter);
     });
 
-    const lettersMatchArr = this.wordService.lettersMatch();
-
     // find matched indexes.
-    // solution: [0, 1, 2, 3, 4]
-    // mismatch: [-1, -1, -1, -1, -1]
-    // match(es): [0, -1, 2, -1, -1]
-    return validChars.map((idxMatch, slot) => {
+    // solution  [0, 1, 2, 3, 4]
+    // mismatch  [-1, -1, -1, -1, -1]
+    // match(es) [0, -1, 2, -1, -1]
+    // prune [0, 1, 0, -1, -1] => [0, 1, -1, -1, -1]
+    return this.pruneDuplicateLetters(validChars).map((idxMatch: number, slot) => {
       if (idxMatch === -1) { return 'used'; }
-      else if (idxMatch === slot || duplicateIndicies.includes(slot)) { return 'match';} // 🤮
+      else if (idxMatch === slot || solutionDuplicateIndicies.includes(slot)) { return 'match';} // 🤮
       else { return 'mismatch'; } //(idxMatch !== slot)
     });
   }
+
+  /**
+   * Scrubs duplicate letters @ improper indices
+   * [A][V][A][I][L] 2nd A is mismatch w/o index fix
+   * [A][V][E][R][T]
+   * no repeated indexes over -1 in array
+   * @param [0, 1, 0, -1, -1]
+   * @returns [0, 1, -1, -1, -1]
+   */
+  pruneDuplicateLetters(validChars: number[]): number[] {
+    const targetChars: number[] = [];
+    validChars.forEach((guessIdx, idx) => {
+      if (targetChars.includes(guessIdx) && guessIdx !== idx) {
+        targetChars[idx] = -1;
+      } else {
+        targetChars[idx] = guessIdx;
+      }
+    });
+    return targetChars;
+  };
 
   incrementRound(round: number): number {
     return round < 6 ? round + 1 : 1;
@@ -172,15 +232,23 @@ export class GameComponent implements OnInit {
     this.toggleNotice(`Built by&nbsp;<a target="_blank" href="https://twitter.com/ky">@ky</a>`, 'default');
   }
 
-  toggleNotice(message: string, type: string): void {
-    this.notice = {message, type};
-    this.clearNotice();
+  toggleNotice(message: string, type: string, again = false, timeOut = 1500): void {
+    this.notice = {message, type, again};
+    this.clearNotice(timeOut);
   }
 
   clearNotice(timeout = 1500): void {
     setTimeout(() => {
-      this.notice = {message: '', type: ''};
+      this.notice = {message: '', type: '', again: false};
     }, timeout);
+  }
+
+  recordStats(): void {
+    // this.storageService.set('stats', JSON.stringify(this.stats));
+  }
+
+  showStats(): void {
+    // this.stats = this.storageService.get('stats');
   }
 
   get play(): string {
@@ -189,32 +257,7 @@ export class GameComponent implements OnInit {
 
   set play(sequence: string) {
     if (sequence.length > 5) { return; }
-    // if (!sequence.match(/[A-Z]/i) || sequence.length === 1) { return; }
     this._play = sequence;
-  }
-
-  resetBoard(): void {
-    [...'abcdefghijklmnopqrstuvwxyz'].forEach(letter => {
-      this.alphabetClass[letter] = GuessClass.DEFAULT;
-    });
-
-    this.board = [
-      ['', '', '', '', ''],
-      ['', '', '', '', ''],
-      ['', '', '', '', ''],
-      ['', '', '', '', ''],
-      ['', '', '', '', ''],
-      ['', '', '', '', '']
-    ];
-    this.classBoard = [
-      [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
-      [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
-      [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
-      [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
-      [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
-      [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT]
-    ];
-    this.round = 1;
   }
 
   private intendedTheme(currentTheme: string) {
