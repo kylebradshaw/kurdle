@@ -5,7 +5,7 @@
     <div class="keyboard__key char"
       (click)="onLetter(k)"
       *ngFor="let k of t"
-      [class]="'char--' + alphabetKey[k]"
+      [class]="'char--' + playedAlphabetKey[k]?.class"
       >
         {{k}}
     </div>

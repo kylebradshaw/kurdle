@@ -122,8 +122,8 @@ export class GameComponent implements OnInit {
     this.wordService.seedWordFromFunc('rando').subscribe((response: FuncWord) => {
       this.currentWord = response.word;
       // this.currentWord = btoa('model');
-      this.currentWord = btoa('mammy');
-      // this.currentWord = btoa('pleat');
+      // this.currentWord = btoa('mammy');
+      this.currentWord = btoa('pleat');
       // this.currentWord = btoa('tract');
       // this.currentWord = btoa('stair');
       this.decodedWord = this.wordService.decode(this.currentWord);
@@ -203,6 +203,17 @@ export class GameComponent implements OnInit {
     this.board[this.round - 1] = this.board[this.round - 1].map((_, idx) => this.play.split('')[idx]);
   }
 
+  get combinedBoard(): any {
+    return this.board.map((r, i) => {
+      return this.classBoard[i].map((c, j) => {
+        return {
+          letter: r[j],
+          class: c
+        };
+      });
+    });
+  }
+
   submitRound(round: number, sequence: string, final?: boolean): void {
     if (sequence.length !== 5) { return }
     if (this.wordService.inDict(sequence)) {
@@ -235,7 +246,8 @@ export class GameComponent implements OnInit {
   // populateAlphabetDict(sequence: string[], classes: GuessClass[], decodedWord: string[]): void {
   //   sequence.forEach((letter, idx) => {
   //     console.log(letter, classes[idx], decodedWord[idx]);
-  //     this.alphabetKey[letter] = {class: classes[idx], idx: []};
+  //     // this needs to be immutable. doesn't have to be populated because we set it from the jump?
+  //     // this.alphabetKey[letter] = {class: classes[idx], idx: []};
   //   });
   // }
 

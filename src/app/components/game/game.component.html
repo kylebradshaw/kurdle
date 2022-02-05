@@ -30,6 +30,8 @@
   </section>
   <app-keyboard [alphabetKey]="alphabetKey"
     (onClick)="refreshLetters($event)"
+    [heavyBoard]="combinedBoard"
+    [round]="round"
     >
   </app-keyboard>
   <footer></footer>

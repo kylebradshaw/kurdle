@@ -19,7 +19,6 @@ export class WordService {
   ) { }
 
   public getAlphabetKey(decodedWord: string): AlphaDict {
-    console.log(decodedWord);
     let alphabetKey: AlphaDict = {};
     [...'abcdefghijklmnopqrstuvwxyz'].forEach(letter => {
       alphabetKey[letter] = { class: GuessClass.DEFAULT, idx: this.getIndices(decodedWord, letter) };
