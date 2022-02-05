@@ -7,7 +7,7 @@ import { AlphaDict, GuessAction } from 'src/app/models/guess';
   styleUrls: ['./keyboard.component.scss']
 })
 export class KeyboardComponent implements OnInit {
-  @Input() alphabetClass: AlphaDict = {};
+  @Input() alphabetKey: AlphaDict = {};
   @Input() sequence: string[] = [];
   @Output() onClick = new EventEmitter<string>();
   keys: string[][];
@@ -31,9 +31,15 @@ export class KeyboardComponent implements OnInit {
       this.sequence.push(letter);
     }
     this.onClick.emit(this.sequence.join(''));
-    // reset sequence (but not for invalid [(sequence)] binding will fix this)
-    if (letter === GuessAction.ENTER) {
-      this.sequence = [];
-    }
+
   }
+
+  // ngOnChanges(changes: SimpleChanges): void {
+    //Called before any other lifecycle hook. Use it to inject dependencies, but avoid any serious work here.
+    //Add '${implements OnChanges}' to the class.
+    // console.log(changes, this.sequence);
+    // look for onSubmit data
+    // this.sequence = [];
+  // }
+
 }

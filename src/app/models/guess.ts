@@ -10,8 +10,13 @@ export enum GuessAction {
   DEL = '⌫'
 }
 
+interface GuessLetter {
+  class: GuessClass;
+  idx: number[];
+}
+
 export interface AlphaDict {
-  [key: string]: string;
+  [key: string]: GuessLetter;
 }
 
 export type Letter = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V' | 'W' | 'X' | 'Y' | 'Z';

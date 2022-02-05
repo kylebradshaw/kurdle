@@ -6,6 +6,7 @@ import { GuessClass, GuessAction, AlphaDict } from 'src/app/models/guess';
 import { Notice } from 'src/app/models/notice';
 import { ActivatedRoute } from '@angular/router';
 import { ThemeService } from '@bcodes/ngx-theme-service';
+import { sequenceEqual } from 'rxjs';
 
 @Component({
   selector: 'app-game',
@@ -19,7 +20,7 @@ export class GameComponent implements OnInit {
   currentWord = "";
   decodedWord = "";
   solved = false;
-  alphabetClass: AlphaDict = {};
+  alphabetKey: AlphaDict = {};
   debugMode: boolean = false;
   notice: Notice = {message: '', type: '', again: false};
   currentTheme = '';
@@ -27,6 +28,7 @@ export class GameComponent implements OnInit {
   buffer = '';
   navigator: any;
   isShareable = false;
+  onSubmit: { reset: boolean } = { reset: false };
   private _play: string = '';
 
   constructor(
@@ -119,12 +121,11 @@ export class GameComponent implements OnInit {
 
     this.wordService.seedWordFromFunc('rando').subscribe((response: FuncWord) => {
       this.currentWord = response.word;
+      // this.currentWord = btoa('model');
       // this.currentWord = btoa('mammy');
+      this.currentWord = btoa('pleat');
       this.decodedWord = this.wordService.decode(this.currentWord);
-    });
-
-    [...'abcdefghijklmnopqrstuvwxyz'].forEach(letter => {
-      this.alphabetClass[letter] = GuessClass.DEFAULT;
+      this.alphabetKey = this.wordService.getAlphabetKey(this.decodedWord);
     });
 
     this.board = [
@@ -197,7 +198,7 @@ export class GameComponent implements OnInit {
   submitRound(round: number, sequence: string, final?: boolean): void {
     if (sequence.length !== 5) { return }
     if (this.wordService.inDict(sequence)) {
-      const classBoardRow = this.matchedLetters(sequence, this.currentWord);
+      const classBoardRow = this.matchedLetters(sequence, this.decodedWord, this.alphabetKey);
       this.classBoard[round - 1] = classBoardRow;
       setTimeout(() => {
         if (classBoardRow.every(letter => letter === 'match')) {
@@ -208,6 +209,8 @@ export class GameComponent implements OnInit {
           this.endState = true;
         }
         if (this.endState) {
+          console.log(this.boardMatrix());
+          this.onSubmit = { reset: true };
           // this.recordStats()
           // this.showStats();
         }
@@ -215,41 +218,107 @@ export class GameComponent implements OnInit {
       this.play = '';
       this.round = this.incrementRound(this.round);
       this.storageService.set('round', `${this.round}`);
-      this.populateAlphabetDict([...sequence], classBoardRow);
+      // this.populateAlphabetDict([...sequence], classBoardRow, [...this.decodedWord]);
     } else {
       this.toggleNotice('The word is not the dictionary. Try again.', 'warn');
     }
   }
 
-  populateAlphabetDict(sequence: string[], classes: string[]): void {
-    sequence.forEach((letter, idx) => {
-      this.alphabetClass[letter] = classes[idx];
-    });
-  }
+  // populateAlphabetDict(sequence: string[], classes: GuessClass[], decodedWord: string[]): void {
+  //   sequence.forEach((letter, idx) => {
+  //     console.log(letter, classes[idx], decodedWord[idx]);
+  //     this.alphabetKey[letter] = {class: classes[idx], idx: []};
+  //   });
+  // }
 
-  matchedLetters(sequence: string, solutionWord: string) {
-    // console.log(sequence, this.wordService.decode(solutionWord), `guess+solution`);
-    const solution = this.wordService.decode(solutionWord);
-    let solutionDuplicateIndicies: number[] = [];
-    let validChars = [...sequence].map((letter, idx) => {
-      // finds repeat letters in the solution word
-      const solutionDuplicateIdx = this.wordService.getIndices(solution, letter);
-      if (solutionDuplicateIdx.length > 1) {
-        solutionDuplicateIndicies = solutionDuplicateIdx;
-      }
-      return solution.indexOf(letter);
-    });
+  /**
+   * Matched letters
+   * @param sequence
+   * @param solutionWord
+   * @returns an array of GuessClass for each letter in sequence based on solution
+   */
+  matchedLetters(sequence: string, decodedWord: string, alphabetKey: AlphaDict): GuessClass[] {
+    let guessClass = [] as GuessClass[];
+    const repeatedSequence = this.wordService.repeatedCharacters(sequence);
+    const repeatedDecoded = this.wordService.repeatedCharacters(decodedWord);
 
-    // find matched indexes.
-    // solution  [0, 1, 2, 3, 4]
-    // mismatch  [-1, -1, -1, -1, -1]
-    // match(es) [0, -1, 2, -1, -1]
-    // prune [0, 1, 0, -1, -1] => [0, 1, -1, -1, -1]
-    return this.pruneDuplicateLetters(validChars).map((idxMatch: number, slot) => {
-      if (idxMatch === -1) { return 'used'; }
-      else if (idxMatch === slot || solutionDuplicateIndicies.includes(slot)) { return 'match';} // 🤮
-      else { return 'mismatch'; } //(idxMatch !== slot)
-    });
+    if (repeatedSequence.length < repeatedDecoded.length || repeatedSequence.length == repeatedDecoded.length) {
+      guessClass = [...sequence].map((letter, i) => {
+        // letter in sequence at proper solution[idx]
+        if (alphabetKey[letter] && alphabetKey[letter].idx.includes(i)) {
+          return GuessClass.MATCH;
+        } else if (alphabetKey[letter].idx.length === 0) {
+          return GuessClass.USED;
+        } else { // misfires can happen here
+          return GuessClass.MISMATCH;
+        }
+      });
+    } else {
+      // DUNNO!
+      let matchQueue = [...sequence].map((letter, i) => {
+        // letter in sequence at proper solution[idx]
+        if (alphabetKey[letter] && alphabetKey[letter].idx.includes(i)) {
+          return letter;
+        } else {
+          return null;
+        }
+      });
+
+      let usedQueue = [...sequence].map((letter, i) => {
+        // letter in sequence at proper solution[idx]
+        if (alphabetKey[letter] && alphabetKey[letter].idx.length === 0) {
+          return letter;
+        } else {
+          return null
+        }
+      });
+
+      let misMatchQueue = [...sequence].map((letter, i) => {
+        if (alphabetKey[letter] && alphabetKey[letter].idx.length > 0 && !alphabetKey[letter].idx.includes(i)) {
+          return letter;
+        } else {
+          return null
+        }
+      });
+      // debugger;
+    }
+
+    return guessClass;
+    // return [...sequence].map((letter, i) => {
+    //   // letter in sequence at proper solution[idx]
+    //   if (alphabetKey[letter] && alphabetKey[letter].idx.includes(i)) {
+    //     return GuessClass.MATCH;
+    //   } else if (alphabetKey[letter].idx.length === 0) {
+    //     return GuessClass.USED;
+    //   } else { // misfires can happen here
+    //     return GuessClass.MISMATCH;
+    //   }
+    // });
+    // are there dupes in guess?
+
+
+    // // console.log(sequence, this.wordService.decode(solutionWord), `guess+solution`);
+    // const solution = this.wordService.decode(solutionWord);
+    // let solutionDuplicateIndicies: number[] = [];
+    // let validChars = [...sequence].map((letter, idx) => {
+    //   // finds repeat letters in the solution word
+    //   const solutionDuplicateIdx = this.wordService.getIndices(solution, letter);
+    //   if (solutionDuplicateIdx.length > 1) {
+    //     solutionDuplicateIndicies = solutionDuplicateIdx;
+    //   }
+    //   return solution.indexOf(letter);
+    // });
+
+    // // find matched indexes.
+    // // solution  [0, 1, 2, 3, 4]
+    // // mismatch  [-1, -1, -1, -1, -1]
+    // // match(es) [0, -1, 2, -1, -1]
+    // // prune [0, 1, 0, -1, -1] => [0, 1, -1, -1, -1]
+    // return this.pruneDuplicateLetters(validChars).map((idxMatch: number, slot) => {
+    //   if (idxMatch === -1) { return GuessClass.USED; }
+    //   else if (idxMatch === slot || solutionDuplicateIndicies.includes(slot)) { return GuessClass.MATCH;} // 🤮
+    //   else { return GuessClass.MISMATCH; } //(idxMatch !== slot)
+    // });
   }
 
   /**

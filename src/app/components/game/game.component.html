@@ -28,6 +28,9 @@
       </pre>
     </code>
   </section>
-  <app-keyboard [alphabetClass]="alphabetClass" (onClick)="refreshLetters($event)"></app-keyboard><!--  [(sequence)])="play" -->
+  <app-keyboard [alphabetKey]="alphabetKey"
+    (onClick)="refreshLetters($event)"
+    >
+  </app-keyboard>
   <footer></footer>
 </div>
