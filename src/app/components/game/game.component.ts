@@ -122,8 +122,10 @@ export class GameComponent implements OnInit {
     this.wordService.seedWordFromFunc('rando').subscribe((response: FuncWord) => {
       this.currentWord = response.word;
       // this.currentWord = btoa('model');
-      // this.currentWord = btoa('mammy');
-      this.currentWord = btoa('pleat');
+      this.currentWord = btoa('mammy');
+      // this.currentWord = btoa('pleat');
+      // this.currentWord = btoa('tract');
+      // this.currentWord = btoa('stair');
       this.decodedWord = this.wordService.decode(this.currentWord);
       this.alphabetKey = this.wordService.getAlphabetKey(this.decodedWord);
     });
@@ -171,9 +173,9 @@ export class GameComponent implements OnInit {
   }
 
   bufferListener(buffer: string): string {
-    if (buffer === 'ddd') {
+    if (buffer === 'josie' || buffer === 'evieb') {
       this.debugMode = true;
-    } else if (buffer === 'xxx') {
+    } else if (buffer === 'xxx' || buffer === 'cammy') {
       this.debugMode = false;
     }
     return this.buffer.slice(-5);
@@ -190,6 +192,12 @@ export class GameComponent implements OnInit {
     }
     if (sequence.endsWith(GuessAction.DEL)) {
       return this.removeLastSequenceLetter(this.play);
+    }
+    if (sequence === 'josie' || sequence === 'evieb') {
+      this.debugMode = true;
+    }
+    if (sequence === 'cammy') {
+      this.debugMode = false;
     }
     this.play = sequence;
     this.board[this.round - 1] = this.board[this.round - 1].map((_, idx) => this.play.split('')[idx]);
@@ -242,58 +250,64 @@ export class GameComponent implements OnInit {
     const repeatedSequence = this.wordService.repeatedCharacters(sequence);
     const repeatedDecoded = this.wordService.repeatedCharacters(decodedWord);
 
-    if (repeatedSequence.length < repeatedDecoded.length || repeatedSequence.length == repeatedDecoded.length) {
-      guessClass = [...sequence].map((letter, i) => {
-        // letter in sequence at proper solution[idx]
-        if (alphabetKey[letter] && alphabetKey[letter].idx.includes(i)) {
-          return GuessClass.MATCH;
-        } else if (alphabetKey[letter].idx.length === 0) {
+    // if (repeatedSequence.length < repeatedDecoded.length || repeatedSequence.length == repeatedDecoded.length) {
+    //   guessClass = [...sequence].map((letter, i) => {
+    //     // letter in sequence at proper solution[idx]
+    //     if (alphabetKey[letter] && alphabetKey[letter].idx.includes(i)) {
+    //       return GuessClass.MATCH;
+    //     } else if (alphabetKey[letter].idx.length === 0) {
+    //       return GuessClass.USED;
+    //     } else { // misfires can happen here
+    //       return GuessClass.MISMATCH;
+    //     }
+    //   });
+    // } else {
+    //   // DUNNO!
+    //   let matchQueue = [...sequence].map((letter, i) => {
+    //     // letter in sequence at proper solution[idx]
+    //     if (alphabetKey[letter] && alphabetKey[letter].idx.includes(i)) {
+    //       return letter;
+    //     } else {
+    //       return null;
+    //     }
+    //   });
+
+    //   let usedQueue = [...sequence].map((letter, i) => {
+    //     // letter in sequence at proper solution[idx]
+    //     if (alphabetKey[letter] && alphabetKey[letter].idx.length === 0) {
+    //       return letter;
+    //     } else {
+    //       return null
+    //     }
+    //   });
+
+    //   let misMatchQueue = [...sequence].map((letter, i) => {
+    //     if (alphabetKey[letter] && alphabetKey[letter].idx.length > 0 && !alphabetKey[letter].idx.includes(i)) {
+    //       return letter;
+    //     } else {
+    //       return null
+    //     }
+    //   });
+    //   // debugger;
+    // }
+
+    // return guessClass;
+    return [...sequence].map((letter, i) => {
+      // letter in sequence at proper solution[idx]
+      if (alphabetKey[letter] && alphabetKey[letter].idx.includes(i)) {
+        return GuessClass.MATCH;
+      } else if (alphabetKey[letter].idx.length === 0) {
+        return GuessClass.USED;
+      } else { // misfires can happen here
+        // if the letter is in the repeatedSequence array and it makes it this far and it's
+        // _NOT_ in the _LAST_ found index of the solution (still more to match against), set it as used_ NOT MISMATCH
+        if (repeatedSequence.includes(letter) && sequence.lastIndexOf(letter) !== i) {
           return GuessClass.USED;
-        } else { // misfires can happen here
+        } else {
           return GuessClass.MISMATCH;
         }
-      });
-    } else {
-      // DUNNO!
-      let matchQueue = [...sequence].map((letter, i) => {
-        // letter in sequence at proper solution[idx]
-        if (alphabetKey[letter] && alphabetKey[letter].idx.includes(i)) {
-          return letter;
-        } else {
-          return null;
-        }
-      });
-
-      let usedQueue = [...sequence].map((letter, i) => {
-        // letter in sequence at proper solution[idx]
-        if (alphabetKey[letter] && alphabetKey[letter].idx.length === 0) {
-          return letter;
-        } else {
-          return null
-        }
-      });
-
-      let misMatchQueue = [...sequence].map((letter, i) => {
-        if (alphabetKey[letter] && alphabetKey[letter].idx.length > 0 && !alphabetKey[letter].idx.includes(i)) {
-          return letter;
-        } else {
-          return null
-        }
-      });
-      // debugger;
-    }
-
-    return guessClass;
-    // return [...sequence].map((letter, i) => {
-    //   // letter in sequence at proper solution[idx]
-    //   if (alphabetKey[letter] && alphabetKey[letter].idx.includes(i)) {
-    //     return GuessClass.MATCH;
-    //   } else if (alphabetKey[letter].idx.length === 0) {
-    //     return GuessClass.USED;
-    //   } else { // misfires can happen here
-    //     return GuessClass.MISMATCH;
-    //   }
-    // });
+      }
+    });
     // are there dupes in guess?
 
 

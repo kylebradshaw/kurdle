@@ -1,4 +1,4 @@
-<div class="app" class="d-flex flex-column">
+<div class="app d-flex flex-column">
   <header class="d-flex align-items-center justify-content-between">
     <!-- <button class="bare" (click)="attribution()">&#xFFFD;</button> -->
     <!-- <button class="bare" (click)="reloadGame()">&#x267B;</button> -->
@@ -14,7 +14,7 @@
     <span *ngIf="notice.again">&nbsp;<button (click)="reloadGame()">Play again?</button></span>
     <span *ngIf="isShareable">&nbsp;<button (click)="shareGame()">&#83;&#104;&#97;&#114;&#101;&#33;</button></span>
   </div>
-  <main class="d-flex flex-column align-items-center justify-content-center">
+  <main class="d-flex flex-column align-items-center justify-content-center flex-grow-1">
     <div class="d-flex" *ngFor="let r of board; let rIdx=index">
       <div class="d-flex" *ngFor="let c of r; let cIdx=index">
         <app-letter-block [char]="c" [letterClass]="classBoard[rIdx][cIdx]"></app-letter-block>
