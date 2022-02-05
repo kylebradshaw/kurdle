@@ -123,7 +123,7 @@ export class GameComponent implements OnInit {
       this.currentWord = response.word;
       // this.currentWord = btoa('model');
       // this.currentWord = btoa('mammy');
-      this.currentWord = btoa('pleat');
+      // this.currentWord = btoa('pleat');
       // this.currentWord = btoa('tract');
       // this.currentWord = btoa('stair');
       this.decodedWord = this.wordService.decode(this.currentWord);

@@ -33,6 +33,9 @@ export class KeyboardComponent implements OnInit, OnChanges {
       this.sequence.push(letter);
     }
     this.onClick.emit(this.sequence.join(''));
+    if (letter === GuessAction.ENTER) {
+      this.sequence = [];
+    }
   }
 
   /**
