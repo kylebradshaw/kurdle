@@ -1,33 +1,30 @@
-<div class="app">
-  <header>
+<div class="app" class="d-flex flex-column">
+  <header class="d-flex align-items-center justify-content-between">
     <!-- <button class="bare" (click)="attribution()">&#xFFFD;</button> -->
     <!-- <button class="bare" (click)="reloadGame()">&#x267B;</button> -->
     <button class="bare" (click)="reloadGame()">&#8634;</button>
     <h1>Kurdle</h1>
-    <button class="bare" (click)="switchTheme(currentTheme, true)">☺︎</button>
+    <button class="bare" (click)="switchTheme(currentTheme, true)">
+      <span *ngIf="currentTheme === 'light'">◻️◼️</span>
+      <span *ngIf="currentTheme === 'dark'">◼️◻️</span>
+    </button>
   </header>
   <div class="flash" [class]="notice.type">
     <span [innerHTML]="notice.message"></span>
     <span *ngIf="notice.again">&nbsp;<button (click)="reloadGame()">Play again?</button></span>
     <span *ngIf="isShareable">&nbsp;<button (click)="shareGame()">&#83;&#104;&#97;&#114;&#101;&#33;</button></span>
   </div>
-  <main>
-    <div class="row" *ngFor="let r of board; let rIdx=index">
-      <div class="column" *ngFor="let c of r; let cIdx=index">
+  <main class="d-flex flex-column align-items-center justify-content-center">
+    <div class="d-flex" *ngFor="let r of board; let rIdx=index">
+      <div class="d-flex" *ngFor="let c of r; let cIdx=index">
         <app-letter-block [char]="c" [letterClass]="classBoard[rIdx][cIdx]"></app-letter-block>
       </div>
     </div>
   </main>
-  <section *ngIf="debugMode">
+  <section *ngIf="debugMode" class="d-flex align-items-center">
     <code>
       <pre>
-        round::{{round}}
-        play::{{play}}
-        currentWord::{{currentWord}}
-        decodedWord::{{decodedWord}}
-      </pre>
-      <pre>
-        {{navigator | json}}
+        round::{{round}}--play::{{play}}--{{currentWord}}::{{decodedWord}}
       </pre>
     </code>
   </section>

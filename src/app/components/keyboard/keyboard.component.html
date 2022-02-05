@@ -1,6 +1,10 @@
-<div class="keyboard">
-  <div class="keyboard__row" *ngFor="let t of keys">
-    <div class="keyboard__key char" (click)="onLetter(k)" *ngFor="let k of t"
+<div class="keyboard d-flex flex-column align-items-center justify-content-center">
+  <div class="keyboard__row d-flex justify-content-center"
+    *ngFor="let t of keys"
+    >
+    <div class="keyboard__key char"
+      (click)="onLetter(k)"
+      *ngFor="let k of t"
       [class]="'char--' + alphabetClass[k]"
       >
         {{k}}

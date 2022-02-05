@@ -1,6 +1,7 @@
 import { DICTIONARY } from './dict';
 import { Handler } from '@netlify/functions';
 import * as base64 from 'base-64';
+import { Random } from "random-js";
 
 const handler: Handler = async (event, context) => {
 
@@ -31,7 +32,7 @@ const handler: Handler = async (event, context) => {
 
   // function to randomize
   const randomWord = (index?: number): string => {
-    return (index) ? DICTIONARY[index] : DICTIONARY[Math.floor(Math.random() * DICTIONARY.length)];
+    return (index) ? DICTIONARY[index] : DICTIONARY[new Random().integer(0, DICTIONARY.length)];
   }
 
   const rawQuery = event.rawQuery;

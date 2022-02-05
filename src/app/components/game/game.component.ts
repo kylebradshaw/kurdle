@@ -119,7 +119,7 @@ export class GameComponent implements OnInit {
 
     this.wordService.seedWordFromFunc('rando').subscribe((response: FuncWord) => {
       this.currentWord = response.word;
-      // this.currentWord = btoa('model');
+      // this.currentWord = btoa('mammy');
       this.decodedWord = this.wordService.decode(this.currentWord);
     });
 
