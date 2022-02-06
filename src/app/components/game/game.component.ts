@@ -295,9 +295,9 @@ export class GameComponent implements OnInit {
     //   return;
     // }
     this.ngNavigatorShareService.share({
-      title: 'KURDLE',
+      title: '',
       text: `KURDLE ${("0000" + this.sequenceIdx).slice(-4)} ${this.round - 1}/6\n` + this.boardMatrix(this.classBoard).map(r => r.join('')).join('\n'),
-      url: `https://kurdle.netlify.app`
+      url: ``
     })
     .then(() => { console.log(`Successful share`); })
     .catch((error) => { console.log(error); });
