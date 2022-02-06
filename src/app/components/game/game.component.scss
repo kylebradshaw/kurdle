@@ -11,9 +11,10 @@
   border: none;
   color: theme-var($--theme-on-surface);
   font-size: 4vw;
-  flex-basis: 10vw;
+  flex-basis: 12vw;
 }
 header {
+  margin: 0.1rem;
   h1 {
     text-transform: uppercase;
     font-size: 6vw;
@@ -56,5 +57,5 @@ header {
   }
 }
 footer {
-  min-height: 3rem;
+  min-height: 0.2rem;
 }

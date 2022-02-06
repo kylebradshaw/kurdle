@@ -19,7 +19,7 @@ export class KeyboardComponent implements OnInit, OnChanges {
     this.keys = [
       ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
       ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
-      ['↵', 'z', 'x', 'c', 'v', 'b', 'n', 'm', '⌫']
+      [GuessAction.ENTER, 'z', 'x', 'c', 'v', 'b', 'n', 'm', GuessAction.DEL]
     ];
   }
 

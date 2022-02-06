@@ -2,7 +2,8 @@
 
 .keyboard {
   max-width: 100vw;
-  margin: 0 auto;
+  padding: 0.5rem auto 0.1rem auto;
+  margin: 0.1rem;
   &__row {
     &:nth-of-type(1) {
       width: 100%;
@@ -12,19 +13,24 @@
     }
     &:nth-of-type(3) {
       width: 100%;
+      // > div {
+      // min-height: 1rem;
+      // }
       > div:first-of-type {
         color: theme-var($--theme-on-primary);
         // color: theme-var($--theme-primary);
-        // background-color: theme-var($--theme-secondary);
+        background-color: theme-var($--theme-primary);
         border: 1px solid transparent;
         flex-grow: 1;
+        // min-height: 3rem;
       }
       > div:last-of-type {
         color: theme-var($--theme-on-primary);
         // color: theme-var($--theme-bad);
-        // background-color: theme-var($--theme-secondary);
+        background-color: theme-var($--theme-bad);
         border: 1px solid transparent;
         flex-grow: 1;
+        // min-height: 3rem;
       }
     }
   }

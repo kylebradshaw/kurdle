@@ -6,7 +6,7 @@ export enum GuessClass {
 }
 
 export enum GuessAction {
-  ENTER = '↵',
+  ENTER = '⏎',
   DEL = '⌫'
 }
 
