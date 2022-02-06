@@ -7,7 +7,8 @@ import { AlphaDict, GuessClass } from 'src/app/models/guess';
 
 export interface FuncWord {
   word: string;
-  wordText: string;
+  sequence: number;
+  action: string;
 }
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,7 @@ export class WordService {
     return alphabetKey;
   }
 
-  public seedWordFromFunc(query: string): Observable<FuncWord> {
+  public seedWordFromFunc(query?: string): Observable<FuncWord> {
     const url = `/.netlify/functions/word?=${query}`;
     return this.http.get(url).pipe(map((response: any) => response));
   }

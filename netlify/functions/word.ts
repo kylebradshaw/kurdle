@@ -3,6 +3,11 @@ import { Handler } from '@netlify/functions';
 import * as base64 from 'base-64';
 import { Random } from "random-js";
 
+interface Solution {
+  word: string;
+  sequence: number;
+}
+
 const handler: Handler = async (event, context) => {
 
   // PERIODIC WORD
@@ -16,12 +21,13 @@ const handler: Handler = async (event, context) => {
   }
 
   const callGetDateDifference = (todaysDate: any) =>{
-    return getDateDifference(todaysDate, baseDate);
+    const dateDiff = getDateDifference(baseDate, todaysDate);
+    return dateDiff;
   }
 
   const getWordOfTheDay = (today: any) => {
     let s = callGetDateDifference(today);
-    return DICTIONARY[s];
+    return {word: DICTIONARY[s], sequence: s};
   }
 
   const today = new Date();
@@ -31,21 +37,38 @@ const handler: Handler = async (event, context) => {
   const periodicWord = getWordOfTheDay(today);
 
   // function to randomize
-  const randomWord = (index?: number): string => {
-    return (index) ? DICTIONARY[index] : DICTIONARY[new Random().integer(0, DICTIONARY.length)];
+  const randomWord = (): Solution => {
+    const idx = new Random().integer(0, DICTIONARY.length);
+    return {word: DICTIONARY[idx], sequence: idx};
   }
 
   const rawQuery = event.rawQuery;
   const chooseRandom = randomWord();
 
+
+  /**
+   * Periodic for Daily Word in Sequence, else Random
+   * to send plaintext btoa(word), use base64.decode(word)
+   * @returns proper word in context
+   */
+  const bodyText = () => {
+    if (rawQuery.includes('rando')) {
+      return {
+        word: chooseRandom.word,
+        sequence: chooseRandom.sequence,
+        action: 'random'
+      };
+    } else {
+      return {
+        word: periodicWord.word,
+        sequence: periodicWord.sequence,
+        action: 'periodic'
+      };
+    }
+  }
   return {
     statusCode: 200,
-    body: JSON.stringify({
-      word: (rawQuery.includes('rando')) ? chooseRandom : periodicWord,
-      wordText: (rawQuery.includes('rando')) ? base64.decode(chooseRandom) : base64.decode(periodicWord),
-      // context,
-      // event
-     }),
+    body: JSON.stringify(bodyText())
   };
 };
 

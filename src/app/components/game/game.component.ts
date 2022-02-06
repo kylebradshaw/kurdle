@@ -16,7 +16,7 @@ import { NgNavigatorShareService } from 'ng-navigator-share';
 export class GameComponent implements OnInit {
   round: number = 1;
   board: string[][] = [[]];
-  classBoard: string[][] = [[]];
+  classBoard: GuessClass[][] = [[]];
   currentWord = "";
   decodedWord = "";
   solved = false;
@@ -27,10 +27,11 @@ export class GameComponent implements OnInit {
   endState = false;
   buffer = '';
   navigator: any;
-  isShareable = false;
   onSubmit: { reset: boolean } = { reset: false };
+  rando = '';
+  sequenceIdx: number = 0;
+  public ngNavigatorShareService: NgNavigatorShareService;
   private _play: string = '';
-  private ngNavigatorShareService: NgNavigatorShareService;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -43,6 +44,9 @@ export class GameComponent implements OnInit {
       if (params[`debug`] !== undefined) {
         this.debugMode = true;
       }
+      if (params[`rando`] !== undefined) {
+        this.rando = `rando`;
+      }
     });
     this.ngNavigatorShareService = ngNavigatorShareService;
   }
@@ -50,9 +54,6 @@ export class GameComponent implements OnInit {
   ngOnInit(): void {
     this.initTheme();
     this.setupGame();
-    if (this.navigator?.share) {
-      this.isShareable = true;
-    }
   }
 
   /**
@@ -74,35 +75,19 @@ export class GameComponent implements OnInit {
     }
   }
 
-  /**
-   * Shares game, share board matrix and link
-   */
-  shareGame(): void {
-    if (this.navigator?.share) {
-      this.navigator.share({
-        title: 'KURDLE',
-        text: 'text\n' + this.boardMatrix().map(r => r.join(' ')).join('\n'),
-        url: 'https://kurdle.netlify.app',
-      })
-        .then(() => console.log('Successful share'))
-        .catch((error: any) => console.log('Error sharing', error));
-    }
-  }
-
-  boardMatrix(): string[][] {
-    return this.classBoard.map((r) => {
-      return r.map((c) => {
+  boardMatrix(classBoard: GuessClass[][]): GuessClass[][] {
+    return classBoard.map((r: GuessClass[]) => {
+      return r.map((c: GuessClass) => {
         if (c === GuessClass.MISMATCH) {
           return '🟨';
         } else if (c === GuessClass.MATCH) {
           return '🟩';
         } else if (c === GuessClass.USED) {
           return '⬛';
-        } else {
-          return '🤷🏻';
         }
+        return;
       });
-    }) as string[][];
+    }) as any;
   }
 
   /**
@@ -114,18 +99,18 @@ export class GameComponent implements OnInit {
   }
 
   /**
-   * Sets Up Game
-   * only works properly when toggled from keyboard (shift + ~), not mouse click ¯\_(ツ)_/¯
+   * Sets Up Game / Resets
+   * only works properly when toggled from desktop (shift + ~), not mouse click ¯\_(ツ)_/¯
    */
   setupGame(): void {
     this.endState = false;
     this.round = 1;
     this.play = '';
 
-    this.wordService.seedWordFromFunc('rando').subscribe((response: FuncWord) => {
+    this.wordService.seedWordFromFunc(this.rando).subscribe((response: FuncWord) => {
       this.currentWord = response.word;
+      this.sequenceIdx = response.sequence;
       // this.currentWord = btoa('model');
-      // this.currentWord = btoa('mammy');
       // this.currentWord = btoa('pleat');
       // this.currentWord = btoa('tract');
       // this.currentWord = btoa('stair');
@@ -176,9 +161,9 @@ export class GameComponent implements OnInit {
   }
 
   bufferListener(buffer: string): string {
-    if (buffer === 'josie' || buffer === 'evieb') {
+    if (buffer === 'josie') {
       this.debugMode = true;
-    } else if (buffer === 'xxx' || buffer === 'cammy') {
+    } else if (buffer === 'evieb') {
       this.debugMode = false;
     }
     return this.buffer.slice(-5);
@@ -196,10 +181,10 @@ export class GameComponent implements OnInit {
     if (sequence.endsWith(GuessAction.DEL)) {
       return this.removeLastSequenceLetter(this.play);
     }
-    if (sequence === 'josie' || sequence === 'evieb') {
+    if (sequence === 'josie') {
       this.debugMode = true;
     }
-    if (sequence === 'cammy') {
+    if (sequence === 'evieb') {
       this.debugMode = false;
     }
     this.play = sequence;
@@ -231,7 +216,7 @@ export class GameComponent implements OnInit {
           this.endState = true;
         }
         if (this.endState) {
-          console.log(this.boardMatrix());
+          console.log(this.boardMatrix(this.classBoard));
           this.onSubmit = { reset: true };
           // this.recordStats()
           // this.showStats();
@@ -299,6 +284,28 @@ export class GameComponent implements OnInit {
 
   showStats(): void {
     // this.stats = this.storageService.get('stats');
+  }
+
+  /**
+   * Shares game, share board matrix and link
+   */
+  shareGame(): void {
+    // if (!this.ngNavigatorShareService.canShare()) {
+    //   alert(`This service/api is not supported in your Browser`);
+    //   return;
+    // }
+    this.ngNavigatorShareService.share({
+      title: 'KURDLE',
+      text: `KURDLE ${("0000" + this.sequenceIdx).slice(-4)} ${this.round - 1}/6\n` + this.boardMatrix(this.classBoard).map(r => r.join('')).join('\n'),
+      url: 'https://kurdle.netlify.app',
+    })
+    .then(() => { console.log(`Successful share`); })
+    .catch((error) => { console.log(error); });
+  }
+
+  get svgFill(): string {
+    const themeColor = this.storageService.get('theme');
+    return (themeColor === 'light') ? "fill: #ffffff;" : "fill: #000000;";
   }
 
   get play(): string {
