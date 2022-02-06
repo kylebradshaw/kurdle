@@ -1,12 +1,12 @@
-import { StorageService } from './../../services/storage.service';
-import { FuncWord } from './../../services/word.service';
+import { FuncWord } from 'src/app/services/word.service';
 import { Component, OnInit, HostListener } from '@angular/core';
 import { WordService } from 'src/app/services/word.service';
 import { GuessClass, GuessAction, AlphaDict } from 'src/app/models/guess';
 import { Notice } from 'src/app/models/notice';
 import { ActivatedRoute } from '@angular/router';
 import { ThemeService } from '@bcodes/ngx-theme-service';
-import { sequenceEqual } from 'rxjs';
+import { StorageService } from 'src/app/services/storage.service';
+import { NgNavigatorShareService } from 'ng-navigator-share';
 
 @Component({
   selector: 'app-game',
@@ -30,18 +30,21 @@ export class GameComponent implements OnInit {
   isShareable = false;
   onSubmit: { reset: boolean } = { reset: false };
   private _play: string = '';
+  private ngNavigatorShareService: NgNavigatorShareService;
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private wordService: WordService,
     private themeService: ThemeService,
     private storageService: StorageService,
+    ngNavigatorShareService: NgNavigatorShareService,
   ) {
     this.activatedRoute.queryParams.subscribe(params => {
       if (params[`debug`] !== undefined) {
         this.debugMode = true;
       }
     });
+    this.ngNavigatorShareService = ngNavigatorShareService;
   }
 
   ngOnInit(): void {
@@ -237,19 +240,10 @@ export class GameComponent implements OnInit {
       this.play = '';
       this.round = this.incrementRound(this.round);
       this.storageService.set('round', `${this.round}`);
-      // this.populateAlphabetDict([...sequence], classBoardRow, [...this.decodedWord]);
     } else {
       this.toggleNotice('The word is not the dictionary. Try again.', 'warn');
     }
   }
-
-  // populateAlphabetDict(sequence: string[], classes: GuessClass[], decodedWord: string[]): void {
-  //   sequence.forEach((letter, idx) => {
-  //     console.log(letter, classes[idx], decodedWord[idx]);
-  //     // this needs to be immutable. doesn't have to be populated because we set it from the jump?
-  //     // this.alphabetKey[letter] = {class: classes[idx], idx: []};
-  //   });
-  // }
 
   /**
    * Matched letters
@@ -262,48 +256,6 @@ export class GameComponent implements OnInit {
     const repeatedSequence = this.wordService.repeatedCharacters(sequence);
     const repeatedDecoded = this.wordService.repeatedCharacters(decodedWord);
 
-    // if (repeatedSequence.length < repeatedDecoded.length || repeatedSequence.length == repeatedDecoded.length) {
-    //   guessClass = [...sequence].map((letter, i) => {
-    //     // letter in sequence at proper solution[idx]
-    //     if (alphabetKey[letter] && alphabetKey[letter].idx.includes(i)) {
-    //       return GuessClass.MATCH;
-    //     } else if (alphabetKey[letter].idx.length === 0) {
-    //       return GuessClass.USED;
-    //     } else { // misfires can happen here
-    //       return GuessClass.MISMATCH;
-    //     }
-    //   });
-    // } else {
-    //   // DUNNO!
-    //   let matchQueue = [...sequence].map((letter, i) => {
-    //     // letter in sequence at proper solution[idx]
-    //     if (alphabetKey[letter] && alphabetKey[letter].idx.includes(i)) {
-    //       return letter;
-    //     } else {
-    //       return null;
-    //     }
-    //   });
-
-    //   let usedQueue = [...sequence].map((letter, i) => {
-    //     // letter in sequence at proper solution[idx]
-    //     if (alphabetKey[letter] && alphabetKey[letter].idx.length === 0) {
-    //       return letter;
-    //     } else {
-    //       return null
-    //     }
-    //   });
-
-    //   let misMatchQueue = [...sequence].map((letter, i) => {
-    //     if (alphabetKey[letter] && alphabetKey[letter].idx.length > 0 && !alphabetKey[letter].idx.includes(i)) {
-    //       return letter;
-    //     } else {
-    //       return null
-    //     }
-    //   });
-    //   // debugger;
-    // }
-
-    // return guessClass;
     return [...sequence].map((letter, i) => {
       // letter in sequence at proper solution[idx]
       if (alphabetKey[letter] && alphabetKey[letter].idx.includes(i)) {
@@ -320,52 +272,7 @@ export class GameComponent implements OnInit {
         }
       }
     });
-    // are there dupes in guess?
-
-
-    // // console.log(sequence, this.wordService.decode(solutionWord), `guess+solution`);
-    // const solution = this.wordService.decode(solutionWord);
-    // let solutionDuplicateIndicies: number[] = [];
-    // let validChars = [...sequence].map((letter, idx) => {
-    //   // finds repeat letters in the solution word
-    //   const solutionDuplicateIdx = this.wordService.getIndices(solution, letter);
-    //   if (solutionDuplicateIdx.length > 1) {
-    //     solutionDuplicateIndicies = solutionDuplicateIdx;
-    //   }
-    //   return solution.indexOf(letter);
-    // });
-
-    // // find matched indexes.
-    // // solution  [0, 1, 2, 3, 4]
-    // // mismatch  [-1, -1, -1, -1, -1]
-    // // match(es) [0, -1, 2, -1, -1]
-    // // prune [0, 1, 0, -1, -1] => [0, 1, -1, -1, -1]
-    // return this.pruneDuplicateLetters(validChars).map((idxMatch: number, slot) => {
-    //   if (idxMatch === -1) { return GuessClass.USED; }
-    //   else if (idxMatch === slot || solutionDuplicateIndicies.includes(slot)) { return GuessClass.MATCH;} // 🤮
-    //   else { return GuessClass.MISMATCH; } //(idxMatch !== slot)
-    // });
   }
-
-  /**
-   * Scrubs duplicate letters @ improper indices
-   * [A][V][A][I][L] 2nd A is mismatch w/o index fix
-   * [A][V][E][R][T]
-   * no repeated indexes over -1 in array
-   * @param [0, 1, 0, -1, -1]
-   * @returns [0, 1, -1, -1, -1]
-   */
-  pruneDuplicateLetters(validChars: number[]): number[] {
-    const targetChars: number[] = [];
-    validChars.forEach((guessIdx, idx) => {
-      if (targetChars.includes(guessIdx) && guessIdx !== idx) {
-        targetChars[idx] = -1;
-      } else {
-        targetChars[idx] = guessIdx;
-      }
-    });
-    return targetChars;
-  };
 
   incrementRound(round: number): number {
     return round < 6 ? round + 1 : 1;

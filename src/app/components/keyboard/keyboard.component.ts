@@ -27,15 +27,19 @@ export class KeyboardComponent implements OnInit, OnChanges {
   }
 
   onLetter(letter: any): void {
+    const currentRound = `${this.round}`.slice();
     if (letter === GuessAction.DEL) {
       this.sequence.length = (this.sequence.length > 0) ? this.sequence.length - 1 : 0;
     } else {
       this.sequence.push(letter);
     }
     this.onClick.emit(this.sequence.join(''));
-    if (letter === GuessAction.ENTER) {
-      this.sequence = [];
-    }
+    setTimeout(() => {
+      const presentRound = `${this.round}`.slice();
+      if (currentRound !== presentRound && letter === GuessAction.ENTER) {
+        this.sequence = [];
+      }
+    }, 500);
   }
 
   /**

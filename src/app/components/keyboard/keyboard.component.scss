@@ -12,13 +12,19 @@
     }
     &:nth-of-type(3) {
       width: 100%;
-      > div:first-of-type * {
-        color: theme-var($--theme-on-secondary);
-        background-color: theme-var($--theme-secondary);
+      > div:first-of-type {
+        color: theme-var($--theme-on-primary);
+        // color: theme-var($--theme-primary);
+        // background-color: theme-var($--theme-secondary);
+        border: 1px solid transparent;
+        flex-grow: 1;
       }
-      > div:last-of-type * {
-        color: theme-var($--theme-on-secondary);
-        background-color: theme-var($--theme-secondary);
+      > div:last-of-type {
+        color: theme-var($--theme-on-primary);
+        // color: theme-var($--theme-bad);
+        // background-color: theme-var($--theme-secondary);
+        border: 1px solid transparent;
+        flex-grow: 1;
       }
     }
   }
@@ -38,14 +44,14 @@
     &.char {
       border: 1px solid theme-var($--theme-on-default);
       color: theme-var($--theme-on-default);
-      padding: 0.8rem 2vw;
+      padding: 0.6rem;
       font-size: 5vw;
       min-width: 1rem;
       text-align: center;
-      &--undefined {
+      &--null {
         color: theme-var($--theme-on-default);
         background: theme-var($--theme-default);
-        padding: 0.8rem 4.4vw;
+        padding: 0.6rem;
         font-size: 5vw;
         color: theme-var($--theme-on-primary);
       }
