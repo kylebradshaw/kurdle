@@ -38,3 +38,6 @@ a:hover {
   color: theme-var($--theme-primary);
   text-decoration: none;
 }
+
+@include media-breakpoint-up(lg) {
+}
