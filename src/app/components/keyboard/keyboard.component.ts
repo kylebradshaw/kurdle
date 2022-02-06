@@ -30,6 +30,8 @@ export class KeyboardComponent implements OnInit, OnChanges {
     const currentRound = `${this.round}`.slice();
     if (letter === GuessAction.DEL) {
       this.sequence.length = (this.sequence.length > 0) ? this.sequence.length - 1 : 0;
+    } else if (letter === GuessAction.ENTER && this.sequence.length === 1) {
+      return;
     } else {
       this.sequence.push(letter);
     }

@@ -175,6 +175,9 @@ export class GameComponent implements OnInit {
   }
 
   refreshLetters(sequence: string): void {
+    if(sequence.startsWith(GuessAction.ENTER)) {
+      return;
+    }
     if (sequence.endsWith(GuessAction.ENTER)) {
       return this.submitRound(this.round, this.play, this.round === 6);
     }
