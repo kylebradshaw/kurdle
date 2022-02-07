@@ -1,7 +1,9 @@
-// req for media query helpers
+// [ req for media query helpers
 @import "./functions";
+@import "./my-bs-overrides";
 @import "./variables";
 @import "./mixins";
+// ]
 @import "./themes";
 
 $dot-half: 8px;
@@ -112,5 +114,8 @@ header {
   }
 }
 footer {
-  min-height: 0.2rem;
+  display: none;
+  @include media-breakpoint-up(sm) {
+    min-height: 0.2rem;
+  }
 }
