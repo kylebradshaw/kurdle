@@ -61,16 +61,20 @@
       @include media-breakpoint-up(sm) {
         min-width: 1rem;
       }
-      @include media-breakpoint-up(md) {
-        padding: 1.5rem;
-      }
       @media (orientation: portrait) {
-        @include media-breakpoint-up(sm) {
+        @include media-breakpoint-up(xs) {
+          min-width: 1rem;
           min-height: 3rem;
+        }
+        @include media-breakpoint-up(md) {
+          padding: 1.5rem;
         }
       }
       @media (orientation: landscape) {
         min-height: 1rem;
+        @include media-breakpoint-up(md) {
+          padding: 1rem;
+        }
         @include media-breakpoint-up(lg) {
           min-height: 3rem;
         }
