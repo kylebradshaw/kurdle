@@ -94,8 +94,13 @@ export class GameComponent implements OnInit {
    * Reloads game
    * Gross but a mouse click that fires setupGame() has downstream issues ¯\_(ツ)_/¯
    */
-  reloadGame(): void {
-    location.reload();
+  reloadGame(mode?: string): void {
+    const l = window.location;
+    if (mode === 'rando' && !l.href.includes('rando')) {
+      l.href = l.href.includes(`?`) ? `${l.href}/${l.search}&rando` : `${l.href}?rando`;
+    } else {
+      location.reload();
+    }
   }
 
   /**
@@ -270,7 +275,7 @@ export class GameComponent implements OnInit {
     this.toggleNotice(`Built by&nbsp;<a target="_blank" href="https://twitter.com/ky">@ky</a>`, 'default');
   }
 
-  toggleNotice(message: string, type: string, again = false, timeOut = 1500): void {
+  toggleNotice(message: string, type: string, again = false, timeOut = 8000): void {
     this.notice = {message, type, again};
     this.clearNotice(timeOut);
   }

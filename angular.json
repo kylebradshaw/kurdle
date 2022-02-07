@@ -32,7 +32,8 @@
             ],
             "stylePreprocessorOptions": {
               "includePaths": [
-                "src/stylings"
+                "src/stylings",
+                "node_modules/bootstrap/scss"
               ]
             },
             "styles": [

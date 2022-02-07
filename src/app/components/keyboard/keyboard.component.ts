@@ -32,10 +32,18 @@ export class KeyboardComponent implements OnInit, OnChanges {
       this.sequence.length = (this.sequence.length > 0) ? this.sequence.length - 1 : 0;
     } else if (letter === GuessAction.ENTER && this.sequence.length === 1) {
       return;
-    } else {
+    } else if (letter === GuessAction.ENTER || this.sequence.length < 5) {
       this.sequence.push(letter);
     }
+
+    // always emit the event on each letter
     this.onClick.emit(this.sequence.join(''));
+
+    // remove action key after emit
+    if (this.sequence[this.sequence.length - 1] === GuessAction.ENTER) {
+      this.sequence.pop();
+    }
+    // reset sequence for next round
     setTimeout(() => {
       const presentRound = `${this.round}`.slice();
       if (currentRound !== presentRound && letter === GuessAction.ENTER) {
@@ -59,9 +67,11 @@ export class KeyboardComponent implements OnInit, OnChanges {
         boardRow.map((letterObj: any, jdx: number) => {
           if (this.playedAlphabetKey[letterObj.letter]?.class === GuessClass.MATCH) {
             return;
-          } else if (letterObj.class === GuessClass.MISMATCH && this.playedAlphabetKey[letterObj.letter]?.class === GuessClass.USED) {
+          } else if (letterObj.class === GuessClass.MISMATCH &&
+                      this.playedAlphabetKey[letterObj.letter]?.class === GuessClass.USED) {
             this.playedAlphabetKey[letterObj.letter] = {class: letterObj.class, idx: []};
-          } else if (letterObj.class === GuessClass.MISMATCH && this.playedAlphabetKey[letterObj.letter]?.class === GuessClass.MATCH) {
+          } else if (letterObj.class === GuessClass.MISMATCH &&
+                      this.playedAlphabetKey[letterObj.letter]?.class === GuessClass.MATCH) {
             // TODO: PLEAT (T never turns green @ end of round)
             this.playedAlphabetKey[letterObj.letter] = {class: letterObj.class, idx: []};
           } else {

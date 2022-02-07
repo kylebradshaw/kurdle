@@ -1,4 +1,9 @@
-@import "./../../../stylings/themes.scss";
+// req for media query helpers
+@import "./functions";
+@import "./variables";
+@import "./mixins";
+
+@import "./themes";
 
 .keyboard {
   max-width: 100vw;
@@ -49,13 +54,30 @@
       border: 1px solid theme-var($--theme-on-default);
       color: theme-var($--theme-on-default);
       padding: 0.5rem;
-      font-size: 5vw;
-      min-width: 1rem;
-      min-height: 3rem;
+      font-size: 1rem; // good for mobile - go bigger in landscape
+      min-width: 0.6rem;
+      min-height: 1rem;
       text-align: center;
-      // @include media-breakpoint-up(lg) {
-      //   font-size: 8vw;
-      // }
+      @include media-breakpoint-up(sm) {
+        min-width: 1rem;
+      }
+      @include media-breakpoint-up(md) {
+        padding: 1.5rem;
+      }
+      @media (orientation: portrait) {
+        @include media-breakpoint-up(sm) {
+          min-height: 3rem;
+        }
+      }
+      @media (orientation: landscape) {
+        min-height: 1rem;
+        @include media-breakpoint-up(lg) {
+          min-height: 3rem;
+        }
+        @include media-breakpoint-up(xl) {
+          font-size: 1.5rem;
+        }
+      }
       &--null {
         color: theme-var($--theme-on-default);
         background: theme-var($--theme-default);
