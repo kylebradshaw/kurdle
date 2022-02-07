@@ -22,9 +22,14 @@
   max-height: 120px;
   @media (orientation: portrait) {
     @include media-breakpoint-up(sm) {
-      width: 4rem;
-      height: 4rem;
-      font-size: 2rem;
+      width: 3rem;
+      height: 3rem;
+      font-size: 1.5rem;
+    }
+    @include media-breakpoint-up(md) {
+      width: 3rem;
+      height: 3rem;
+      font-size: 1.5rem;
     }
     @include media-breakpoint-up(lg) {
       width: 6rem;
@@ -37,11 +42,11 @@
     height: 1.3rem;
     font-size: 0.6rem;
     margin: 1px;
-    // @include media-breakpoint-up(md) {
-    //   width: 2.5rem;
-    //   height: 2.5rem;
-    //   font-size: 1.5rem;
-    // }
+    @include media-breakpoint-up(sm) {
+      height: 1.5rem;
+      width: 1.5rem;
+      font-size: 1rem;
+    }
     @include media-breakpoint-up(lg) {
       width: 3.5rem;
       height: 3.5rem;
