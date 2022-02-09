@@ -23,15 +23,13 @@
       // min-height: 1rem;
       // }
       > button:first-of-type {
-        color: theme-var($--theme-on-primary);
-        // color: theme-var($--theme-primary);
+        color: theme-var($--theme-on-block);
         background-color: theme-var($--theme-primary);
         border: 1px solid transparent;
         flex-grow: 1;
       }
       > button:last-of-type {
-        color: theme-var($--theme-on-primary);
-        // color: theme-var($--theme-bad);
+        color: theme-var($--theme-on-block);
         background-color: theme-var($--theme-bad);
         border: 1px solid transparent;
         flex-grow: 1;
@@ -86,26 +84,23 @@
       &--null {
         color: theme-var($--theme-on-default);
         background: theme-var($--theme-default);
-        // padding: 0.6rem;
-        // font-size: 5vw;
-        color: theme-var($--theme-on-primary);
       }
       &--default {
         color: theme-var($--theme-on-default);
         background: theme-var($--theme-default);
       }
       &--used {
-        color: theme-var($--theme-on-used) !important;
+        color: theme-var($--theme-on-block) !important;
         background: theme-var($--theme-used);
         border: 1px solid transparent !important;
       }
       &--match {
-        color: theme-var($--theme-on-match);
+        color: theme-var($--theme-on-block);
         background: theme-var($--theme-match);
         border: 1px solid transparent !important;
       }
       &--mismatch {
-        color: theme-var($--theme-on-mismatch);
+        color: theme-var($--theme-on-block);
         background: theme-var($--theme-mismatch);
         border: 1px solid transparent !important;
       }

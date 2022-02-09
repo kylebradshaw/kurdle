@@ -10,7 +10,7 @@ export class KeyboardComponent implements OnInit, OnChanges {
   @Input() alphabetKey: AlphaDict = {};
   @Input() sequence: string[] = [];
   @Input() heavyBoard: any[] = [];
-  @Input() round: number = 0;
+  @Input() prevRound: number = 0;
   @Output() onClick = new EventEmitter<string>();
   keys: string[][];
   playedAlphabetKey: AlphaDict = {};
@@ -27,7 +27,7 @@ export class KeyboardComponent implements OnInit, OnChanges {
   }
 
   onLetter(letter: any): void {
-    const currentRound = `${this.round}`.slice();
+    const currentRound = `${this.prevRound}`.slice();
     if (letter === GuessAction.DEL) {
       this.sequence.length = (this.sequence.length > 0) ? this.sequence.length - 1 : 0;
     } else if (letter === GuessAction.ENTER && this.sequence.length === 1) {
@@ -45,7 +45,7 @@ export class KeyboardComponent implements OnInit, OnChanges {
     }
     // reset sequence for next round
     setTimeout(() => {
-      const presentRound = `${this.round}`.slice();
+      const presentRound = `${this.prevRound}`.slice();
       if (currentRound !== presentRound && letter === GuessAction.ENTER) {
         this.sequence = [];
       }
@@ -63,7 +63,7 @@ export class KeyboardComponent implements OnInit, OnChanges {
       return;
     }
     changes['heavyBoard'].currentValue.map((boardRow: any, idx: number) => {
-      if (((idx == this.round - 2) || (this.round === 1)) && boardRow.some((x: any) => x.class !== 'default')) { //boardRow[4].letter !== '' &&
+      if (((idx == this.prevRound - 1) || (this.prevRound === 0)) && boardRow.some((x: any) => x.class !== 'default')) { //boardRow[4].letter !== '' &&
         boardRow.map((letterObj: any, jdx: number) => {
           if (this.playedAlphabetKey[letterObj.letter]?.class === GuessClass.MATCH) {
             return;

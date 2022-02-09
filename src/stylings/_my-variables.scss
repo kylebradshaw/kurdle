@@ -17,6 +17,7 @@ $--theme-good: --theme-good;
 $--theme-bad: --theme-bad;
 $--theme-warn: --theme-warn;
 $--theme-neutral: --theme-neutral;
+$--theme-on-block: --theme-on-block;
 
 // Default theme
 $theme-map-light: (
@@ -39,6 +40,7 @@ $theme-map-light: (
   $--theme-bad: #cd1e1eee,
   $--theme-warn: #f7c910,
   $--theme-neutral: #999,
+  $--theme-on-block: #fff,
 );
 
 // Override the default light theme
@@ -62,4 +64,5 @@ $theme-map-dark: (
   $--theme-bad: #cd1e1eee,
   $--theme-warn: #f7c910,
   $--theme-neutral: #999,
+  $--theme-on-block: #fff,
 );
