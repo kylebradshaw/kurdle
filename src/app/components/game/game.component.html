@@ -3,7 +3,7 @@
     <!-- <button class="bare" (click)="attribution()">&#xFFFD;</button> -->
     <!-- <button class="bare" (click)="reloadGame()">&#x267B;</button> -->
     <button title="Reset Game" class="bare" (click)="reloadGame()">&#8634;</button>
-    <h1 *ngIf="!debugMode">Kurdle</h1>
+    <h1 *ngIf="!debugMode" [routerLink]="['/']">Kurdle</h1>
     <h1 *ngIf="debugMode">{{decodedWord}}</h1>
     <div class="bare" (click)="switchTheme(currentTheme, true)">
       <span class="d-flex align-items-center justify-content-center" *ngIf="currentTheme === 'light'">

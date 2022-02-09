@@ -48,14 +48,22 @@ const handler: Handler = async (event, context) => {
   const rawQuery = event.rawQuery;
   const chooseRandom = randomWord();
 
-
   /**
    * Periodic for Daily Word in Sequence, else Random
    * to send plaintext btoa(word), use base64.decode(word)
    * @returns proper word in context
    */
   const bodyText = () => {
-    if (rawQuery.includes('rando')) {
+    const sequenceIdx = Number(rawQuery.split('sequenceIdx=')[1]);
+    if (sequenceIdx  > 0) {
+      return {
+        word: DICTIONARY[sequenceIdx],
+        sequence: `${sequenceIdx}`,
+        action: 'random',
+        cache: `k4e7e9j10??${CACHED_COMMIT_REF.slice(0, 5)}`,
+      };
+
+    } else if (rawQuery.includes('rando=true')) {
       return {
         word: chooseRandom.word,
         sequence: chooseRandom.sequence,

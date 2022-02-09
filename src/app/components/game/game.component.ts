@@ -27,7 +27,7 @@ export class GameComponent implements OnInit {
   endState = false;
   buffer = '';
   navigator: any;
-  rando = '';
+  rando = false;
   sequenceIdx: number = 0;
   cache: string = '';
   public ngNavigatorShareService: NgNavigatorShareService;
@@ -46,7 +46,7 @@ export class GameComponent implements OnInit {
         this.debugMode = true;
       }
       if (params[`rando`] !== undefined) {
-        this.rando = `rando`;
+        this.rando = true;
       }
     });
     this.ngNavigatorShareService = ngNavigatorShareService;
@@ -99,7 +99,7 @@ export class GameComponent implements OnInit {
     this.storageService.clear(true);
     const l = window.location;
     if (mode === 'rando' && !l.href.includes('rando')) {
-      l.href = l.href.includes(`?`) ? `${l.href}/${l.search}&rando` : `${l.href}?rando`;
+      l.href = l.href.includes(`?`) ? `${l.href}/${l.search}&rando=true` : `${l.href}?rando=true`;
     } else {
       location.reload();
     }
@@ -114,13 +114,20 @@ export class GameComponent implements OnInit {
     this.prevRound = 0;
     this.play = '';
 
-    this.wordService.seedWordFromFunc(this.rando).subscribe((response: FuncWord) => {
+    if (this.storageService.get('sequenceIdx')) {
+      this.sequenceIdx = Number(this.storageService.get('sequenceIdx'));
+      this.storageService.set('gameState', GameState.RESTORED);
+    } else {
+      this.storageService.set('gameState', GameState.INITIALIZED);
+    }
+
+    this.wordService.seedWordFromFunc(this.rando, this.sequenceIdx).subscribe((response: FuncWord) => {
       if (this.storageService.get('board') && this.storageService.get('classBoard')) {
-        this.board = JSON.parse(this.storageService.get('board'));
-        this.classBoard = JSON.parse(this.storageService.get('classBoard'));
+        this.loadGameState();
       }
       if (this.storageService.get('cache') !== response.cache) {
         this.storageService.set('cache', response.cache);
+        // NEW BUILD, CACHE BUST!
         this.reloadGame();
       }
       if (this.storageService.get('word') !== response.word) {
@@ -129,6 +136,10 @@ export class GameComponent implements OnInit {
       if (this.storageService.get('roundIdx')) {
         this.prevRound = Number(this.storageService.get('roundIdx'));
       }
+      if (Number(this.storageService.get('sequenceIdx')) !== response.sequence) {
+        this.storageService.set('sequenceIdx', `${response.sequence}`);
+      }
+
       this.currentWord = response.word;
       this.sequenceIdx = response.sequence;
       // this.currentWord = btoa('model');
@@ -141,7 +152,6 @@ export class GameComponent implements OnInit {
 
     this.board = this.emptyBoard();
     this.classBoard = this.setupClassBoard();
-    this.storageService.set('gameState', GameState.INITIALIZED);
   }
 
   emptyBoard(): string[][] {
@@ -232,11 +242,11 @@ export class GameComponent implements OnInit {
     if (classBoard) {
       this.storageService.set('classBoard', JSON.stringify(classBoard));
     }
-    console.log(board, classBoard);
   }
 
-  loadBoard(): void {
+  loadGameState(): void {
     this.board = JSON.parse(this.storageService.get('board'));
+    this.classBoard = JSON.parse(this.storageService.get('classBoard'));
     this.prevRound = Number(this.storageService.get('prevRound'));
   }
 
@@ -276,10 +286,6 @@ export class GameComponent implements OnInit {
   }
 
   endGame(ended: boolean): void {
-    console.log(this.shareText());
-    // delete board from LS
-    this.storageService.remove('board');
-    this.storageService.remove('roundIdx');
     this.storageService.set('shareText', JSON.stringify(this.shareText()));
     this.storageService.set('gameState', GameState.ENDED);
   }

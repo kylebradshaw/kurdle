@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DICTIONARY } from 'netlify/functions/dict';
 import { AlphaDict, GuessClass } from 'src/app/models/guess';
+import { Params } from '@angular/router';
 
 export interface FuncWord {
   word: string;
@@ -28,9 +29,14 @@ export class WordService {
     return alphabetKey;
   }
 
-  public seedWordFromFunc(query?: string): Observable<FuncWord> {
-    const url = `/.netlify/functions/word?=${query}`;
-    return this.http.get(url).pipe(map((response: any) => response));
+  public seedWordFromFunc(rando?: boolean, sequenceIdx?: number): Observable<FuncWord> {
+    let sequenceIndex = '';
+    if (sequenceIdx && sequenceIdx > 0) {
+      sequenceIndex = `${sequenceIdx}`;
+    }
+    const params = { params: {rando, sequenceIdx: sequenceIdx}} as Params;
+    const url = `/.netlify/functions/word`;
+    return this.http.get(url, params).pipe(map((response: any) => response));
   }
 
   public seedWord(index?: number): string {
