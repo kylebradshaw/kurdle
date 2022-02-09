@@ -4,7 +4,7 @@ import * as base64 from 'base-64';
 import { Random } from "random-js";
 
 // https://flaviocopes.com/netlify-functions-env-variables/
-const { CACHED_COMMIT_REF  } = process.env;
+const { GIT_REVISION  } = process.env;
 
 interface Solution {
   word: string;
@@ -55,12 +55,13 @@ const handler: Handler = async (event, context) => {
    */
   const bodyText = () => {
     const sequenceIdx = Number(rawQuery.split('sequenceIdx=')[1]);
+    const prevHash = `5d7b2d7`;
     if (sequenceIdx  > 0) {
       return {
         word: DICTIONARY[sequenceIdx],
         sequence: `${sequenceIdx}`,
         action: 'random',
-        cache: `k4e7e9j10??${CACHED_COMMIT_REF}`,
+        cache: `prevHash${prevHash}`,
       };
 
     } else if (rawQuery.includes('rando=true')) {
@@ -68,14 +69,14 @@ const handler: Handler = async (event, context) => {
         word: chooseRandom.word,
         sequence: chooseRandom.sequence,
         action: 'random',
-        cache: `k4e7e9j10??${CACHED_COMMIT_REF}`,
+        cache: `prevHash${prevHash}`,
       };
     } else {
       return {
         word: periodicWord.word,
         sequence: periodicWord.sequence,
         action: 'periodic',
-        cache: `k4e7e9j10??${CACHED_COMMIT_REF}`,
+        cache: `prevHash${prevHash}`,
       };
     }
   }
