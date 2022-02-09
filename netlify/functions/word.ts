@@ -60,7 +60,7 @@ const handler: Handler = async (event, context) => {
         word: DICTIONARY[sequenceIdx],
         sequence: `${sequenceIdx}`,
         action: 'random',
-        cache: `k4e7e9j10??${CACHED_COMMIT_REF.slice(0, 5)}`,
+        cache: `k4e7e9j10??${CACHED_COMMIT_REF}`,
       };
 
     } else if (rawQuery.includes('rando=true')) {
@@ -68,14 +68,14 @@ const handler: Handler = async (event, context) => {
         word: chooseRandom.word,
         sequence: chooseRandom.sequence,
         action: 'random',
-        cache: `k4e7e9j10??${CACHED_COMMIT_REF.slice(0, 5)}`,
+        cache: `k4e7e9j10??${CACHED_COMMIT_REF}`,
       };
     } else {
       return {
         word: periodicWord.word,
         sequence: periodicWord.sequence,
         action: 'periodic',
-        cache: `k4e7e9j10??${CACHED_COMMIT_REF.slice(0, 5)}`,
+        cache: `k4e7e9j10??${CACHED_COMMIT_REF}`,
       };
     }
   }
