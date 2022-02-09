@@ -64,7 +64,8 @@
       @media (orientation: portrait) {
         @include media-breakpoint-up(ss) {
           padding: 0.7rem;
-          min-height: 3rem;
+          min-width: 2rem;
+          min-height: 5rem;
         }
         @include media-breakpoint-up(md) {
           padding: 1.5rem;
@@ -75,7 +76,7 @@
           padding: 1rem;
         }
         @include media-breakpoint-up(lg) {
-          min-height: 3rem;
+          min-height: 5rem;
         }
         @include media-breakpoint-up(xl) {
           font-size: 1.5rem;

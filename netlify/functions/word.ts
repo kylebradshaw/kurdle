@@ -4,7 +4,6 @@ import * as base64 from 'base-64';
 import { Random } from "random-js";
 
 // https://flaviocopes.com/netlify-functions-env-variables/
-const { GIT_REVISION  } = process.env;
 
 interface Solution {
   word: string;
