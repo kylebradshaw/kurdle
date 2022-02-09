@@ -2317,5 +2317,13 @@ export const DICTIONARY = [
   "ZGl2dnk=",
   "cGVuaXM=",
   "Ym9vYnM=",
-  'd2hvcmU='
+  "d2hvcmU=",
+  "cGFuZGE=",
+  "bW9tbXk=",
+  "Ym9ndXM=",
+  "aGlrZXI=",
+  "bGl0ZXI=",
+  "cGlvdXM=",
 ];
+
+// copy(`"${btoa("mommy")}",`)
