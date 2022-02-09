@@ -2326,4 +2326,4 @@ export const DICTIONARY = [
   "cGlvdXM=",
 ];
 
-// copy(`"${btoa("mommy")}",`)
+// copy(`"${btoa("mommy".toLowerCase())}",`)

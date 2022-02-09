@@ -26,7 +26,6 @@ export class GameComponent implements OnInit {
   endState = false;
   buffer = '';
   navigator: any;
-  onSubmit: { reset: boolean } = { reset: false };
   rando = '';
   sequenceIdx: number = 0;
   public ngNavigatorShareService: NgNavigatorShareService;
@@ -205,6 +204,7 @@ export class GameComponent implements OnInit {
     }
     this.play = sequence;
     this.board[this.round - 1] = this.board[this.round - 1].map((_, idx) => this.play.split('')[idx]);
+    console.log(this._soln, `solution`);
   }
 
   get combinedBoard(): any {
@@ -226,24 +226,25 @@ export class GameComponent implements OnInit {
       setTimeout(() => {
         if (classBoardRow.every(letter => letter === 'match')) {
           this.toggleNotice('You won!', 'good', true, 36e6);
-          this.endState = true;
+          this.endGame(true);
         } else if (final) {
           this.toggleNotice(`${this.decodedWord.toUpperCase()}`, 'bad', true, 36e6);
-          this.endState = true;
+          this.endGame(true);
         }
-        if (this.endState) {
-          console.log(this.boardMatrix(this.classBoard));
-          this.onSubmit = { reset: true };
-          // this.recordStats()
-          // this.showStats();
-        }
-      }, 1000);
+      }, 0);
       this.play = '';
       this.round = this.incrementRound(this.round);
       this.storageService.set('round', `${this.round}`);
     } else {
       this.toggleNotice('The word is not the dictionary.', 'warn');
     }
+  }
+
+  endGame(ended: boolean): void {
+    // TODO: why does 2 enter into scene @ gameEnd (increments before expected, find and fix)
+    this._soln = [...this.classBoard][this.round - 2].every(letter => letter === GuessClass.MATCH) || false;
+    // TODO: SET GAME STATE IN LS
+    this.storageService.set('shareText', JSON.stringify(this.shareText()));
   }
 
   /**
@@ -304,17 +305,25 @@ export class GameComponent implements OnInit {
 
   /**
    * Shares game, share board matrix and link
+   *
+   */
+  // TODO: Refactor for testability
+  shareText(): any {
+    const numerator = (this.soln) ? this.round - 1 : `X`;
+    return {
+      title: ``,
+        text: `KURDLE ${("0000" + this.sequenceIdx).slice(-4)} ${numerator}/6\n\n` + this.boardMatrix(this.classBoard).map(r => r.join('')).join('\n'),
+    }
+  }
+  /**
+   * Shares game
    */
   shareGame(): void {
     // if (!this.ngNavigatorShareService.canShare()) {
     //   alert(`This service/api is not supported in your Browser`);
     //   return;
     // }
-    const numerator = (this.soln) ? this.round - 1 : `X`;
-    this.ngNavigatorShareService.share({
-      title: ``,
-      text: `KURDLE ${("0000" + this.sequenceIdx).slice(-4)} ${numerator}/6\n\n` + this.boardMatrix(this.classBoard).map(r => r.join('')).join('\n'),
-    })
+    this.ngNavigatorShareService.share(this.shareText())
     .then(() => { console.log(`Successful share`); })
     .catch((error) => { console.log(error); });
   }
@@ -329,9 +338,7 @@ export class GameComponent implements OnInit {
   }
 
   set soln(value: boolean) {
-    const myBoard = [...this.board];
-    const soln = [...myBoard].pop()?.every(letter => letter === GuessClass.MATCH) || false;
-    this._soln = soln;
+    this._soln = value;
   }
 
   get play(): string {
