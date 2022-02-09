@@ -163,7 +163,7 @@ export class GameComponent implements OnInit {
     } else if ($event.code === 'Backspace') {
       this.removeLastSequenceLetter(this.play);
     } else if ($event.code === 'Enter') {
-      this.submitRound(this.prevRound + 1, this.play, this.prevRound === 5);
+      this.submitRound(this.prevRound, this.play, this.prevRound === 5);
     } else if ($event.code.startsWith('Key')) {
       this.buffer += $event.key.toLowerCase();
       this.play +=  $event.key.toLowerCase(); // no numbers, no spaces
@@ -204,7 +204,6 @@ export class GameComponent implements OnInit {
     }
     this.play = sequence;
     this.board[this.prevRound] = this.board[this.prevRound].map((_, idx) => this.play.split('')[idx]);
-    console.log(this._soln, `solution`);
   }
 
   get combinedBoard(): any {
@@ -218,11 +217,11 @@ export class GameComponent implements OnInit {
     });
   }
 
-  submitRound(round: number, sequence: string, final?: boolean): void {
+  submitRound(prevRound: number, sequence: string, final?: boolean): void {
     if (sequence.length !== 5) { return }
     if (this.wordService.inDict(sequence)) {
       const classBoardRow = this.matchedLetters(sequence, this.decodedWord, this.alphabetKey);
-      this.classBoard[round - 1] = classBoardRow;
+      this.classBoard[prevRound] = classBoardRow;
       setTimeout(() => {
         if (classBoardRow.every(letter => letter === 'match')) {
           this.toggleNotice('You won!', 'good', true, 36e6);
@@ -276,8 +275,8 @@ export class GameComponent implements OnInit {
     });
   }
 
-  incrementRound(round: number): number {
-    return round < 6 ? round + 1 : 1;
+  incrementRound(prevRound: number): number {
+    return prevRound < 6 ? prevRound + 1 : 0;
   }
 
   attribution(): void {
