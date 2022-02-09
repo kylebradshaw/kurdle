@@ -19,7 +19,6 @@ export class GameComponent implements OnInit {
   classBoard: GuessClass[][] = [[]];
   currentWord = "";
   decodedWord = "";
-  solved = false;
   alphabetKey: AlphaDict = {};
   debugMode: boolean = false;
   notice: Notice = {message: '', type: '', again: false};
@@ -32,6 +31,7 @@ export class GameComponent implements OnInit {
   sequenceIdx: number = 0;
   public ngNavigatorShareService: NgNavigatorShareService;
   private _play: string = '';
+  private _soln: boolean = false;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -123,7 +123,13 @@ export class GameComponent implements OnInit {
       this.alphabetKey = this.wordService.getAlphabetKey(this.decodedWord);
     });
 
-    this.board = [
+    this.board = this.setupBoard();
+
+    this.classBoard = this.setupClassBoard();
+  }
+
+  setupBoard(): string[][] {
+    return [
       ['', '', '', '', ''],
       ['', '', '', '', ''],
       ['', '', '', '', ''],
@@ -131,15 +137,17 @@ export class GameComponent implements OnInit {
       ['', '', '', '', ''],
       ['', '', '', '', '']
     ];
+  }
 
-    this.classBoard = [
+  setupClassBoard(): GuessClass[][] {
+    return [
       [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
       [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
       [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
       [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
       [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
       [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT]
-    ];
+    ]
   }
 
   switchTheme(previousTheme: string, flip = false): void {
@@ -220,7 +228,7 @@ export class GameComponent implements OnInit {
           this.toggleNotice('You won!', 'good', true, 36e6);
           this.endState = true;
         } else if (final) {
-          this.toggleNotice(`${this.decodedWord.toUpperCase()} was the answer.`, 'bad', true, 36e6);
+          this.toggleNotice(`${this.decodedWord.toUpperCase()}`, 'bad', true, 36e6);
           this.endState = true;
         }
         if (this.endState) {
@@ -234,7 +242,7 @@ export class GameComponent implements OnInit {
       this.round = this.incrementRound(this.round);
       this.storageService.set('round', `${this.round}`);
     } else {
-      this.toggleNotice('The word is not the dictionary. Try again.', 'warn');
+      this.toggleNotice('The word is not the dictionary.', 'warn');
     }
   }
 
@@ -302,9 +310,10 @@ export class GameComponent implements OnInit {
     //   alert(`This service/api is not supported in your Browser`);
     //   return;
     // }
+    const numerator = (this.soln) ? this.round - 1 : `X`;
     this.ngNavigatorShareService.share({
       title: ``,
-      text: `KURDLE ${("0000" + this.sequenceIdx).slice(-4)} ${this.round - 1}/6\n\n` + this.boardMatrix(this.classBoard).map(r => r.join('')).join('\n'),
+      text: `KURDLE ${("0000" + this.sequenceIdx).slice(-4)} ${numerator}/6\n\n` + this.boardMatrix(this.classBoard).map(r => r.join('')).join('\n'),
     })
     .then(() => { console.log(`Successful share`); })
     .catch((error) => { console.log(error); });
@@ -313,6 +322,16 @@ export class GameComponent implements OnInit {
   get svgFill(): string {
     const themeColor = this.storageService.get('theme');
     return (themeColor === 'light') ? "fill: #ffffff;" : "fill: #000000;";
+  }
+
+  get soln(): boolean {
+    return this._soln;
+  }
+
+  set soln(value: boolean) {
+    const myBoard = [...this.board];
+    const soln = [...myBoard].pop()?.every(letter => letter === GuessClass.MATCH) || false;
+    this._soln = soln;
   }
 
   get play(): string {

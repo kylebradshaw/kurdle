@@ -74,14 +74,17 @@
     background: theme-var($--theme-default);
   }
   &--used {
+    border: 1px solid theme-var($--theme-used);
     color: theme-var($--theme-on-used);
     background: theme-var($--theme-used);
   }
   &--match {
+    border: 1px solid theme-var($--theme-match);
     color: theme-var($--theme-on-match);
     background: theme-var($--theme-match);
   }
   &--mismatch {
+    border: 1px solid theme-var($--theme-mismatch);
     color: theme-var($--theme-on-mismatch);
     background: theme-var($--theme-mismatch);
   }
