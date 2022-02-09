@@ -22,14 +22,14 @@
       // > div {
       // min-height: 1rem;
       // }
-      > div:first-of-type {
+      > button:first-of-type {
         color: theme-var($--theme-on-primary);
         // color: theme-var($--theme-primary);
         background-color: theme-var($--theme-primary);
         border: 1px solid transparent;
         flex-grow: 1;
       }
-      > div:last-of-type {
+      > button:last-of-type {
         color: theme-var($--theme-on-primary);
         // color: theme-var($--theme-bad);
         background-color: theme-var($--theme-bad);
@@ -42,7 +42,7 @@
     margin: 0.05rem;
     text-transform: uppercase;
     color: #333;
-    margin: 0.1rem;
+    // margin: 0.1rem;
     cursor: pointer;
     // prevent annoying copy prompt
     -webkit-touch-callout: none; /* Safari */

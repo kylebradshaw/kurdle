@@ -2,12 +2,12 @@
   <div class="keyboard__row d-flex align-items-top justify-content-center"
     *ngFor="let t of keys"
     >
-    <div class="keyboard__key char"
+    <button class="keyboard__key char"
       [class]="'char--' + playedAlphabetKey[k]?.class"
       *ngFor="let k of t"
       (click)="onLetter(k)"
       >
         {{k}}
-    </div>
+    </button>
   </div>
 </div>
