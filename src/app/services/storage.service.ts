@@ -12,7 +12,9 @@ export class StorageService {
 
   public clear(force = false) {
     if (this.isClient && force) {
+      const cache = localStorage.getItem('cache') as string;
       localStorage.clear();
+      localStorage.setItem('cache', cache);
     }
   }
 

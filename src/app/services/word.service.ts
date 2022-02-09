@@ -9,6 +9,7 @@ export interface FuncWord {
   word: string;
   sequence: number;
   action: string;
+  cache: string;
 }
 @Injectable({
   providedIn: 'root'

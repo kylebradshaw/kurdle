@@ -6,7 +6,6 @@ import { Random } from "random-js";
 // https://flaviocopes.com/netlify-functions-env-variables/
 const { CACHED_COMMIT_REF  } = process.env;
 
-console.log(CACHED_COMMIT_REF.slice(0, 4), `cached_commit_ref`);
 interface Solution {
   word: string;
   sequence: number;
@@ -60,13 +59,15 @@ const handler: Handler = async (event, context) => {
       return {
         word: chooseRandom.word,
         sequence: chooseRandom.sequence,
-        action: 'random'
+        action: 'random',
+        cache: `k4e7e9j10??${CACHED_COMMIT_REF.slice(0, 5)}`,
       };
     } else {
       return {
         word: periodicWord.word,
         sequence: periodicWord.sequence,
-        action: 'periodic'
+        action: 'periodic',
+        cache: `k4e7e9j10??${CACHED_COMMIT_REF.slice(0, 5)}`,
       };
     }
   }

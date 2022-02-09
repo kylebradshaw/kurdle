@@ -1,6 +1,7 @@
 import { FuncWord } from 'src/app/services/word.service';
 import { Component, OnInit, HostListener } from '@angular/core';
 import { WordService } from 'src/app/services/word.service';
+import { GameState } from 'src/app/models/game';
 import { GuessClass, GuessAction, AlphaDict } from 'src/app/models/guess';
 import { Notice } from 'src/app/models/notice';
 import { ActivatedRoute } from '@angular/router';
@@ -28,6 +29,7 @@ export class GameComponent implements OnInit {
   navigator: any;
   rando = '';
   sequenceIdx: number = 0;
+  cache: string = '';
   public ngNavigatorShareService: NgNavigatorShareService;
   private _play: string = '';
   private _soln: boolean = false;
@@ -94,6 +96,7 @@ export class GameComponent implements OnInit {
    * Gross but a mouse click that fires setupGame() has downstream issues ¯\_(ツ)_/¯
    */
   reloadGame(mode?: string): void {
+    this.storageService.clear(true);
     const l = window.location;
     if (mode === 'rando' && !l.href.includes('rando')) {
       l.href = l.href.includes(`?`) ? `${l.href}/${l.search}&rando` : `${l.href}?rando`;
@@ -112,6 +115,20 @@ export class GameComponent implements OnInit {
     this.play = '';
 
     this.wordService.seedWordFromFunc(this.rando).subscribe((response: FuncWord) => {
+      if (this.storageService.get('board') && this.storageService.get('classBoard')) {
+        this.board = JSON.parse(this.storageService.get('board'));
+        this.classBoard = JSON.parse(this.storageService.get('classBoard'));
+      }
+      if (this.storageService.get('cache') !== response.cache) {
+        this.storageService.set('cache', response.cache);
+        this.reloadGame();
+      }
+      if (this.storageService.get('word') !== response.word) {
+        this.storageService.set('word', response.word);
+      }
+      if (this.storageService.get('roundIdx')) {
+        this.prevRound = Number(this.storageService.get('roundIdx'));
+      }
       this.currentWord = response.word;
       this.sequenceIdx = response.sequence;
       // this.currentWord = btoa('model');
@@ -122,12 +139,12 @@ export class GameComponent implements OnInit {
       this.alphabetKey = this.wordService.getAlphabetKey(this.decodedWord);
     });
 
-    this.board = this.setupBoard();
-
+    this.board = this.emptyBoard();
     this.classBoard = this.setupClassBoard();
+    this.storageService.set('gameState', GameState.INITIALIZED);
   }
 
-  setupBoard(): string[][] {
+  emptyBoard(): string[][] {
     return [
       ['', '', '', '', ''],
       ['', '', '', '', ''],
@@ -187,6 +204,7 @@ export class GameComponent implements OnInit {
   }
 
   refreshLetters(sequence: string): void {
+    this.storageService.set('gameState', GameState.PLAYING);
     if(sequence.startsWith(GuessAction.ENTER)) {
       return;
     }
@@ -204,6 +222,22 @@ export class GameComponent implements OnInit {
     }
     this.play = sequence;
     this.board[this.prevRound] = this.board[this.prevRound].map((_, idx) => this.play.split('')[idx]);
+    this.saveBoard(this.board, null);
+  }
+
+  saveBoard(board: string[][] | null, classBoard: string[][] | null): void {
+    if (board) {
+      this.storageService.set('board', JSON.stringify(board));
+    }
+    if (classBoard) {
+      this.storageService.set('classBoard', JSON.stringify(classBoard));
+    }
+    console.log(board, classBoard);
+  }
+
+  loadBoard(): void {
+    this.board = JSON.parse(this.storageService.get('board'));
+    this.prevRound = Number(this.storageService.get('prevRound'));
   }
 
   get combinedBoard(): any {
@@ -222,6 +256,7 @@ export class GameComponent implements OnInit {
     if (this.wordService.inDict(sequence)) {
       const classBoardRow = this.matchedLetters(sequence, this.decodedWord, this.alphabetKey);
       this.classBoard[prevRound] = classBoardRow;
+      this.saveBoard(null, this.classBoard);
       setTimeout(() => {
         if (classBoardRow.every(letter => letter === 'match')) {
           this.toggleNotice('You won!', 'good', true, 36e6);
@@ -242,8 +277,11 @@ export class GameComponent implements OnInit {
 
   endGame(ended: boolean): void {
     console.log(this.shareText());
-    // TODO: SET GAME STATE IN LS
+    // delete board from LS
+    this.storageService.remove('board');
+    this.storageService.remove('roundIdx');
     this.storageService.set('shareText', JSON.stringify(this.shareText()));
+    this.storageService.set('gameState', GameState.ENDED);
   }
 
   /**
@@ -300,6 +338,7 @@ export class GameComponent implements OnInit {
 
   showStats(): void {
     // this.stats = this.storageService.get('stats');
+    this.storageService.set('gameState', GameState.PAUSED);
   }
 
   /**
