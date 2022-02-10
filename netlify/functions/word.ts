@@ -1,9 +1,11 @@
+import * as base64 from 'base-64';
 import { DICTIONARY } from './dict';
 import { Handler,  } from '@netlify/functions';
-import * as base64 from 'base-64';
 import { Random } from "random-js";
 
 // https://flaviocopes.com/netlify-functions-env-variables/
+const { COMMIT_REF } = process.env;
+// console.log(process.env, `process.env`);
 
 interface Solution {
   word: string;
@@ -54,27 +56,27 @@ const handler: Handler = async (event, context) => {
    */
   const bodyText = () => {
     const sequenceIdx = Number(rawQuery.split('sequenceIdx=')[1]);
-    const prevHash = `dfa4728`;
+    const hash = `${COMMIT_REF}`;
     if (sequenceIdx  > 0) {
       return {
         word: DICTIONARY[sequenceIdx],
         sequence: `${sequenceIdx}`,
         action: 'random',
-        cache: `prevHash${prevHash}`,
+        cache: `${hash}`,
       };
     } else if (rawQuery.includes('rando=true')) {
       return {
         word: chooseRandom.word,
         sequence: chooseRandom.sequence,
         action: 'random',
-        cache: `prevHash${prevHash}`,
+        cache: `${hash}`,
       };
     } else {
       return {
         word: periodicWord.word,
         sequence: periodicWord.sequence,
         action: 'periodic',
-        cache: `prevHash${prevHash}`,
+        cache: `${hash}`,
       };
     }
   }
