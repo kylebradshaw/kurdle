@@ -16,6 +16,13 @@
       gtag('js', new Date());
       gtag('config', 'G-5J1NY176LF');
     </script>
+    <script type="text/javascript">
+      // prevent ios jumping on button mash
+      window.addEventListener("scroll", (e) => {
+        e.preventDefault();
+        window.scrollTo(0, 0);
+      });
+    </script>
   </head>
   <body>
     <app-root></app-root>
