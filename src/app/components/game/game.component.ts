@@ -144,7 +144,7 @@ export class GameComponent implements OnInit {
       this.sequenceIdx = response.sequence;
       // this.currentWord = btoa('gonad');
       // this.currentWord = btoa('rebut');
-      this.currentWord = btoa('mammy');
+      // this.currentWord = btoa('mammy');
       // this.currentWord = btoa('pleat');
       this.decodedWord = this.wordService.decode(this.currentWord);
       this.alphabetKey = this.wordService.getAlphabetKey(this.decodedWord);
