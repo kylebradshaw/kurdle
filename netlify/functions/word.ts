@@ -54,7 +54,7 @@ const handler: Handler = async (event, context) => {
    */
   const bodyText = () => {
     const sequenceIdx = Number(rawQuery.split('sequenceIdx=')[1]);
-    const prevHash = `4a03899`;
+    const prevHash = `dfa4728`;
     if (sequenceIdx  > 0) {
       return {
         word: DICTIONARY[sequenceIdx],
