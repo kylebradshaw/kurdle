@@ -142,10 +142,10 @@ export class GameComponent implements OnInit {
 
       this.currentWord = response.word;
       this.sequenceIdx = response.sequence;
-      // this.currentWord = btoa('model');
+      // this.currentWord = btoa('gonad');
+      // this.currentWord = btoa('rebut');
+      this.currentWord = btoa('mammy');
       // this.currentWord = btoa('pleat');
-      // this.currentWord = btoa('tract');
-      // this.currentWord = btoa('stair');
       this.decodedWord = this.wordService.decode(this.currentWord);
       this.alphabetKey = this.wordService.getAlphabetKey(this.decodedWord);
     });
@@ -313,7 +313,12 @@ export class GameComponent implements OnInit {
         if (repeatedSequence.includes(letter) && sequence.lastIndexOf(letter) !== i) {
           return GuessClass.USED;
         } else {
-          return GuessClass.MISMATCH;
+          // if there is a repeated letter in the guess but there is not repeated letter in the solution
+          if (repeatedSequence.includes(letter) && !repeatedDecoded.includes(letter)) {
+            return GuessClass.USED;
+          } else {
+            return GuessClass.MISMATCH;
+          }
         }
       }
     });

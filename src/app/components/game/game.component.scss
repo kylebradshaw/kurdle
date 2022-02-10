@@ -7,6 +7,10 @@
 @import "./themes";
 
 $dot-half: 8px;
+.highlight-letters {
+  @include transition(all 0.3s ease-in-out);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.9);
+}
 
 .app {
   min-height: 100%;
