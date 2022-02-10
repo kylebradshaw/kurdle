@@ -62,7 +62,6 @@ const handler: Handler = async (event, context) => {
         action: 'random',
         cache: `prevHash${prevHash}`,
       };
-
     } else if (rawQuery.includes('rando=true')) {
       return {
         word: chooseRandom.word,
