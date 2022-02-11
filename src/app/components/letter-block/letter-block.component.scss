@@ -92,6 +92,10 @@
     color: theme-var($--theme-on-mismatch);
     background: theme-var($--theme-mismatch);
   }
+  &--ghost {
+    opacity: 0.5;
+    border: 1px dashed theme-var($--theme-on-default);
+  }
   // &--next {
   //   border: 1px solid orange !important;
   // }

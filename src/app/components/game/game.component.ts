@@ -1,8 +1,8 @@
 import { FuncWord } from 'src/app/services/word.service';
 import { Component, OnInit, HostListener } from '@angular/core';
 import { WordService } from 'src/app/services/word.service';
-import { GameState } from 'src/app/models/game';
-import { GuessClass, GuessAction, AlphaDict } from 'src/app/models/guess';
+import { GamePosition, GameState } from 'src/app/models/game';
+import { GuessClass, GuessAction, AlphaDict, Letter } from 'src/app/models/guess';
 import { Notice } from 'src/app/models/notice';
 import { ActivatedRoute } from '@angular/router';
 import { ThemeService } from '@bcodes/ngx-theme-service';
@@ -224,7 +224,6 @@ export class GameComponent implements OnInit {
     if (this.currPos[1] === 5) {
       this.nextPos = [prevRound + 1, 0];
     }
-    console.log(this.currPos[1], this.currPos, this.nextPos);
   }
 
   refreshLetters(sequence: string): void {
@@ -251,9 +250,16 @@ export class GameComponent implements OnInit {
     this.play = sequence;
     this.updatePos();
     this.board[this.prevRound] = this.board[this.prevRound].map((_, idx) => {
-      return this.play.split('')[idx];
+      return this._play.split('')[idx];
+      // skip over ghosting approach, but was not intuitive
+      // const playArr = this.play.split('');
+      // if (!!letter && !this.play.split('')[idx]) {
+      //   return letter;
+      // } else {
+      //   this.classBoard[this.prevRound][idx] = GuessClass.DEFAULT;
+      //   return this.play.split('')[idx];
+      // }
     });
-    this.updatePos();
     this.saveBoard(this.board, null);
   }
 
@@ -399,6 +405,16 @@ export class GameComponent implements OnInit {
     this.ngNavigatorShareService.share(this.shareText())
       .then(() => { console.log(`Successful share`); })
       .catch((error) => { console.log(error); });
+  }
+
+  /**
+   * if a MATCH is applied to the board, apply that letter + index to the current round
+   */
+  carryForward(char: string, letterClass: GuessClass, pos: GamePosition): void {
+    // if (letterClass === GuessClass.MATCH) {
+      this.classBoard[this.prevRound][pos[1]] = GuessClass.GHOST; //letterClass;
+      this.board[this.prevRound][pos[1]] = char;
+    // }
   }
 
   get svgFill(): string {

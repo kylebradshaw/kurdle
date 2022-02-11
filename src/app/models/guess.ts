@@ -2,7 +2,8 @@ export enum GuessClass {
   MISMATCH = 'mismatch',
   MATCH = 'match',
   DEFAULT = 'default',
-  USED = 'used'
+  USED = 'used',
+  GHOST = 'ghost'
 }
 
 export enum GuessAction {

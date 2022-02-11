@@ -1,3 +1,4 @@
+export type GamePosition = [number, number];
 export enum GameState {
   INITIALIZED = 'INITIALIZED',
   PLAYING = 'PLAYING',

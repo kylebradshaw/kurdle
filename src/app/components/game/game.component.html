@@ -39,6 +39,7 @@
       <div class="d-flex" *ngFor="let r of board; let rIdx=index">
       <div class="d-flex" *ngFor="let c of r; let cIdx=index">
         <app-letter-block
+          (click)="carryForward(c, classBoard[rIdx][cIdx], [rIdx, cIdx])"
           [char]="c"
           [letterClass]="'char--' + classBoard[rIdx][cIdx]"
           [active]="rIdx === currPos[0] && cIdx === currPos[1]"
