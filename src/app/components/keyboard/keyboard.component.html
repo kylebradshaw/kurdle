@@ -6,8 +6,8 @@
       [class]="'char--' + playedAlphabetKey[k]?.class"
       *ngFor="let k of t"
       (click)="onLetter(k)"
+      [innerText]="k || '&nbsp;'"
       >
-        {{k}}
     </button>
   </div>
 </div>

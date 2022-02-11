@@ -50,6 +50,7 @@
     </div>
   </main>
   <app-keyboard
+    (click)="keyboardClick($event)"
     [alphabetKey]="alphabetKey"
     (onClick)="refreshLetters($event)"
     [heavyBoard]="combinedBoard"

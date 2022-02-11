@@ -234,6 +234,13 @@ export class GameComponent implements OnInit {
     }
   }
 
+  keyboardClick($event: MouseEvent): void {
+    const element = $event.target as HTMLElement;
+    if (element && element.classList.value.includes('keyboard__row')) {
+      $event.preventDefault();
+      $event.stopPropagation;
+    }
+  }
   refreshLetters(sequence: string): void {
     this.storageService.set('gameState', GameState.PLAYING);
     // leading GuessAction.ENTER, submit if populated but round hasn't ended
