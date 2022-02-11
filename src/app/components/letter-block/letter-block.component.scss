@@ -7,12 +7,6 @@
 @import "./themes";
 
 .char {
-  &--active {
-    background-color: magenta !important;
-  }
-  &--next .char--inner {
-    background-color: cyan !important;
-  }
   display: flex;
   justify-content: center;
   align-items: center;
@@ -79,6 +73,9 @@
     border: 1px solid theme-var($--theme-on-default);
     color: theme-var($--theme-on-default);
     background: theme-var($--theme-default);
+    &.char--active {
+      border: 1px dashed theme-var($--theme-on-default);
+    }
   }
   &--used {
     border: 1px solid theme-var($--theme-used);
@@ -95,4 +92,7 @@
     color: theme-var($--theme-on-mismatch);
     background: theme-var($--theme-mismatch);
   }
+  // &--next {
+  //   border: 1px solid orange !important;
+  // }
 }

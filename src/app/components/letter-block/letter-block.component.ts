@@ -19,7 +19,7 @@ export class LetterBlockComponent implements OnInit {
   get charClass(): string {
     const active = (this.active) ? 'char--active' : '';
     const next = (this.next) ? 'char--next' : '';
-    return `char--${this.letterClass} ${active} ${next}`;
+    return `${this.letterClass} ${active} ${next}`;
   }
 
 }

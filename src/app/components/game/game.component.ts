@@ -105,6 +105,7 @@ export class GameComponent implements OnInit {
     } else {
       location.reload();
     }
+    this.updatePos();
   }
 
   /**
@@ -216,19 +217,24 @@ export class GameComponent implements OnInit {
   }
 
   updatePos(play = this.play, prevRound = this.prevRound) {
-    this.currPos = [prevRound, play.length];
+    this.currPos = [prevRound, play.length || 0];
     if (this.currPos[1] < 5) {
       this.nextPos = [prevRound, play.length + 1];
     }
     if (this.currPos[1] === 5) {
       this.nextPos = [prevRound + 1, 0];
     }
+    console.log(this.currPos[1], this.currPos, this.nextPos);
   }
 
   refreshLetters(sequence: string): void {
     this.storageService.set('gameState', GameState.PLAYING);
-    if(sequence.startsWith(GuessAction.ENTER)) {
+    // leading GuessAction.ENTER, submit if populated but round hasn't ended
+    if (sequence.startsWith(GuessAction.ENTER) && //check if the row is filled
+      this.board[this.prevRound].every(letter => !letter) ) {
       return;
+    } else if (sequence.startsWith(GuessAction.ENTER)) {
+      this._play = this.board[this.prevRound].map(letter => letter).join('');
     }
     if (sequence.endsWith(GuessAction.ENTER)) {
       return this.submitRound(this.prevRound, this.play, this.prevRound === 5);
@@ -264,6 +270,7 @@ export class GameComponent implements OnInit {
     this.board = JSON.parse(this.storageService.get('board'));
     this.classBoard = JSON.parse(this.storageService.get('classBoard'));
     this.prevRound = Number(this.storageService.get('prevRound'));
+    this.updatePos();
   }
 
   get combinedBoard(): any {
@@ -296,6 +303,7 @@ export class GameComponent implements OnInit {
       this.play = '';
       this.prevRound = this.incrementRound(this.prevRound);
       this.storageService.set('roundIdx', `${this.prevRound}`);
+      this.updatePos();
     } else {
       this.toggleNotice('The word is not the dictionary.', 'warn');
     }

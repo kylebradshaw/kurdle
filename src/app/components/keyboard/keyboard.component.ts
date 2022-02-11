@@ -71,8 +71,7 @@ export class KeyboardComponent implements OnInit, OnChanges {
                       this.playedAlphabetKey[letterObj.letter]?.class === GuessClass.USED) {
             this.playedAlphabetKey[letterObj.letter] = {class: letterObj.class, idx: []};
           } else if (letterObj.class === GuessClass.MISMATCH &&
-                      this.playedAlphabetKey[letterObj.letter]?.class === GuessClass.MATCH) {
-            // TODO: PLEAT (T never turns green @ end of round)
+              this.playedAlphabetKey[letterObj.letter]?.class === GuessClass.MATCH) {
             this.playedAlphabetKey[letterObj.letter] = {class: letterObj.class, idx: []};
           } else {
             this.playedAlphabetKey[letterObj.letter] = {class: letterObj.class, idx: []};
