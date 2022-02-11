@@ -1,8 +1,9 @@
 <div class="app d-flex flex-column">
   <header class="d-flex align-items-center justify-content-between">
     <!-- <button class="bare" (click)="attribution()">&#xFFFD;</button> -->
-    <!-- <button class="bare" (click)="reloadGame()">&#x267B;</button> -->
-    <button title="Reset Game" class="bare" (click)="reloadGame()">&#8634;</button>
+    <!-- <button class="bare" (click)="reloadGame(true)">&#x267B;</button> -->
+    <!-- <button title="Reset Game" class="bare" (click)="reloadGame(false)">&#8634;</button> -->
+    <div class="bare" (click)="reloadGame(false)">&nbsp;<span *ngIf="rando">🔀</span></div>
     <h1 *ngIf="!debugMode" [routerLink]="['/']">Kurdle</h1>
     <h1 *ngIf="debugMode">{{decodedWord}}</h1>
     <div class="bare" (click)="switchTheme(currentTheme, true)">
@@ -18,7 +19,7 @@
   </header>
   <div class="flash d-flex align-items-center" [class]="notice.type">
     <span [innerHTML]="notice.message"></span>
-    <span *ngIf="notice.again">&nbsp;<button (click)="reloadGame('rando')">Play again?</button></span>
+    <span *ngIf="notice.again">&nbsp;<button (click)="reloadGame(true)">Play again?</button></span>
     <button
       *ngIf="notice.again && ngNavigatorShareService.canShare()"
       (click)="shareGame()">Share</button>
@@ -40,7 +41,7 @@
       <div class="d-flex" *ngFor="let c of r; let cIdx=index">
         <app-letter-block
           (click)="carryForward(c, classBoard[rIdx][cIdx], [rIdx, cIdx])"
-          [char]="c"
+          [char]="c || ghostBoard[rIdx][cIdx]"
           [letterClass]="'char--' + classBoard[rIdx][cIdx]"
           [active]="rIdx === currPos[0] && cIdx === currPos[1]"
           [next]="rIdx === nextPos[0] && cIdx === nextPos[1]"

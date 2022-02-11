@@ -63,6 +63,11 @@ const handler: Handler = async (event, context) => {
         sequence: `${sequenceIdx}`,
         action: 'random',
         cache: `${hash}`,
+        dates: [
+          baseDate,
+          todaysDate,
+          getDateDifference(baseDate, todaysDate),
+        ]
       };
     } else if (rawQuery.includes('rando=true')) {
       return {
@@ -70,6 +75,11 @@ const handler: Handler = async (event, context) => {
         sequence: chooseRandom.sequence,
         action: 'random',
         cache: `${hash}`,
+        dates: [
+          baseDate,
+          todaysDate,
+          getDateDifference(baseDate, todaysDate),
+        ]
       };
     } else {
       return {
@@ -77,6 +87,11 @@ const handler: Handler = async (event, context) => {
         sequence: periodicWord.sequence,
         action: 'periodic',
         cache: `${hash}`,
+        dates: [
+          baseDate,
+          todaysDate,
+          getDateDifference(baseDate, todaysDate),
+        ]
       };
     }
   }

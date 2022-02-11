@@ -1,3 +1,4 @@
+import { Meta } from '@angular/platform-browser';
 import { FuncWord } from 'src/app/services/word.service';
 import { Component, OnInit, HostListener } from '@angular/core';
 import { WordService } from 'src/app/services/word.service';
@@ -18,6 +19,7 @@ export class GameComponent implements OnInit {
   prevRound: number = 0;
   board: string[][] = [[]];
   classBoard: GuessClass[][] = [[]];
+  ghostBoard: string[][] = [[]];
   currentWord = "";
   decodedWord = "";
   alphabetKey: AlphaDict = {};
@@ -41,6 +43,7 @@ export class GameComponent implements OnInit {
     private wordService: WordService,
     private themeService: ThemeService,
     private storageService: StorageService,
+    private meta: Meta,
     ngNavigatorShareService: NgNavigatorShareService,
   ) {
     this.activatedRoute.queryParams.subscribe(params => {
@@ -52,6 +55,9 @@ export class GameComponent implements OnInit {
       }
     });
     this.ngNavigatorShareService = ngNavigatorShareService;
+    this.meta.addTag(
+      { name: 'theme-color', content: '#ffffff' }
+    );
   }
 
   ngOnInit(): void {
@@ -97,13 +103,13 @@ export class GameComponent implements OnInit {
    * Reloads game
    * Gross but a mouse click that fires setupGame() has downstream issues ¯\_(ツ)_/¯
    */
-  reloadGame(mode?: string): void {
+  reloadGame(mode: boolean): void {
     this.storageService.clear(true);
     const l = window.location;
-    if (mode === 'rando' && !l.href.includes('rando')) {
+    if (mode && !l.href.includes('rando')) {
       l.href = l.href.includes(`?`) ? `${l.href}/${l.search}&rando=true` : `${l.href}?rando=true`;
     } else {
-      location.reload();
+      window.location.href = window.origin;
     }
     this.updatePos();
   }
@@ -131,7 +137,7 @@ export class GameComponent implements OnInit {
       if (this.storageService.get('cache') !== response.cache) {
         this.storageService.set('cache', response.cache);
         // NEW BUILD, CACHE BUST!
-        this.reloadGame();
+        this.reloadGame(false);
       }
       if (this.storageService.get('word') !== response.word) {
         this.storageService.set('word', response.word);
@@ -154,7 +160,8 @@ export class GameComponent implements OnInit {
     });
 
     this.board = this.emptyBoard();
-    this.classBoard = this.setupClassBoard();
+    this.classBoard = this.setupClassBoard(GuessClass.DEFAULT);
+    this.ghostBoard = this.emptyBoard();
   }
 
   emptyBoard(): string[][] {
@@ -168,20 +175,21 @@ export class GameComponent implements OnInit {
     ];
   }
 
-  setupClassBoard(): GuessClass[][] {
+  setupClassBoard(guessClass: GuessClass = GuessClass.DEFAULT): GuessClass[][] {
     return [
-      [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
-      [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
-      [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
-      [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
-      [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT],
-      [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT]
+      [guessClass, guessClass, guessClass, guessClass, guessClass],
+      [guessClass, guessClass, guessClass, guessClass, guessClass],
+      [guessClass, guessClass, guessClass, guessClass, guessClass],
+      [guessClass, guessClass, guessClass, guessClass, guessClass],
+      [guessClass, guessClass, guessClass, guessClass, guessClass],
+      [guessClass, guessClass, guessClass, guessClass, guessClass]
     ]
   }
 
   switchTheme(previousTheme: string, flip = false): void {
     let nextTheme = (flip) ? this.intendedTheme(previousTheme) : previousTheme;
     this.themeService.switchTheme(nextTheme);
+    this.meta.updateTag({ content: (nextTheme === 'light') ? '#ffffff' : '#0a0a0a' }, 'name=theme-color');
     this.storageService.set('theme', nextTheme);
     this.currentTheme = nextTheme;
   }
@@ -250,6 +258,9 @@ export class GameComponent implements OnInit {
     this.play = sequence;
     this.updatePos();
     this.board[this.prevRound] = this.board[this.prevRound].map((_, idx) => {
+      if (idx < this.play.length) {
+        this.classBoard[this.prevRound][idx] = GuessClass.DEFAULT;
+      }
       return this._play.split('')[idx];
       // skip over ghosting approach, but was not intuitive
       // const playArr = this.play.split('');
@@ -413,7 +424,7 @@ export class GameComponent implements OnInit {
   carryForward(char: string, letterClass: GuessClass, pos: GamePosition): void {
     // if (letterClass === GuessClass.MATCH) {
       this.classBoard[this.prevRound][pos[1]] = GuessClass.GHOST; //letterClass;
-      this.board[this.prevRound][pos[1]] = char;
+      this.ghostBoard[this.prevRound][pos[1]] = char;
     // }
   }
 

@@ -2324,6 +2324,7 @@ export const DICTIONARY = [
   "aGlrZXI=",
   "bGl0ZXI=",
   "cGlvdXM=",
+  "d2lwZXI=",
 ];
 
 // copy(`"${btoa("mommy".toLowerCase())}",`)

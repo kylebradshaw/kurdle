@@ -4,7 +4,7 @@
 // https://bcodes.io/blog/post/theming-css-variables-in-scss
 :root.theme-transition,
 :root.theme-transition * {
-  transition: background-color 1000ms !important;
+  transition: background-color 100ms !important;
   transition-delay: 0s !important;
 }
 
