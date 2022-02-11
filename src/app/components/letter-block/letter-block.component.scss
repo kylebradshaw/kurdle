@@ -7,6 +7,12 @@
 @import "./themes";
 
 .char {
+  &--active {
+    background-color: magenta !important;
+  }
+  &--next .char--inner {
+    background-color: cyan !important;
+  }
   display: flex;
   justify-content: center;
   align-items: center;

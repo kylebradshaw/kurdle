@@ -30,6 +30,8 @@ export class GameComponent implements OnInit {
   rando = false;
   sequenceIdx: number = 0;
   cache: string = '';
+  currPos: number[] = [0, 0];
+  nextPos: number[] = [0, 0];
   public ngNavigatorShareService: NgNavigatorShareService;
   private _play: string = '';
   private _soln: boolean = false;
@@ -213,6 +215,16 @@ export class GameComponent implements OnInit {
     this.refreshLetters(this.play);
   }
 
+  updatePos(play = this.play, prevRound = this.prevRound) {
+    this.currPos = [prevRound, play.length];
+    if (this.currPos[1] < 5) {
+      this.nextPos = [prevRound, play.length + 1];
+    }
+    if (this.currPos[1] === 5) {
+      this.nextPos = [prevRound + 1, 0];
+    }
+  }
+
   refreshLetters(sequence: string): void {
     this.storageService.set('gameState', GameState.PLAYING);
     if(sequence.startsWith(GuessAction.ENTER)) {
@@ -231,7 +243,11 @@ export class GameComponent implements OnInit {
       this.debugMode = false;
     }
     this.play = sequence;
-    this.board[this.prevRound] = this.board[this.prevRound].map((_, idx) => this.play.split('')[idx]);
+    this.updatePos();
+    this.board[this.prevRound] = this.board[this.prevRound].map((_, idx) => {
+      return this.play.split('')[idx];
+    });
+    this.updatePos();
     this.saveBoard(this.board, null);
   }
 

@@ -36,9 +36,14 @@
     </svg>
   </div>
   <main class="d-flex flex-column align-items-center justify-content-center flex-grow-1">
-    <div class="d-flex" *ngFor="let r of board; let rIdx=index" [ngClass]="{'highlight-letters': rIdx === prevRound}">
+      <div class="d-flex" *ngFor="let r of board; let rIdx=index">
       <div class="d-flex" *ngFor="let c of r; let cIdx=index">
-        <app-letter-block [char]="c" [letterClass]="classBoard[rIdx][cIdx]"></app-letter-block>
+        <app-letter-block
+          [char]="c"
+          [letterClass]="'char--' + classBoard[rIdx][cIdx]"
+          [active]="rIdx === currPos[0] && cIdx === currPos[1]"
+          [next]="rIdx === nextPos[0] && cIdx === nextPos[1]"
+          ></app-letter-block>
       </div>
     </div>
   </main>
