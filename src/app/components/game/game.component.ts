@@ -155,6 +155,8 @@ export class GameComponent implements OnInit {
       // this.currentWord = btoa('rebut');
       // this.currentWord = btoa('mammy');
       // this.currentWord = btoa('pleat');
+      // this.currentWord = btoa('blurt');
+      // this.currentWord = btoa('trend');
       this.decodedWord = this.wordService.decode(this.currentWord);
       this.alphabetKey = this.wordService.getAlphabetKey(this.decodedWord);
     });
@@ -345,7 +347,6 @@ export class GameComponent implements OnInit {
    * @returns an array of GuessClass for each letter in sequence based on solution
    */
   matchedLetters(sequence: string, decodedWord: string, alphabetKey: AlphaDict): GuessClass[] {
-    let guessClass = [] as GuessClass[];
     const repeatedSequence = this.wordService.repeatedCharacters(sequence);
     const repeatedDecoded = this.wordService.repeatedCharacters(decodedWord);
 
@@ -358,11 +359,17 @@ export class GameComponent implements OnInit {
       } else { // misfires can happen here
         // if the letter is in the repeatedSequence array and it makes it this far and it's
         // _NOT_ in the _LAST_ found index of the solution (still more to match against), set it as used_ NOT MISMATCH
+        if (letter.toLowerCase() === 'l') { debugger; }
         if (repeatedSequence.includes(letter) && sequence.lastIndexOf(letter) !== i) {
+
           return GuessClass.USED;
         } else {
+          // if the repeated letter in the guess is the _last_ opportunity to match a the letter in the solution, set mismatch
+          if (repeatedSequence.includes(letter) && sequence.lastIndexOf(letter) === i) {
+            return GuessClass.MISMATCH;
+          }
           // if there is a repeated letter in the guess but there is not repeated letter in the solution
-          if (repeatedSequence.includes(letter) && !repeatedDecoded.includes(letter)) {
+           else if (repeatedSequence.includes(letter) && !repeatedDecoded.includes(letter)) {
             return GuessClass.USED;
           } else {
             return GuessClass.MISMATCH;
