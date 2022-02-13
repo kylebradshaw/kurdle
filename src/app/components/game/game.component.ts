@@ -107,7 +107,7 @@ export class GameComponent implements OnInit {
   reloadGame(mode: boolean): void {
     this.storageService.clear(true);
     const l = window.location;
-    if (mode) {
+    if (mode && !l.href.includes('rando')) {
       l.href = l.href.includes(`?`) ? `${l.href}/${l.search}&rando=true` : `${l.href}?rando=true`;
     } else {
       window.location.href = window.origin;
@@ -438,10 +438,13 @@ export class GameComponent implements OnInit {
    * if a MATCH is applied to the board, apply that letter + index to the current round
    */
   carryForward(char: string, letterClass: GuessClass, pos: GamePosition): void {
-    // if (letterClass === GuessClass.MATCH) {
+    if (letterClass === GuessClass.GHOST) {
+      this.classBoard[this.prevRound][pos[1]] = GuessClass.DEFAULT; //letterClass;
+    } else {
       this.classBoard[this.prevRound][pos[1]] = GuessClass.GHOST; //letterClass;
-      this.ghostBoard[this.prevRound][pos[1]] = char;
-    // }
+    }
+
+    this.ghostBoard[this.prevRound][pos[1]] = char;
   }
 
   get svgFill(): string {
