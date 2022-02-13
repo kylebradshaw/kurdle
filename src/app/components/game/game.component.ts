@@ -359,9 +359,7 @@ export class GameComponent implements OnInit {
       } else { // misfires can happen here
         // if the letter is in the repeatedSequence array and it makes it this far and it's
         // _NOT_ in the _LAST_ found index of the solution (still more to match against), set it as used_ NOT MISMATCH
-        if (letter.toLowerCase() === 'l') { debugger; }
         if (repeatedSequence.includes(letter) && sequence.lastIndexOf(letter) !== i) {
-
           return GuessClass.USED;
         } else {
           // if the repeated letter in the guess is the _last_ opportunity to match a the letter in the solution, set mismatch
