@@ -26,6 +26,10 @@ $dot-half: 8px;
   flex-basis: 3rem;
   text-align: center;
 }
+.kurdle-code {
+  color: theme-var($--theme-on-surface);
+  text-transform: uppercase;
+}
 .dot {
   width: $dot-half;
   height: $dot-half * 2;

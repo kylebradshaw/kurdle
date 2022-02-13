@@ -76,4 +76,10 @@ export class WordService {
     return [0, 1, 2, 3, 4]
   }
 
+  public numberToLetters(num: number): string {
+    const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+    const alphabetArr = alphabet.split('');
+    return `${num}`.split('').map(num => alphabetArr[Number(num) + 11 % 26] ).join('');
+  }
+
 }

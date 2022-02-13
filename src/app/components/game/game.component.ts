@@ -34,6 +34,7 @@ export class GameComponent implements OnInit {
   cache: string = '';
   currPos: number[] = [0, 0];
   nextPos: number[] = [0, 0];
+  indexCode: string = '';
   public ngNavigatorShareService: NgNavigatorShareService;
   private _play: string = '';
   private _soln: boolean = false;
@@ -106,7 +107,7 @@ export class GameComponent implements OnInit {
   reloadGame(mode: boolean): void {
     this.storageService.clear(true);
     const l = window.location;
-    if (mode && !l.href.includes('rando')) {
+    if (mode) {
       l.href = l.href.includes(`?`) ? `${l.href}/${l.search}&rando=true` : `${l.href}?rando=true`;
     } else {
       window.location.href = window.origin;
@@ -159,6 +160,9 @@ export class GameComponent implements OnInit {
       // this.currentWord = btoa('trend');
       this.decodedWord = this.wordService.decode(this.currentWord);
       this.alphabetKey = this.wordService.getAlphabetKey(this.decodedWord);
+      if (this.rando) {
+        this.indexCode = this.wordService.numberToLetters(response.sequence);
+      }
     });
 
     this.board = this.emptyBoard();
