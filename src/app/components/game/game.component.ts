@@ -136,6 +136,8 @@ export class GameComponent implements OnInit {
     const l = window.location;
     if (mode && !l.href.includes('rando')) {
       l.href = l.href.includes(`?`) ? `${l.href}/${l.search}&rando=true` : `${l.href}?rando=true`;
+    } else if (mode && l.href.includes('rando')) {
+      window.location.reload();
     } else {
       window.location.href = window.origin;
     }
@@ -180,12 +182,12 @@ export class GameComponent implements OnInit {
       this.currentWord = response.word;
       this.sequenceIdx = response.sequence;
       // this.currentWord = btoa('gonad');
-      // this.currentWord = btoa('rebut');
-      // this.currentWord = btoa('mammy');
-      // this.currentWord = btoa('pleat');
+      // this.currentWord = btoa('rebut'); // 'retry'
+      // this.currentWord = btoa('mammy'); // 'mommy'
+      // this.currentWord = btoa('pleat'); // 'plate
       // this.currentWord = btoa('blurt'); // 'bully'
       // this.currentWord = btoa('trend'); // 'terse'
-      this.currentWord = btoa('swift'); // 'stiff'
+      // this.currentWord = btoa('swift'); // 'stiff'
       this.decodedWord = this.wordService.decode(this.currentWord);
       this.alphabetKey = this.wordService.getAlphabetKey(this.decodedWord);
       if (this.rando) {
@@ -348,35 +350,26 @@ export class GameComponent implements OnInit {
 
     return [...sequence].map((letter, i) => {
       const soln = decodedWord;
-      // letter in sequence at proper solution[idx]
-      if (alphabetKey[letter] && alphabetKey[letter].idx.includes(i)) {
+      if (soln[i] === letter) {
+        // letter in sequence at proper slot
         return GuessClass.MATCH;
       } else if (alphabetKey[letter].idx.length === 0) {
+        // the letter in sequence is not in solution
         return GuessClass.USED;
-      } else { // misfires can happen here
-        // if the letter is in the repeatedSequence array and it makes it this far and it's
-        // NOT in the LAST found index of the solution (still more to match against), set it as used NOT MISMATCH
-        // OR
-        // if the guess has a repeated letter, but the solution does NOT have a repeated letter, set it as used NOT MISMATCH
-        if (repeatedSequence.includes(letter) && sequence.lastIndexOf(letter) !== i) {
-          return GuessClass.USED;
-        } else {
-          // if the repeated letter in the guess is the _last_ opportunity to match a the letter in the solution, set mismatch
-          // scenario: repeat has already matched, but it is in the last index
-          if (repeatedSequence.includes(letter) && sequence.lastIndexOf(letter) === i) {
-            if (soln.indexOf(letter) !== i) {
-              return GuessClass.MISMATCH;
-            } else {
-              return GuessClass.USED;
-            }
-          }
-          // if there is a repeated letter in the guess but there is not repeated letter in the solution
-           else if (repeatedSequence.includes(letter) && !repeatedDecoded.includes(letter)) {
-            return GuessClass.USED;
-          } else {
+      } else {
+        // the letter is in sequence but does not match
+        if (repeatedSequence.includes(letter)) {
+          // the guess is repeated
+          if (sequence.lastIndexOf(letter) !== i) {
+            // the guess is the first instance letter of a repeated sequence
             return GuessClass.MISMATCH;
+          } else {
+            // the guess is the last instance letter of a repeated sequence and the previous guess was a (mis)match
+            return GuessClass.USED;
           }
         }
+        // the letter is at the improper index
+        return GuessClass.MISMATCH;
       }
     });
   }
