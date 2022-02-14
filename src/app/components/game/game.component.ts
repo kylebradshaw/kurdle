@@ -185,7 +185,7 @@ export class GameComponent implements OnInit {
       // this.currentWord = btoa('pleat');
       // this.currentWord = btoa('blurt'); // 'bully'
       // this.currentWord = btoa('trend'); // 'terse'
-      // this.currentWord = btoa('swift'); // 'stiff'
+      this.currentWord = btoa('swift'); // 'stiff'
       this.decodedWord = this.wordService.decode(this.currentWord);
       this.alphabetKey = this.wordService.getAlphabetKey(this.decodedWord);
       if (this.rando) {
@@ -347,6 +347,7 @@ export class GameComponent implements OnInit {
     const repeatedDecoded = this.wordService.repeatedCharacters(decodedWord);
 
     return [...sequence].map((letter, i) => {
+      const soln = decodedWord;
       // letter in sequence at proper solution[idx]
       if (alphabetKey[letter] && alphabetKey[letter].idx.includes(i)) {
         return GuessClass.MATCH;
@@ -357,14 +358,17 @@ export class GameComponent implements OnInit {
         // NOT in the LAST found index of the solution (still more to match against), set it as used NOT MISMATCH
         // OR
         // if the guess has a repeated letter, but the solution does NOT have a repeated letter, set it as used NOT MISMATCH
-        if (
-          (repeatedSequence.includes(letter) && sequence.lastIndexOf(letter) !== i)
-        ) {
+        if (repeatedSequence.includes(letter) && sequence.lastIndexOf(letter) !== i) {
           return GuessClass.USED;
         } else {
           // if the repeated letter in the guess is the _last_ opportunity to match a the letter in the solution, set mismatch
+          // scenario: repeat has already matched, but it is in the last index
           if (repeatedSequence.includes(letter) && sequence.lastIndexOf(letter) === i) {
-            return GuessClass.MISMATCH;
+            if (soln.indexOf(letter) !== i) {
+              return GuessClass.MISMATCH;
+            } else {
+              return GuessClass.USED;
+            }
           }
           // if there is a repeated letter in the guess but there is not repeated letter in the solution
            else if (repeatedSequence.includes(letter) && !repeatedDecoded.includes(letter)) {
