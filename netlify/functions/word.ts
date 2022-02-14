@@ -5,7 +5,7 @@ import { Random } from "random-js";
 
 // https://flaviocopes.com/netlify-functions-env-variables/
 const { COMMIT_REF } = process.env;
-// console.log(process.env, `process.env`);
+// console.log(process.env, `COMMIT_REF used to cache-bust`);
 
 interface Solution {
   word: string;
@@ -15,30 +15,27 @@ interface Solution {
 const handler: Handler = async (event, context) => {
 
   // PERIODIC WORD
-  const todaysDate = new Date();
   const baseDate = new Date(2022, 1, 4, 0, 0, 0, 0);
+  const today = new Date();
+  const tomorrow = today.setDate(today.getDate() + 1);
 
-  const getDateDifference = (then: any, now: any) => {
-    const origin = new Date(then);
-    const diff = new Date(now).setHours(0, 0, 0, 0) - origin.setHours(0, 0, 0, 0);
+  const dateDifference = (then: any, now: any) => {
+    const diff = new Date(now).setHours(0, 0, 0, 0) - new Date(then).setHours(0, 0, 0, 0);
     return Math.floor(diff / 864e5)
   }
 
-  const callGetDateDifference = (todaysDate: any) =>{
-    const dateDiff = getDateDifference(baseDate, todaysDate);
-    return dateDiff;
-  }
+  // const callGetDateDifference = (today: any) =>{
+  //   const dateDiff = getDateDifference(baseDate, today);
+  //   return dateDiff;
+  // }
 
-  const getWordOfTheDay = (today: any) => {
-    let s = callGetDateDifference(today);
-    return {word: DICTIONARY[s], sequence: s};
+  const getWordOfTheDay = (baseDate: any, targetDay: any = tomorrow) => {
+    const idx = dateDifference(baseDate, targetDay);
+    return { word: DICTIONARY[idx], sequence: idx};
   }
-
-  const today = new Date();
-  today.setDate(today.getDate() + 1);
 
   // function to restrict the index to a 24-hour time frame. (incrementing)
-  const periodicWord = getWordOfTheDay(today);
+  const periodicWord = getWordOfTheDay(baseDate, tomorrow);
 
   // function to randomize
   const randomWord = (): Solution => {
@@ -65,8 +62,8 @@ const handler: Handler = async (event, context) => {
         cache: `${hash}`,
         dates: [
           baseDate,
-          todaysDate,
-          getDateDifference(baseDate, todaysDate),
+          today,
+          dateDifference(baseDate, today),
         ]
       };
     } else if (rawQuery.includes('rando=true')) {
@@ -77,8 +74,8 @@ const handler: Handler = async (event, context) => {
         cache: `${hash}`,
         dates: [
           baseDate,
-          todaysDate,
-          getDateDifference(baseDate, todaysDate),
+          today,
+          dateDifference(baseDate, today),
         ]
       };
     } else {
@@ -89,8 +86,8 @@ const handler: Handler = async (event, context) => {
         cache: `${hash}`,
         dates: [
           baseDate,
-          todaysDate,
-          getDateDifference(baseDate, todaysDate),
+          today,
+          dateDifference(baseDate, today),
         ]
       };
     }

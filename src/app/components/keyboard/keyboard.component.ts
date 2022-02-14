@@ -1,5 +1,7 @@
 import { Component, OnInit, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { GameState, CombinedLetter } from 'src/app/models/game';
 import { AlphaDict, GuessAction, GuessClass } from 'src/app/models/guess';
+import { StorageService } from 'src/app/services/storage.service';
 
 @Component({
   selector: 'app-keyboard',
@@ -15,7 +17,9 @@ export class KeyboardComponent implements OnInit, OnChanges {
   keys: string[][];
   playedAlphabetKey: AlphaDict = {};
 
-  constructor() {
+  constructor(
+    private storageService: StorageService,
+  ) {
     this.keys = [
       ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
       ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
@@ -24,6 +28,12 @@ export class KeyboardComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
+    if (this.storageService.get('gameState') === GameState.RESTORED) {
+      const combinedBoard = JSON.parse(this.storageService.get('combinedBoard'));
+      if (combinedBoard) {
+        this.updateKeyboard(combinedBoard);
+      }
+    }
   }
 
   onLetter(letter: any): void {
@@ -52,6 +62,28 @@ export class KeyboardComponent implements OnInit, OnChanges {
     }, 500);
   }
 
+  // updates playedAlphabetKey
+  updateKeyboard(combinedBoard: CombinedLetter[][]): void {
+    combinedBoard.map((boardRow: any, idx: number) => {
+      if (((idx == this.prevRound - 1) || (this.prevRound === 0)) && boardRow.some((x: any) => x.class !== 'default')) { //boardRow[4].letter !== '' &&
+        boardRow.map((letterObj: any, jdx: number) => {
+          if (this.playedAlphabetKey[letterObj.letter]?.class === GuessClass.MATCH) {
+            return;
+          } else if (letterObj.class === GuessClass.MISMATCH &&
+            this.playedAlphabetKey[letterObj.letter]?.class === GuessClass.USED) {
+            this.playedAlphabetKey[letterObj.letter] = { class: letterObj.class, idx: [] };
+          } else if (letterObj.class === GuessClass.MISMATCH &&
+            this.playedAlphabetKey[letterObj.letter]?.class === GuessClass.MATCH) {
+            this.playedAlphabetKey[letterObj.letter] = { class: letterObj.class, idx: [] };
+          } else {
+            this.playedAlphabetKey[letterObj.letter] = { class: letterObj.class, idx: [] };
+          }
+        });
+      }
+
+    });
+  }
+
   /**
    * TODO: OPTIMIZE!! (HEAVY, gets called often)
    * on changes
@@ -62,24 +94,7 @@ export class KeyboardComponent implements OnInit, OnChanges {
     if (changes['heavyBoard'].firstChange === true) {
       return;
     }
-    changes['heavyBoard'].currentValue.map((boardRow: any, idx: number) => {
-      if (((idx == this.prevRound - 1) || (this.prevRound === 0)) && boardRow.some((x: any) => x.class !== 'default')) { //boardRow[4].letter !== '' &&
-        boardRow.map((letterObj: any, jdx: number) => {
-          if (this.playedAlphabetKey[letterObj.letter]?.class === GuessClass.MATCH) {
-            return;
-          } else if (letterObj.class === GuessClass.MISMATCH &&
-                      this.playedAlphabetKey[letterObj.letter]?.class === GuessClass.USED) {
-            this.playedAlphabetKey[letterObj.letter] = {class: letterObj.class, idx: []};
-          } else if (letterObj.class === GuessClass.MISMATCH &&
-              this.playedAlphabetKey[letterObj.letter]?.class === GuessClass.MATCH) {
-            this.playedAlphabetKey[letterObj.letter] = {class: letterObj.class, idx: []};
-          } else {
-            this.playedAlphabetKey[letterObj.letter] = {class: letterObj.class, idx: []};
-          }
-        });
-      }
-
-    });
+    this.updateKeyboard(changes['heavyBoard'].currentValue);
   }
 
 }

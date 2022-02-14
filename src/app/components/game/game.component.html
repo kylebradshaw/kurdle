@@ -4,10 +4,7 @@
     <!-- <button class="bare" (click)="reloadGame(true)">&#x267B;</button> -->
     <!-- <button title="Reset Game" class="bare" (click)="reloadGame(false)">&#8634;</button> -->
     <div class="bare">&nbsp;
-      <span *ngIf="rando" (click)="reloadGame(true)">
-        <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"><path d="M21.67 3.955l-2.825-2.202.665-.753 4.478 3.497-4.474 3.503-.665-.753 2.942-2.292h-4.162c-3.547.043-5.202 3.405-6.913 7.023 1.711 3.617 3.366 6.979 6.913 7.022h4.099l-2.883-2.247.665-.753 4.478 3.497-4.474 3.503-.665-.753 2.884-2.247h-4.11c-3.896-.048-5.784-3.369-7.461-6.858-1.687 3.51-3.592 6.842-7.539 6.858h-2.623v-1h2.621c3.6-.014 5.268-3.387 6.988-7.022-1.72-3.636-3.388-7.009-6.988-7.023h-2.621v-1h2.623c3.947.016 5.852 3.348 7.539 6.858 1.677-3.489 3.565-6.81 7.461-6.858h4.047z"/></svg>
-      </span>
-      <span *ngIf="!rando" (click)="reloadGame(false)">
+      <span (click)="reloadGame(false)">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M13.5 2c-5.621 0-10.211 4.443-10.475 10h-3.025l5 6.625 5-6.625h-2.975c.257-3.351 3.06-6 6.475-6 3.584 0 6.5 2.916 6.5 6.5s-2.916 6.5-6.5 6.5c-1.863 0-3.542-.793-4.728-2.053l-2.427 3.216c1.877 1.754 4.389 2.837 7.155 2.837 5.79 0 10.5-4.71 10.5-10.5s-4.71-10.5-10.5-10.5z"/></svg>
       </span>
     </div>
@@ -27,7 +24,10 @@
     </div>
   </header>
   <div class="flash d-flex align-items-center" [class]="notice.type">
-    <span class="kurdle-code" *ngIf="rando && !notice.type">{{indexCode}}</span>
+    <span class="kurdle-code d-flex justify-content-center align-items-center" *ngIf="rando && !notice.type">
+      {{indexCode}}
+      <svg style="transform: scale(0.7)" width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"><path d="M21.67 3.955l-2.825-2.202.665-.753 4.478 3.497-4.474 3.503-.665-.753 2.942-2.292h-4.162c-3.547.043-5.202 3.405-6.913 7.023 1.711 3.617 3.366 6.979 6.913 7.022h4.099l-2.883-2.247.665-.753 4.478 3.497-4.474 3.503-.665-.753 2.884-2.247h-4.11c-3.896-.048-5.784-3.369-7.461-6.858-1.687 3.51-3.592 6.842-7.539 6.858h-2.623v-1h2.621c3.6-.014 5.268-3.387 6.988-7.022-1.72-3.636-3.388-7.009-6.988-7.023h-2.621v-1h2.623c3.947.016 5.852 3.348 7.539 6.858 1.677-3.489 3.565-6.81 7.461-6.858h4.047z"/></svg>
+    </span>
     <span [innerHTML]="notice.message"></span>
     <span *ngIf="notice.again">&nbsp;<button (click)="reloadGame(true)">Play again?</button></span>
     <button
@@ -50,7 +50,9 @@
       <div class="d-flex" *ngFor="let r of board; let rIdx=index">
       <div class="d-flex" *ngFor="let c of r; let cIdx=index">
         <app-letter-block
-          (click)="carryForward(c, classBoard[rIdx][cIdx], [rIdx, cIdx])"
+          (click)="
+            rIdx <= prevRound &&
+            carryForward(c, classBoard[rIdx][cIdx], [rIdx, cIdx])"
           [char]="c || ghostBoard[rIdx][cIdx]"
           [letterClass]="'char--' + classBoard[rIdx][cIdx]"
           [active]="rIdx === currPos[0] && cIdx === currPos[1]"

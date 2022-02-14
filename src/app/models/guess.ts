@@ -21,3 +21,12 @@ export interface AlphaDict {
 }
 
 export type Letter = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V' | 'W' | 'X' | 'Y' | 'Z';
+
+export type GuessFinal = {
+  "1": number,
+  "2": number,
+  "3": number,
+  "4": number,
+  "5": number,
+  "6": number
+};

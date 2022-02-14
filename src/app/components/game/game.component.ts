@@ -9,6 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ThemeService } from '@bcodes/ngx-theme-service';
 import { StorageService } from 'src/app/services/storage.service';
 import { NgNavigatorShareService } from 'ng-navigator-share';
+import { StatsService } from 'src/app/services/stats.service';
 
 @Component({
   selector: 'app-game',
@@ -46,6 +47,7 @@ export class GameComponent implements OnInit {
     private storageService: StorageService,
     private meta: Meta,
     ngNavigatorShareService: NgNavigatorShareService,
+    private statsService: StatsService
   ) {
     this.activatedRoute.queryParams.subscribe(params => {
       if (params[`debug`] !== undefined) {
@@ -64,6 +66,31 @@ export class GameComponent implements OnInit {
   ngOnInit(): void {
     this.initTheme();
     this.setupGame();
+  }
+
+  @HostListener('window:keyup', ['$event'])
+  keyEvent($event: KeyboardEvent): void {
+    if ($event.code === 'Backquote' && $event.shiftKey === true) {
+      this.setupGame();
+    } else if ($event.code === 'Backspace') {
+      this.removeLastSequenceLetter(this.play);
+    } else if ($event.code === 'Enter') {
+      this.submitRound(this.prevRound, this.play, this.prevRound === 5);
+    } else if ($event.code.startsWith('Key')) {
+      this.buffer += $event.key.toLowerCase();
+      this.play += $event.key.toLowerCase(); // no numbers, no spaces
+      this.refreshLetters(this.play);
+    }
+    this.buffer = this.bufferListener(this.buffer);
+  }
+
+  bufferListener(buffer: string): string {
+    if (buffer === 'josie') {
+      this.debugMode = true;
+    } else if (buffer === 'evieb') {
+      this.debugMode = false;
+    }
+    return this.buffer.slice(-5);
   }
 
   /**
@@ -109,6 +136,8 @@ export class GameComponent implements OnInit {
     const l = window.location;
     if (mode && !l.href.includes('rando')) {
       l.href = l.href.includes(`?`) ? `${l.href}/${l.search}&rando=true` : `${l.href}?rando=true`;
+    } else if (mode && l.href.includes('rando')) {
+      window.location.reload();
     } else {
       window.location.href = window.origin;
     }
@@ -153,11 +182,12 @@ export class GameComponent implements OnInit {
       this.currentWord = response.word;
       this.sequenceIdx = response.sequence;
       // this.currentWord = btoa('gonad');
-      // this.currentWord = btoa('rebut');
-      // this.currentWord = btoa('mammy');
-      // this.currentWord = btoa('pleat');
-      // this.currentWord = btoa('blurt');
-      // this.currentWord = btoa('trend');
+      // this.currentWord = btoa('rebut'); // 'retry'
+      // this.currentWord = btoa('mammy'); // 'mommy'
+      // this.currentWord = btoa('pleat'); // 'plate
+      // this.currentWord = btoa('blurt'); // 'bully'
+      // this.currentWord = btoa('trend'); // 'terse'
+      // this.currentWord = btoa('swift'); // 'stiff'
       this.decodedWord = this.wordService.decode(this.currentWord);
       this.alphabetKey = this.wordService.getAlphabetKey(this.decodedWord);
       if (this.rando) {
@@ -165,31 +195,20 @@ export class GameComponent implements OnInit {
       }
     });
 
-    this.board = this.emptyBoard();
-    this.classBoard = this.setupClassBoard(GuessClass.DEFAULT);
-    this.ghostBoard = this.emptyBoard();
+    this.board = this.emptyBoard('');
+    this.classBoard = this.emptyBoard(GuessClass.DEFAULT);
+    this.ghostBoard = this.emptyBoard('');
   }
 
-  emptyBoard(): string[][] {
+  emptyBoard(fill: string | GuessClass): any[][] {
     return [
-      ['', '', '', '', ''],
-      ['', '', '', '', ''],
-      ['', '', '', '', ''],
-      ['', '', '', '', ''],
-      ['', '', '', '', ''],
-      ['', '', '', '', '']
+      [fill, fill, fill, fill, fill],
+      [fill, fill, fill, fill, fill],
+      [fill, fill, fill, fill, fill],
+      [fill, fill, fill, fill, fill],
+      [fill, fill, fill, fill, fill],
+      [fill, fill, fill, fill, fill]
     ];
-  }
-
-  setupClassBoard(guessClass: GuessClass = GuessClass.DEFAULT): GuessClass[][] {
-    return [
-      [guessClass, guessClass, guessClass, guessClass, guessClass],
-      [guessClass, guessClass, guessClass, guessClass, guessClass],
-      [guessClass, guessClass, guessClass, guessClass, guessClass],
-      [guessClass, guessClass, guessClass, guessClass, guessClass],
-      [guessClass, guessClass, guessClass, guessClass, guessClass],
-      [guessClass, guessClass, guessClass, guessClass, guessClass]
-    ]
   }
 
   switchTheme(previousTheme: string, flip = false): void {
@@ -198,31 +217,6 @@ export class GameComponent implements OnInit {
     this.meta.updateTag({ content: (nextTheme === 'light') ? '#ffffff' : '#0a0a0a' }, 'name=theme-color');
     this.storageService.set('theme', nextTheme);
     this.currentTheme = nextTheme;
-  }
-
-  @HostListener('window:keyup', ['$event'])
-  keyEvent($event: KeyboardEvent): void {
-    if ($event.code === 'Backquote' && $event.shiftKey === true) {
-      this.setupGame();
-    } else if ($event.code === 'Backspace') {
-      this.removeLastSequenceLetter(this.play);
-    } else if ($event.code === 'Enter') {
-      this.submitRound(this.prevRound, this.play, this.prevRound === 5);
-    } else if ($event.code.startsWith('Key')) {
-      this.buffer += $event.key.toLowerCase();
-      this.play +=  $event.key.toLowerCase(); // no numbers, no spaces
-      this.refreshLetters(this.play);
-    }
-    this.buffer = this.bufferListener(this.buffer);
-  }
-
-  bufferListener(buffer: string): string {
-    if (buffer === 'josie') {
-      this.debugMode = true;
-    } else if (buffer === 'evieb') {
-      this.debugMode = false;
-    }
-    return this.buffer.slice(-5);
   }
 
   removeLastSequenceLetter(play: string): void {
@@ -284,15 +278,15 @@ export class GameComponent implements OnInit {
       //   return this.play.split('')[idx];
       // }
     });
-    this.saveBoard(this.board, null);
+    this.saveBoard('board', this.board);
   }
 
-  saveBoard(board: string[][] | null, classBoard: string[][] | null): void {
-    if (board) {
-      this.storageService.set('board', JSON.stringify(board));
-    }
-    if (classBoard) {
-      this.storageService.set('classBoard', JSON.stringify(classBoard));
+  saveBoard(type: string = 'board', targetBoard: string[][]): void {
+    if (type === 'board') {
+      this.storageService.set('board', JSON.stringify(targetBoard));
+      this.storageService.set('combinedBoard', JSON.stringify(this.combinedBoard));
+    } else if (type === 'class') {
+      this.storageService.set('classBoard', JSON.stringify(targetBoard));
     }
   }
 
@@ -319,7 +313,7 @@ export class GameComponent implements OnInit {
     if (this.wordService.inDict(sequence)) {
       const classBoardRow = this.matchedLetters(sequence, this.decodedWord, this.alphabetKey);
       this.classBoard[prevRound] = classBoardRow;
-      this.saveBoard(null, this.classBoard);
+      this.saveBoard('class', this.classBoard);
       setTimeout(() => {
         if (classBoardRow.every(letter => letter === 'match')) {
           this.toggleNotice('You won!', 'good', true, 36e6);
@@ -355,28 +349,27 @@ export class GameComponent implements OnInit {
     const repeatedDecoded = this.wordService.repeatedCharacters(decodedWord);
 
     return [...sequence].map((letter, i) => {
-      // letter in sequence at proper solution[idx]
-      if (alphabetKey[letter] && alphabetKey[letter].idx.includes(i)) {
+      const soln = decodedWord;
+      if (soln[i] === letter) {
+        // letter in sequence at proper slot
         return GuessClass.MATCH;
       } else if (alphabetKey[letter].idx.length === 0) {
+        // the letter in sequence is not in solution
         return GuessClass.USED;
-      } else { // misfires can happen here
-        // if the letter is in the repeatedSequence array and it makes it this far and it's
-        // _NOT_ in the _LAST_ found index of the solution (still more to match against), set it as used_ NOT MISMATCH
-        if (repeatedSequence.includes(letter) && sequence.lastIndexOf(letter) !== i) {
-          return GuessClass.USED;
-        } else {
-          // if the repeated letter in the guess is the _last_ opportunity to match a the letter in the solution, set mismatch
-          if (repeatedSequence.includes(letter) && sequence.lastIndexOf(letter) === i) {
+      } else {
+        // the letter is in sequence but does not match
+        if (repeatedSequence.includes(letter)) {
+          // the guess is repeated
+          if (sequence.lastIndexOf(letter) !== i) {
+            // the guess is the first instance letter of a repeated sequence
             return GuessClass.MISMATCH;
-          }
-          // if there is a repeated letter in the guess but there is not repeated letter in the solution
-           else if (repeatedSequence.includes(letter) && !repeatedDecoded.includes(letter)) {
-            return GuessClass.USED;
           } else {
-            return GuessClass.MISMATCH;
+            // the guess is the last instance letter of a repeated sequence and the previous guess was a (mis)match
+            return GuessClass.USED;
           }
         }
+        // the letter is at the improper index
+        return GuessClass.MISMATCH;
       }
     });
   }
@@ -438,14 +431,22 @@ export class GameComponent implements OnInit {
    * if a MATCH is applied to the board, apply that letter + index to the current round
    */
   carryForward(char: string, letterClass: GuessClass, pos: GamePosition): void {
-    if (letterClass === GuessClass.GHOST) {
+    this.ghostBoard[this.prevRound][pos[1]] = char;
+    if (letterClass === GuessClass.GHOST || char === '') {
       this.classBoard[this.prevRound][pos[1]] = GuessClass.DEFAULT; //letterClass;
     } else {
       this.classBoard[this.prevRound][pos[1]] = GuessClass.GHOST; //letterClass;
     }
 
-    this.ghostBoard[this.prevRound][pos[1]] = char;
   }
+
+  /**
+   * Generates final GameStats record and consolidates with existing stats
+   * sets GameState
+   * sets user expectation
+   */
+  conclude(): void {
+  };
 
   get svgFill(): string {
     const themeColor = this.storageService.get('theme');
