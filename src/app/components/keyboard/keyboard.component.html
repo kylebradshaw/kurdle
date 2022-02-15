@@ -2,9 +2,11 @@
   <div class="keyboard__row d-flex align-items-start justify-content-center"
     *ngFor="let t of keys"
     >
-    <button class="keyboard__key char"
-      [class]="'char--' + playedAlphabetKey[k]?.class"
+    <button
       *ngFor="let k of t"
+      [disabled]="sequence.length !== 5 && k === '⏎'"
+      class="keyboard__key char"
+      [class]="'char--' + playedAlphabetKey[k]?.class"
       (click)="onLetter(k)"
       [innerText]="k || '&nbsp;'"
       >

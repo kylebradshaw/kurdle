@@ -27,6 +27,12 @@
         background-color: theme-var($--theme-primary);
         border: 1px solid transparent;
         flex-grow: 1;
+        &[disabled] {
+          cursor: not-allowed;
+          color: theme-var($--theme-on-block);
+          background-color: theme-var($--theme-primary-disabled);
+          border: 1px solid transparent;
+        }
       }
       > button:last-of-type {
         color: theme-var($--theme-on-block);
@@ -50,6 +56,7 @@
     user-select: none;
 
     &.char {
+      transition: background-color 0.5s ease-in-out;
       border: 1px solid theme-var($--theme-on-default);
       color: theme-var($--theme-on-default);
       padding: 0.6rem;
