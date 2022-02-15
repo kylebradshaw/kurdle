@@ -16,6 +16,7 @@ export class KeyboardComponent implements OnInit, OnChanges {
   @Output() onClick = new EventEmitter<string>();
   keys: string[][];
   playedAlphabetKey: AlphaDict = {};
+  guessAction = GuessAction;
 
   constructor(
     private storageService: StorageService,

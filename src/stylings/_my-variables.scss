@@ -16,6 +16,7 @@ $--theme-default: --theme-default;
 $--theme-on-default: --theme-on-default;
 $--theme-good: --theme-good;
 $--theme-bad: --theme-bad;
+$--theme-bad-disabled: --theme-bad-disabled;
 $--theme-warn: --theme-warn;
 $--theme-neutral: --theme-neutral;
 $--theme-on-block: --theme-on-block;
@@ -40,6 +41,7 @@ $theme-map-light: (
   $--theme-on-default: #383735,
   $--theme-good: #08b306,
   $--theme-bad: #cd1e1eee,
+  $--theme-bad-disabled: #6a0404ee,
   $--theme-warn: #f7c910,
   $--theme-neutral: #999,
   $--theme-on-block: #fff,
@@ -65,6 +67,7 @@ $theme-map-dark: (
   $--theme-on-default: #fafafa,
   $--theme-good: #08b306,
   $--theme-bad: #cd1e1eee,
+  $--theme-bad-disabled: #6a0404ee,
   $--theme-warn: #f7c910,
   $--theme-neutral: #999,
   $--theme-on-block: #fff,

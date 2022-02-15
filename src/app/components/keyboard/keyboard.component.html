@@ -4,7 +4,10 @@
     >
     <button
       *ngFor="let k of t"
-      [disabled]="sequence.length !== 5 && k === '⏎'"
+      [disabled]="
+        (sequence.length !== 5 && k === guessAction.ENTER) ||
+        (sequence.length === 0 && k === guessAction.DEL)
+      "
       class="keyboard__key char"
       [class]="'char--' + playedAlphabetKey[k]?.class"
       (click)="onLetter(k)"
