@@ -65,13 +65,13 @@ export class GameComponent implements OnInit {
 
   ngOnInit(): void {
     this.initTheme();
-    this.setupGame();
+    this.initGame();
   }
 
   @HostListener('window:keyup', ['$event'])
   keyEvent($event: KeyboardEvent): void {
     if ($event.code === 'Backquote' && $event.shiftKey === true) {
-      this.setupGame();
+      this.initGame();
     } else if ($event.code === 'Backspace') {
       this.removeLastSequenceLetter(this.play);
     } else if ($event.code === 'Enter') {
@@ -129,7 +129,7 @@ export class GameComponent implements OnInit {
 
   /**
    * Reloads game
-   * Gross but a mouse click that fires setupGame() has downstream issues ¯\_(ツ)_/¯
+   * Gross but a mouse click that fires initGame() has downstream issues ¯\_(ツ)_/¯
    */
   reloadGame(mode: boolean): void {
     this.storageService.clear(true);
@@ -148,7 +148,7 @@ export class GameComponent implements OnInit {
    * Sets Up Game / Resets
    * only works properly when toggled from desktop (shift + ~), not mouse click ¯\_(ツ)_/¯
    */
-  setupGame(): void {
+  initGame(): void {
     this.endState = false;
     this.prevRound = 0;
     this.play = '';
@@ -188,6 +188,7 @@ export class GameComponent implements OnInit {
       // this.currentWord = btoa('blurt'); // 'bully'
       // this.currentWord = btoa('trend'); // 'terse'
       // this.currentWord = btoa('swift'); // 'stiff'
+      this.currentWord = btoa('prize'); // 'piece'
       this.decodedWord = this.wordService.decode(this.currentWord);
       this.alphabetKey = this.wordService.getAlphabetKey(this.decodedWord);
       if (this.rando) {
@@ -361,8 +362,15 @@ export class GameComponent implements OnInit {
         if (repeatedSequence.includes(letter)) {
           // the guess is repeated
           if (sequence.lastIndexOf(letter) !== i) {
-            // the guess is the first instance letter of a repeated sequence
-            return GuessClass.MISMATCH;
+            if (!repeatedDecoded.includes(letter)) {
+              // the guess is the first instance of a guessRepeated, _but_ repeatedDecoded is not in the mix,
+              // so the first instance must be USED
+              return GuessClass.USED;
+            } else {
+              // the guess is the first instance letter of a repeated sequence _and_
+              // the repeatedDecoded also has a dupe just not at this index
+              return GuessClass.MISMATCH;
+            }
           } else {
             // the guess is the last instance letter of a repeated sequence and the previous guess was a (mis)match
             return GuessClass.USED;
