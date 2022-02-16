@@ -53,7 +53,7 @@ const handler: Handler = async (event, context) => {
         word: DICTIONARY[sequenceIdx],
         sequence: `${sequenceIdx}`,
         action: 'random',
-        cache: `${hash}`,
+        cache: hash,
         dates: [
           baseDate,
           now,
@@ -65,7 +65,7 @@ const handler: Handler = async (event, context) => {
         word: chooseRandom.word,
         sequence: chooseRandom.sequence,
         action: 'random',
-        cache: `${hash}`,
+        cache: hash,
         dates: [
           baseDate,
           now,
@@ -77,7 +77,7 @@ const handler: Handler = async (event, context) => {
         word: periodicWord.word,
         sequence: periodicWord.sequence,
         action: 'periodic',
-        cache: `${hash}`,
+        cache: hash,
         dates: [
           baseDate,
           now,
