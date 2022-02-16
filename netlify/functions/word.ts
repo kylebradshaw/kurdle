@@ -59,7 +59,7 @@ const handler: Handler = async (event, context) => {
           now,
           tomorrow,
         ],
-        process: process.env
+        // process: process.env
       };
     } else if (rawQuery.includes('rando=true')) {
       return {
@@ -72,7 +72,7 @@ const handler: Handler = async (event, context) => {
           now,
           tomorrow,
         ],
-        process: process.env
+        // process: process.env
       };
     } else {
       return {
@@ -85,7 +85,7 @@ const handler: Handler = async (event, context) => {
           now,
           tomorrow,
         ],
-        process: process.env
+        // process: process.env
       };
     }
   }
