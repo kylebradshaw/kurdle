@@ -11,3 +11,4 @@ a wordle inspired pwa powered by Angular 13.
 - [Reverse Engineering Wordle](https://reichel.dev/blog/reverse-engineering-wordle.html)
 - [UNICODE](https://unicode-table.com/en/21BA/)
 - [Share Button](https://web.dev/web-share/)
+- [iconography](https://iconmonstr.com)
