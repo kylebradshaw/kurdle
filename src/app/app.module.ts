@@ -9,6 +9,7 @@ import { WordService } from './services/word.service';
 import { LetterBlockComponent } from './components/letter-block/letter-block.component';
 import { KeyboardComponent } from './components/keyboard/keyboard.component';
 import { StorageService } from './services/storage.service';
+import { CountdownComponent } from './components/countdown/countdown.component';
 
 const themeServiceConfig: ThemeServiceConfig = {
   themes: ['light', 'dark'],
@@ -24,7 +25,8 @@ const themeServiceConfig: ThemeServiceConfig = {
     AppComponent,
     GameComponent,
     LetterBlockComponent,
-    KeyboardComponent
+    KeyboardComponent,
+    CountdownComponent
   ],
   imports: [
     BrowserModule,
