@@ -58,7 +58,8 @@ const handler: Handler = async (event, context) => {
           baseDate,
           now,
           tomorrow,
-        ]
+        ],
+        process: process.env
       };
     } else if (rawQuery.includes('rando=true')) {
       return {
@@ -70,7 +71,8 @@ const handler: Handler = async (event, context) => {
           baseDate,
           now,
           tomorrow,
-        ]
+        ],
+        process: process.env
       };
     } else {
       return {
@@ -82,7 +84,8 @@ const handler: Handler = async (event, context) => {
           baseDate,
           now,
           tomorrow,
-        ]
+        ],
+        process: process.env
       };
     }
   }
