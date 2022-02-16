@@ -1,4 +1,9 @@
-import * as base64 from 'base-64';
+// import * as base64 from 'base-64';
+import {
+  differenceInDays,
+  addDays,
+  startOfDay
+} from 'date-fns'
 import { DICTIONARY } from './dict';
 import { Handler,  } from '@netlify/functions';
 import { Random } from "random-js";
@@ -15,32 +20,21 @@ interface Solution {
 const handler: Handler = async (event, context) => {
 
   // PERIODIC WORD
-  const baseDate = new Date(2022, 1, 4, 0, 0, 0, 0);
-  const today = new Date();
-  const tomorrow = today.setDate(today.getDate() + 1);
+  const baseDate = startOfDay(new Date(2022, 1, 3, 0, 0)); // 2022-02-03
+  const now = new Date();
+  const tomorrow = startOfDay(addDays(now, 1));
 
-  const dateDifference = (then: any, now: any) => {
-    const diff = new Date(now).setHours(0, 0, 0, 0) - new Date(then).setHours(0, 0, 0, 0);
-    return Math.floor(diff / 864e5)
-  }
+  const getWordOfTheDay = (baseDate: any, targetDate: any = tomorrow) => {
+    const idx = differenceInDays(targetDate, baseDate);
+    return { word: DICTIONARY[idx], sequence: idx };
+  };
 
-  // const callGetDateDifference = (today: any) =>{
-  //   const dateDiff = getDateDifference(baseDate, today);
-  //   return dateDiff;
-  // }
-
-  const getWordOfTheDay = (baseDate: any, targetDay: any = tomorrow) => {
-    const idx = dateDifference(baseDate, targetDay);
-    return { word: DICTIONARY[idx], sequence: idx};
-  }
-
-  // function to restrict the index to a 24-hour time frame. (incrementing)
   const periodicWord = getWordOfTheDay(baseDate, tomorrow);
 
   // function to randomize
   const randomWord = (): Solution => {
     const idx = new Random().integer(0, DICTIONARY.length);
-    return {word: DICTIONARY[idx], sequence: idx};
+    return { word: DICTIONARY[idx], sequence: idx };
   }
 
   const rawQuery = event.rawQuery;
@@ -62,8 +56,8 @@ const handler: Handler = async (event, context) => {
         cache: `${hash}`,
         dates: [
           baseDate,
-          today,
-          dateDifference(baseDate, today),
+          now,
+          tomorrow,
         ]
       };
     } else if (rawQuery.includes('rando=true')) {
@@ -74,8 +68,8 @@ const handler: Handler = async (event, context) => {
         cache: `${hash}`,
         dates: [
           baseDate,
-          today,
-          dateDifference(baseDate, today),
+          now,
+          tomorrow,
         ]
       };
     } else {
@@ -86,8 +80,8 @@ const handler: Handler = async (event, context) => {
         cache: `${hash}`,
         dates: [
           baseDate,
-          today,
-          dateDifference(baseDate, today),
+          now,
+          tomorrow,
         ]
       };
     }
