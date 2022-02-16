@@ -10,6 +10,7 @@ import { ThemeService } from '@bcodes/ngx-theme-service';
 import { StorageService } from 'src/app/services/storage.service';
 import { NgNavigatorShareService } from 'ng-navigator-share';
 import { StatsService } from 'src/app/services/stats.service';
+import { nextRoundTime } from 'src/app/helpers';
 
 @Component({
   selector: 'app-game',
@@ -36,6 +37,7 @@ export class GameComponent implements OnInit {
   currPos: number[] = [0, 0];
   nextPos: number[] = [0, 0];
   indexCode: string = '';
+  nextSequence: any;
   public ngNavigatorShareService: NgNavigatorShareService;
   private _play: string = '';
   private _soln: boolean = false;
@@ -178,7 +180,10 @@ export class GameComponent implements OnInit {
       if (Number(this.storageService.get('sequenceIdx')) !== response.sequence) {
         this.storageService.set('sequenceIdx', `${response.sequence}`);
       }
-
+      if (response.dates[2] !== undefined) {
+        this.nextSequence = response.dates[2] as Date;
+        this.storageService.set('nextSequence', `${this.nextSequence}`);
+      }
       this.currentWord = response.word;
       this.sequenceIdx = response.sequence;
       // this.currentWord = btoa('gonad');

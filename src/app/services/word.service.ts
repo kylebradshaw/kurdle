@@ -11,7 +11,7 @@ export interface FuncWord {
   sequence: number;
   action: string;
   cache: string;
-  dates: string[];
+  dates: Date[];
 }
 @Injectable({
   providedIn: 'root'

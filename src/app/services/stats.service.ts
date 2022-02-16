@@ -1,9 +1,17 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
+import { StorageService } from 'src/app/services/storage.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class StatsService {
+export class StatsService implements OnInit {
+  constructor(
+    private storageService: StorageService
+  ) { }
 
-  constructor() { }
+  ngOnInit(): void {
+    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+    //Add 'implements OnInit' to the class.
+    console.log(`stats.service.ts: ngOnInit()`);
+  }
 }

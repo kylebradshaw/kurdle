@@ -22,3 +22,9 @@ export interface CombinedLetter {
   letter: string;
   class: GuessClass;
 }
+
+export interface GameTime {
+  seconds: number;
+  minutes: number;
+  hours: number;
+}
