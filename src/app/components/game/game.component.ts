@@ -27,7 +27,7 @@ export class GameComponent implements OnInit {
   decodedWord = "";
   alphabetKey: AlphaDict = {};
   debugMode: boolean = false;
-  notice: Notice = {message: '', type: '', again: false};
+  notice: Notice = { message: '', type: '', again: false };
   currentTheme = '';
   endState = false;
   buffer = '';
@@ -104,7 +104,7 @@ export class GameComponent implements OnInit {
    * picks up native theme preference if available on first visit
    * otherwise we set our own
    */
-  initTheme(): void  {
+  initTheme(): void {
     const theme = this.storageService.get('theme');
     if (theme !== null) {
       this.currentTheme = theme;
@@ -162,11 +162,6 @@ export class GameComponent implements OnInit {
     this.wordService.seedWordFromFunc(this.rando, this.sequenceIdx).subscribe((response: FuncWord) => {
       if (this.storageService.get('board') && this.storageService.get('classBoard')) {
         this.loadGameState();
-      }
-      if (this.storageService.get('cache') !== response.cache || response.cache === 'undefined') {
-        this.storageService.set('cache', response.cache + new Date().getTime());
-        // NEW BUILD, CACHE BUST!
-        this.reloadGame(false);
       }
       if (this.storageService.get('word') !== response.word) {
         this.storageService.set('word', response.word);
@@ -253,7 +248,7 @@ export class GameComponent implements OnInit {
     }
     // leading GuessAction.ENTER, submit if populated but round hasn't ended
     if (sequence.startsWith(GuessAction.ENTER) && //check if the row is filled
-      this.board[this.prevRound].every(letter => !letter) ) {
+      this.board[this.prevRound].every(letter => !letter)) {
       return;
     } else if (sequence.startsWith(GuessAction.ENTER)) {
       this._play = this.board[this.prevRound].map(letter => letter).join('');
@@ -399,13 +394,13 @@ export class GameComponent implements OnInit {
   }
 
   toggleNotice(message: string, type: string, again = false, timeOut = 8000): void {
-    this.notice = {message, type, again};
+    this.notice = { message, type, again };
     this.clearNotice(timeOut);
   }
 
   clearNotice(timeout = 1500): void {
     setTimeout(() => {
-      this.notice = {message: '', type: '', again: false};
+      this.notice = { message: '', type: '', again: false };
     }, timeout);
   }
 
@@ -427,7 +422,7 @@ export class GameComponent implements OnInit {
     const numerator = (this.soln) ? this.prevRound : `X`;
     return {
       title: ``,
-        text: `KURDLE ${("0000" + this.sequenceIdx).slice(-4)} ${numerator}/6\n\n` + this.boardMatrix(this.classBoard).map(r => r.join('')).join('\n'),
+      text: `KURDLE ${("0000" + this.sequenceIdx).slice(-4)} ${numerator}/6\n\n` + this.boardMatrix(this.classBoard).map(r => r.join('')).join('\n'),
     }
   }
   /**
