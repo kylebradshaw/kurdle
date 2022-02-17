@@ -26,7 +26,7 @@ const handler: Handler = async (event, context) => {
 
   let baseDateUtc = zonedTimeToUtc(baseDate, 'UTC');
   // let nowUtc = zonedTimeToUtc(now, 'UTC');
-  // let tomorrowUtc = zonedTimeToUtc(tomorrow, 'UTC');
+  let tomorrowUtc = zonedTimeToUtc(tomorrow, 'UTC');
 
   const getWordOfTheDay = (baseDate: any, targetDate: any = tomorrow) => {
     const idx = differenceInDays(targetDate, baseDate);
@@ -34,7 +34,7 @@ const handler: Handler = async (event, context) => {
     return { word: DICTIONARY[idx], sequence: idx };
   };
 
-  const periodicWord = getWordOfTheDay(baseDateUtc, tomorrow); // but we want UTC when contrasting with Tomorrows targetDate to get the idx
+  const periodicWord = getWordOfTheDay(baseDateUtc, tomorrowUtc); // but we want UTC when contrasting with Tomorrows targetDate to get the idx
 
   // function to randomize
   const randomWord = (): Solution => {
