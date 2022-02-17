@@ -72,6 +72,10 @@ export class GameComponent implements OnInit {
 
   @HostListener('window:keyup', ['$event'])
   keyEvent($event: KeyboardEvent): void {
+    if (this.storageService.get('gameState') === GameState.ENDED) {
+      this.toggleNotice('Game Over. Wait or try Random Play.', 'warn');
+      return;
+    }
     if ($event.code === 'Backquote' && $event.shiftKey === true) {
       this.initGame();
     } else if ($event.code === 'Backspace') {
@@ -241,7 +245,12 @@ export class GameComponent implements OnInit {
     }
   }
   refreshLetters(sequence: string): void {
-    this.storageService.set('gameState', GameState.PLAYING);
+    if (this.storageService.get('gameState') === GameState.ENDED) {
+      this.toggleNotice('Game Over. Wait or try Random Play.', 'warn');
+      return;
+    } else {
+      this.storageService.set('gameState', GameState.PLAYING);
+    }
     // leading GuessAction.ENTER, submit if populated but round hasn't ended
     if (sequence.startsWith(GuessAction.ENTER) && //check if the row is filled
       this.board[this.prevRound].every(letter => !letter) ) {
@@ -335,6 +344,7 @@ export class GameComponent implements OnInit {
   endGame(ended: boolean): void {
     this.storageService.set('shareText', JSON.stringify(this.shareText()));
     this.storageService.set('gameState', GameState.ENDED);
+    this.storageService.set('gameCompletedTime', new Date().toISOString());
   }
 
   /**
