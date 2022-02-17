@@ -164,7 +164,7 @@ export class GameComponent implements OnInit {
         this.loadGameState();
       }
       if (this.storageService.get('cache') !== response.cache || response.cache === 'undefined') {
-        this.storageService.set('cache', response.cache);
+        this.storageService.set('cache', response.cache + new Date().getTime());
         // NEW BUILD, CACHE BUST!
         this.reloadGame(false);
       }
