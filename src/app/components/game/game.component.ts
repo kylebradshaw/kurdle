@@ -160,16 +160,30 @@ export class GameComponent implements OnInit {
     }
 
     this.wordService.seedWordFromFunc(this.rando, this.sequenceIdx).subscribe((response: FuncWord) => {
-      if (this.storageService.get('board') && this.storageService.get('classBoard')) {
+      const board = this.storageService.get('board');
+      const classBoard = this.storageService.get('classBoard');
+      const word = this.storageService.get('word');
+      const roundIdx = this.storageService.get('roundIdx');
+      let version = this.storageService.get('version');
+      const sequenceIdx = Number(this.storageService.get('sequenceIdx'));
+
+      if (board && classBoard) {
         this.loadGameState();
       }
-      if (this.storageService.get('word') !== response.word) {
+      if (word !== response.word) {
         this.storageService.set('word', response.word);
       }
-      if (this.storageService.get('roundIdx')) {
+      if (roundIdx) {
         this.prevRound = Number(this.storageService.get('roundIdx'));
       }
-      if (Number(this.storageService.get('sequenceIdx')) !== response.sequence) {
+      if (version === undefined || version === null ) {
+        this.storageService.set('version', response.version);
+        version = this.storageService.get('version');
+      }
+      if (version !== response.version) {
+        this.reloadGame(false);
+      }
+      if (sequenceIdx !== response.sequence) {
         this.storageService.set('sequenceIdx', `${response.sequence}`);
       }
       if (response.dates[2] !== undefined) {

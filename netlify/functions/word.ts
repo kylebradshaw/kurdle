@@ -7,10 +7,11 @@ import {
 import { DICTIONARY } from './dict';
 import { Handler,  } from '@netlify/functions';
 import { Random } from "random-js";
+import * as PACKAGE from "./../../package.json";
 
 // https://flaviocopes.com/netlify-functions-env-variables/
-const { COMMIT_REF } = process.env;
-// console.log(process.env, `COMMIT_REF used to cache-bust`);
+// const { COMMIT_REF } = process.env; // not dependable
+
 
 interface Solution {
   word: string;
@@ -47,13 +48,12 @@ const handler: Handler = async (event, context) => {
    */
   const bodyText = () => {
     const sequenceIdx = Number(rawQuery.split('sequenceIdx=')[1]);
-    const hash = `${COMMIT_REF}`;
     if (sequenceIdx  > 0) {
       return {
         word: DICTIONARY[sequenceIdx],
         sequence: `${sequenceIdx}`,
         action: 'random',
-        cache: hash,
+        version: PACKAGE.version,
         dates: [
           baseDate,
           now,
@@ -66,7 +66,7 @@ const handler: Handler = async (event, context) => {
         word: chooseRandom.word,
         sequence: chooseRandom.sequence,
         action: 'random',
-        cache: hash,
+        version: PACKAGE.version,
         dates: [
           baseDate,
           now,
@@ -79,7 +79,7 @@ const handler: Handler = async (event, context) => {
         word: periodicWord.word,
         sequence: periodicWord.sequence,
         action: 'periodic',
-        cache: hash,
+        version: PACKAGE.version,
         dates: [
           baseDate,
           now,

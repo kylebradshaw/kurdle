@@ -12,10 +12,10 @@ export class StorageService {
 
   public clear(force = false) {
     if (this.isClient && force) {
-      const cache = localStorage.getItem('cache') as string;
+      const version = localStorage.getItem('version') as string;
       const theme = localStorage.getItem('theme') as string;
       localStorage.clear();
-      localStorage.setItem('cache', cache);
+      localStorage.setItem('version', version);
       localStorage.setItem('theme', theme);
     }
   }

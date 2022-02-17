@@ -10,7 +10,7 @@ export interface FuncWord {
   word: string;
   sequence: number;
   action: string;
-  cache: string;
+  version: string;
   dates: Date[];
 }
 @Injectable({
