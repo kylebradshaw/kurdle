@@ -10,7 +10,7 @@
   transform: scale(0.7);
 }
 .share-icon {
-  transform: scale(0.6) rotate(-90deg);
+  transform: scale(0.6) rotate(-90deg) translateY(-0.8rem);
 }
 .highlight-letters {
   @include transition(all 0.3s ease-in-out);
@@ -46,9 +46,10 @@ header {
         font-size: 1rem;
       }
     }
-    letter-spacing: 2vw;
     padding: 0;
     margin: 0;
+    letter-spacing: 2vw;
+    padding-left: 2vw;
   }
 }
 .flash {

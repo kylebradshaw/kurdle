@@ -35,9 +35,9 @@
     <button
       *ngIf="notice.again && ngNavigatorShareService.canShare()"
       (click)="shareGame()">Share</button>
+      <!-- *ngIf="notice.again && ngNavigatorShareService.canShare()" -->
     <svg
       class="share-icon"
-      *ngIf="notice.again && ngNavigatorShareService.canShare()"
       (click)="shareGame()"
       fill="currentColor"
       width="24"
