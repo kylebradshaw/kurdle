@@ -19,7 +19,8 @@
       <span class="clickable">About</span>
     </li>
     <li class="collapsed" [ngClass]="{'about-expanded': aboutToggled}">
-      <span>Built by <a href="https://twitter.com/ky" target="_blank">@ky</a></span>
+      <span>Icons by <a target="_blank" rel="noreferrer noopener" href="https://iconmonstr.com">iconmonstr</a></span>
+      <span>Built by <a target="_blank" rel="noreferrer noopener" href="https://twitter.com/ky">@ky</a></span>
     </li>
     <li *ngIf="ngNavigatorShareService.canShare() && shareText"
       (click)="shareGame()"

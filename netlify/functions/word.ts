@@ -1,5 +1,7 @@
 // import * as base64 from 'base-64';
+import {zonedTimeToUtc} from 'date-fns-tz';
 import {
+  parse,
   differenceInDays,
   addDays,
   startOfDay
@@ -21,12 +23,16 @@ const handler: Handler = async (event, context) => {
   const now = new Date();
   const tomorrow = startOfDay(addDays(now, 1));
 
-  const getWordOfTheDay = (baseDate: any, targetDate: any = tomorrow) => {
-    const idx = differenceInDays(targetDate, baseDate);
+  let baseDateUtc = zonedTimeToUtc(baseDate, 'UTC');
+  let nowUtc = zonedTimeToUtc(now, 'UTC');
+  let tomorrowUtc = zonedTimeToUtc(tomorrow, 'UTC');
+
+  const getWordOfTheDay = (baseDateUtc: any, targetDate: any = tomorrowUtc) => {
+    const idx = differenceInDays(targetDate, baseDateUtc);
     return { word: DICTIONARY[idx], sequence: idx };
   };
 
-  const periodicWord = getWordOfTheDay(baseDate, tomorrow);
+  const periodicWord = getWordOfTheDay(baseDateUtc, tomorrowUtc);
 
   // function to randomize
   const randomWord = (): Solution => {
@@ -51,9 +57,9 @@ const handler: Handler = async (event, context) => {
         action: 'random',
         version: PACKAGE.version,
         dates: [
-          baseDate,
-          now,
-          tomorrow,
+          baseDateUtc,
+          nowUtc,
+          tomorrowUtc,
         ],
         // process: process.env
       };
@@ -64,9 +70,9 @@ const handler: Handler = async (event, context) => {
         action: 'random',
         version: PACKAGE.version,
         dates: [
-          baseDate,
-          now,
-          tomorrow,
+          baseDateUtc,
+          nowUtc,
+          tomorrowUtc,
         ],
         // process: process.env
       };
@@ -77,9 +83,9 @@ const handler: Handler = async (event, context) => {
         action: 'periodic',
         version: PACKAGE.version,
         dates: [
-          baseDate,
-          now,
-          tomorrow,
+          baseDateUtc,
+          nowUtc,
+          tomorrowUtc,
         ],
         // process: process.env
       };

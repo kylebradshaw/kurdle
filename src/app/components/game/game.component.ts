@@ -12,6 +12,7 @@ import { NgNavigatorShareService } from 'ng-navigator-share';
 import { StatsService } from 'src/app/services/stats.service';
 import { nextRoundTime } from 'src/app/helpers';
 import { forceRefresh } from 'src/app/helpers/utils';
+import { EST_OFFSET_MS_FROM_UTC } from 'src/app/models/time';
 
 @Component({
   selector: 'app-game',
@@ -37,7 +38,7 @@ export class GameComponent implements OnInit {
   currPos: number[] = [0, 0];
   nextPos: number[] = [0, 0];
   indexCode: string = '';
-  nextSequence: any;
+  nextSequenceUtc: any;
   private _play: string = '';
   private _soln: boolean = false;
 
@@ -187,8 +188,8 @@ export class GameComponent implements OnInit {
         this.storageService.set('sequenceIdx', `${response.sequence}`);
       }
       if (response.dates[2] !== undefined) {
-        this.nextSequence = response.dates[2] as Date;
-        this.storageService.set('nextSequence', `${this.nextSequence}`);
+        this.nextSequenceUtc = response.dates[2] as Date;
+        this.storageService.set('nextSequenceUtc', `${this.nextSequenceUtc}`);
       }
       this.currentWord = response.word;
       this.sequenceIdx = response.sequence;
@@ -354,7 +355,7 @@ export class GameComponent implements OnInit {
   endGame(ended: boolean): void {
     this.storageService.set('shareText', JSON.stringify(this.shareText()));
     this.storageService.set('gameState', GameState.ENDED);
-    this.storageService.set('completed', new Date().toISOString());
+    this.storageService.set('completedUtc', new Date(new Date().getTime() - EST_OFFSET_MS_FROM_UTC).toISOString());
   }
 
   /**

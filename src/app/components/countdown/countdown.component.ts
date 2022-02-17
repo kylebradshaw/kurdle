@@ -23,7 +23,7 @@ export class CountdownComponent implements OnInit {
   ngOnInit(): void {
     this.countdown$ = interval(1000).pipe(
       tap(() => {
-        const expires = this.storageService.get('nextSequence');
+        const expires = this.storageService.get('nextSequenceUtc');
         const next = nextRoundTime(expires);
         this.seconds = next.seconds;
         this.minutes = next.minutes;

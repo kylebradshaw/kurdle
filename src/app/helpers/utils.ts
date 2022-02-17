@@ -1,8 +1,8 @@
 import { GameTime } from "src/app/models/game";
+import { EST_OFFSET_MS_FROM_UTC } from "src/app/models/time";
 
 export const nextRoundTime = (expires: string): GameTime => {
-  var offsetMin = new Date(expires).getTimezoneOffset();
-  const left = new Date(expires).getTime() - new Date().getTime() - (offsetMin * 60);
+  const left = new Date(expires).getTime() - (new Date().getTime() - EST_OFFSET_MS_FROM_UTC);
   return {
     seconds: Math.floor((left % 6e4) / 1e3),
     minutes: Math.floor((left % 36e5) / 6e4),
