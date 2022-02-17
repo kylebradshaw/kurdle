@@ -11,6 +11,7 @@ import { StorageService } from 'src/app/services/storage.service';
 import { NgNavigatorShareService } from 'ng-navigator-share';
 import { StatsService } from 'src/app/services/stats.service';
 import { nextRoundTime } from 'src/app/helpers';
+import { forceRefresh } from 'src/app/helpers/utils';
 
 @Component({
   selector: 'app-game',
@@ -131,18 +132,11 @@ export class GameComponent implements OnInit {
   /**
    * Reloads game
    * Gross but a mouse click that fires initGame() has downstream issues ¯\_(ツ)_/¯
+   * unsure if this even works tbh - need to use ServiceWorkers
    */
   reloadGame(mode: boolean): void {
     this.storageService.clear(true);
-    const l = window.location;
-    if (mode && !l.href.includes('rando')) {
-      l.href = l.href.includes(`?`) ? `${l.href}/${l.search}&rando=true` : `${l.href}?rando=true`;
-    } else if (mode && l.href.includes('rando')) {
-      window.location.reload();
-    } else {
-      window.location.href = window.origin;
-    }
-    this.updatePos();
+    forceRefresh(mode);
   }
 
   /**
@@ -165,7 +159,7 @@ export class GameComponent implements OnInit {
       if (this.storageService.get('board') && this.storageService.get('classBoard')) {
         this.loadGameState();
       }
-      if (this.storageService.get('cache') !== response.cache) {
+      if (this.storageService.get('cache') !== response.cache || response.cache === 'undefined') {
         this.storageService.set('cache', response.cache);
         // NEW BUILD, CACHE BUST!
         this.reloadGame(false);
