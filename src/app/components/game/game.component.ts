@@ -38,7 +38,6 @@ export class GameComponent implements OnInit {
   nextPos: number[] = [0, 0];
   indexCode: string = '';
   nextSequence: any;
-  public ngNavigatorShareService: NgNavigatorShareService;
   private _play: string = '';
   private _soln: boolean = false;
 
@@ -48,7 +47,7 @@ export class GameComponent implements OnInit {
     private themeService: ThemeService,
     private storageService: StorageService,
     private meta: Meta,
-    ngNavigatorShareService: NgNavigatorShareService,
+    public ngNavigatorShareService: NgNavigatorShareService,
     private statsService: StatsService
   ) {
     this.activatedRoute.queryParams.subscribe(params => {

@@ -1,0 +1,52 @@
+// [ req for media query helpers
+@import "./functions";
+@import "./my-bs-overrides";
+@import "./variables";
+@import "./mixins";
+// ]
+@import "./themes";
+/* Navigation Drawer */
+.nav-drawer {
+  z-index: 10;
+  position: fixed;
+  top: 6px;
+  left: 0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  min-width: 40vw;
+  background: theme-var($--theme-secondary);
+  color: theme-var($--theme-on-secondary);
+  box-shadow: 1px 2px 0px 2px theme-var($--theme-shadow);
+  border-top-right-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+  border-top: inset 2px theme-var($--theme-surface);
+  border-right: inset 2px theme-var($--theme-surface);
+  border-bottom: inset 2px theme-var($--theme-surface);
+
+  ul,
+  li {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  li {
+    padding: 0.5rem;
+    cursor: pointer;
+  }
+  .x {
+    text-align: right;
+    padding: 0.1rem;
+    // margin: 0.5rem;
+    svg {
+      transform: scale(0.8);
+    }
+  }
+}
+.slide-out {
+  transform: translateX(-110%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.slide-in {
+  transform: translateX(0%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
