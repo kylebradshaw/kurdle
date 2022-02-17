@@ -7,10 +7,7 @@
 @import "./themes";
 
 .random-icon {
-  transform: scale(0.7);
-}
-.share-icon {
-  transform: scale(0.6) rotate(-90deg) translateY(-0.8rem);
+  transform: scale(1);
 }
 .highlight-letters {
   @include transition(all 0.3s ease-in-out);
@@ -23,6 +20,7 @@
   // min-width: 414px;
 }
 .bare {
+  position: relative;
   background: none;
   outline: none;
   border: none;

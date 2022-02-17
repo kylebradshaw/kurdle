@@ -11,6 +11,7 @@ import { StorageService } from 'src/app/services/storage.service';
 import { NgNavigatorShareService } from 'ng-navigator-share';
 import { StatsService } from 'src/app/services/stats.service';
 import { nextRoundTime } from 'src/app/helpers';
+import { forceRefresh } from 'src/app/helpers/utils';
 
 @Component({
   selector: 'app-game',
@@ -38,7 +39,6 @@ export class GameComponent implements OnInit {
   nextPos: number[] = [0, 0];
   indexCode: string = '';
   nextSequence: any;
-  public ngNavigatorShareService: NgNavigatorShareService;
   private _play: string = '';
   private _soln: boolean = false;
 
@@ -48,7 +48,7 @@ export class GameComponent implements OnInit {
     private themeService: ThemeService,
     private storageService: StorageService,
     private meta: Meta,
-    ngNavigatorShareService: NgNavigatorShareService,
+    public ngNavigatorShareService: NgNavigatorShareService,
     private statsService: StatsService
   ) {
     this.activatedRoute.queryParams.subscribe(params => {
@@ -72,6 +72,10 @@ export class GameComponent implements OnInit {
 
   @HostListener('window:keyup', ['$event'])
   keyEvent($event: KeyboardEvent): void {
+    if (this.storageService.get('gameState') === GameState.ENDED) {
+      this.toggleNotice('Game Over. Wait or try Random Play.', 'warn');
+      return;
+    }
     if ($event.code === 'Backquote' && $event.shiftKey === true) {
       this.initGame();
     } else if ($event.code === 'Backspace') {
@@ -132,18 +136,11 @@ export class GameComponent implements OnInit {
   /**
    * Reloads game
    * Gross but a mouse click that fires initGame() has downstream issues ¯\_(ツ)_/¯
+   * unsure if this even works tbh - need to use ServiceWorkers
    */
   reloadGame(mode: boolean): void {
     this.storageService.clear(true);
-    const l = window.location;
-    if (mode && !l.href.includes('rando')) {
-      l.href = l.href.includes(`?`) ? `${l.href}/${l.search}&rando=true` : `${l.href}?rando=true`;
-    } else if (mode && l.href.includes('rando')) {
-      window.location.reload();
-    } else {
-      window.location.href = window.origin;
-    }
-    this.updatePos();
+    forceRefresh(mode);
   }
 
   /**
@@ -166,7 +163,7 @@ export class GameComponent implements OnInit {
       if (this.storageService.get('board') && this.storageService.get('classBoard')) {
         this.loadGameState();
       }
-      if (this.storageService.get('cache') !== response.cache) {
+      if (this.storageService.get('cache') !== response.cache || response.cache === 'undefined') {
         this.storageService.set('cache', response.cache);
         // NEW BUILD, CACHE BUST!
         this.reloadGame(false);
@@ -248,7 +245,12 @@ export class GameComponent implements OnInit {
     }
   }
   refreshLetters(sequence: string): void {
-    this.storageService.set('gameState', GameState.PLAYING);
+    if (this.storageService.get('gameState') === GameState.ENDED) {
+      this.toggleNotice('Game Over. Wait or try Random Play.', 'warn');
+      return;
+    } else {
+      this.storageService.set('gameState', GameState.PLAYING);
+    }
     // leading GuessAction.ENTER, submit if populated but round hasn't ended
     if (sequence.startsWith(GuessAction.ENTER) && //check if the row is filled
       this.board[this.prevRound].every(letter => !letter) ) {
@@ -342,6 +344,7 @@ export class GameComponent implements OnInit {
   endGame(ended: boolean): void {
     this.storageService.set('shareText', JSON.stringify(this.shareText()));
     this.storageService.set('gameState', GameState.ENDED);
+    this.storageService.set('gameCompletedTime', new Date().toISOString());
   }
 
   /**

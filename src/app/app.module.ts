@@ -10,6 +10,7 @@ import { LetterBlockComponent } from './components/letter-block/letter-block.com
 import { KeyboardComponent } from './components/keyboard/keyboard.component';
 import { StorageService } from './services/storage.service';
 import { CountdownComponent } from './components/countdown/countdown.component';
+import { MenuComponent } from './components/menu/menu.component';
 
 const themeServiceConfig: ThemeServiceConfig = {
   themes: ['light', 'dark'],
@@ -26,7 +27,8 @@ const themeServiceConfig: ThemeServiceConfig = {
     GameComponent,
     LetterBlockComponent,
     KeyboardComponent,
-    CountdownComponent
+    CountdownComponent,
+    MenuComponent
   ],
   imports: [
     BrowserModule,
