@@ -9,10 +9,6 @@ import { Handler,  } from '@netlify/functions';
 import { Random } from "random-js";
 import * as PACKAGE from "./../../package.json";
 
-// https://flaviocopes.com/netlify-functions-env-variables/
-// const { COMMIT_REF } = process.env; // not dependable
-
-
 interface Solution {
   word: string;
   sequence: number;

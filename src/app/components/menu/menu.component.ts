@@ -50,4 +50,12 @@ export class MenuComponent implements OnInit {
     forceRefresh(mode);
   }
 
+  get completed(): string {
+    return this.storageService.get('completed');
+  }
+
+  get alreadyPlayed(): boolean {
+    return new Date(this.completed).getDate() === new Date().getDate();
+  }
+
 }

@@ -14,9 +14,11 @@ export class StorageService {
     if (this.isClient && force) {
       const version = localStorage.getItem('version') as string;
       const theme = localStorage.getItem('theme') as string;
+      const completed = localStorage.getItem('completed') as string;
       localStorage.clear();
       localStorage.setItem('version', version);
       localStorage.setItem('theme', theme);
+      localStorage.setItem('completed', completed);
     }
   }
 

@@ -34,7 +34,6 @@ export class GameComponent implements OnInit {
   navigator: any;
   rando = false;
   sequenceIdx: number = 0;
-  cache: string = '';
   currPos: number[] = [0, 0];
   nextPos: number[] = [0, 0];
   indexCode: string = '';
@@ -181,6 +180,7 @@ export class GameComponent implements OnInit {
         version = this.storageService.get('version');
       }
       if (version !== response.version) {
+        this.storageService.set('version', response.version);
         this.reloadGame(false);
       }
       if (sequenceIdx !== response.sequence) {
@@ -253,6 +253,7 @@ export class GameComponent implements OnInit {
       $event.stopPropagation;
     }
   }
+
   refreshLetters(sequence: string): void {
     if (this.storageService.get('gameState') === GameState.ENDED) {
       this.toggleNotice('Game Over. Wait or try Random Play.', 'warn');
@@ -353,7 +354,7 @@ export class GameComponent implements OnInit {
   endGame(ended: boolean): void {
     this.storageService.set('shareText', JSON.stringify(this.shareText()));
     this.storageService.set('gameState', GameState.ENDED);
-    this.storageService.set('gameCompletedTime', new Date().toISOString());
+    this.storageService.set('completed', new Date().toISOString());
   }
 
   /**
