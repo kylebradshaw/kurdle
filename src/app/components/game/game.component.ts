@@ -355,7 +355,7 @@ export class GameComponent implements OnInit {
   endGame(ended: boolean): void {
     this.storageService.set('shareText', JSON.stringify(this.shareText()));
     this.storageService.set('gameState', GameState.ENDED);
-    this.storageService.set('completedUtc', new Date(new Date().getTime() - EST_OFFSET_MS_FROM_UTC).toISOString());
+    this.storageService.set('completedUtc', new Date().toISOString());
   }
 
   /**

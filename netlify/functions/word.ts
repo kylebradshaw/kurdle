@@ -4,6 +4,7 @@ import {
   parse,
   differenceInDays,
   addDays,
+  addHours,
   startOfDay
 } from 'date-fns'
 import { DICTIONARY } from './dict';
@@ -21,18 +22,18 @@ const handler: Handler = async (event, context) => {
   // PERIODIC WORD
   const baseDate = startOfDay(new Date(2022, 1, 3, 0, 0)); // 2022-02-03
   const now = new Date();
-  const tomorrow = startOfDay(addDays(now, 1));
+  const tomorrow = startOfDay(addDays(addHours(now, 5), 1)); // subtract 5 hours to account for EST basis
 
-  let baseDateUtc = zonedTimeToUtc(baseDate, 'UTC');
-  let nowUtc = zonedTimeToUtc(now, 'UTC');
-  let tomorrowUtc = zonedTimeToUtc(tomorrow, 'UTC');
+  // let baseDateUtc = zonedTimeToUtc(baseDate, 'UTC');
+  // let nowUtc = zonedTimeToUtc(now, 'UTC');
+  // let tomorrowUtc = zonedTimeToUtc(tomorrow, 'UTC');
 
-  const getWordOfTheDay = (baseDateUtc: any, targetDate: any = tomorrowUtc) => {
-    const idx = differenceInDays(targetDate, baseDateUtc);
+  const getWordOfTheDay = (baseDate: any, targetDate: any = tomorrow) => {
+    const idx = differenceInDays(targetDate, baseDate);
     return { word: DICTIONARY[idx], sequence: idx };
   };
 
-  const periodicWord = getWordOfTheDay(baseDateUtc, tomorrowUtc);
+  const periodicWord = getWordOfTheDay(baseDate, tomorrow);
 
   // function to randomize
   const randomWord = (): Solution => {
@@ -57,9 +58,9 @@ const handler: Handler = async (event, context) => {
         action: 'random',
         version: PACKAGE.version,
         dates: [
-          baseDateUtc,
-          nowUtc,
-          tomorrowUtc,
+          baseDate,
+          now,
+          tomorrow,
         ],
         // process: process.env
       };
@@ -70,9 +71,9 @@ const handler: Handler = async (event, context) => {
         action: 'random',
         version: PACKAGE.version,
         dates: [
-          baseDateUtc,
-          nowUtc,
-          tomorrowUtc,
+          baseDate,
+          now,
+          tomorrow,
         ],
         // process: process.env
       };
@@ -83,9 +84,9 @@ const handler: Handler = async (event, context) => {
         action: 'periodic',
         version: PACKAGE.version,
         dates: [
-          baseDateUtc,
-          nowUtc,
-          tomorrowUtc,
+          baseDate,
+          now,
+          tomorrow,
         ],
         // process: process.env
       };
