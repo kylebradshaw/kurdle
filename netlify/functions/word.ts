@@ -22,18 +22,19 @@ const handler: Handler = async (event, context) => {
   // PERIODIC WORD
   const baseDate = startOfDay(new Date(2022, 1, 3, 0, 0)); // 2022-02-03
   const now = new Date();
-  const tomorrow = startOfDay(addDays(addHours(now, 5), 1)); // subtract 5 hours to account for EST basis
+  const tomorrow = startOfDay(addDays(now, 1)); // add 5 hours to account for EST midnight flip time
 
-  // let baseDateUtc = zonedTimeToUtc(baseDate, 'UTC');
+  let baseDateUtc = zonedTimeToUtc(baseDate, 'UTC');
   // let nowUtc = zonedTimeToUtc(now, 'UTC');
   // let tomorrowUtc = zonedTimeToUtc(tomorrow, 'UTC');
 
   const getWordOfTheDay = (baseDate: any, targetDate: any = tomorrow) => {
     const idx = differenceInDays(targetDate, baseDate);
+    console.log(idx, `difference`);
     return { word: DICTIONARY[idx], sequence: idx };
   };
 
-  const periodicWord = getWordOfTheDay(baseDate, tomorrow);
+  const periodicWord = getWordOfTheDay(baseDateUtc, tomorrow); // but we want UTC when contrasting with Tomorrows targetDate to get the idx
 
   // function to randomize
   const randomWord = (): Solution => {
@@ -58,7 +59,7 @@ const handler: Handler = async (event, context) => {
         action: 'random',
         version: PACKAGE.version,
         dates: [
-          baseDate,
+          baseDateUtc,
           now,
           tomorrow,
         ],
@@ -71,7 +72,7 @@ const handler: Handler = async (event, context) => {
         action: 'random',
         version: PACKAGE.version,
         dates: [
-          baseDate,
+          baseDateUtc,
           now,
           tomorrow,
         ],
@@ -84,7 +85,7 @@ const handler: Handler = async (event, context) => {
         action: 'periodic',
         version: PACKAGE.version,
         dates: [
-          baseDate,
+          baseDateUtc,
           now,
           tomorrow,
         ],
