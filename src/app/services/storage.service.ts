@@ -12,10 +12,12 @@ export class StorageService {
 
   public clear(force = false) {
     if (this.isClient && force) {
+      const hotfix = localStorage.getItem('hotfix') as string;
       const version = localStorage.getItem('version') as string;
       const theme = localStorage.getItem('theme') as string;
       const completed = localStorage.getItem('completedUtc') as string;
       localStorage.clear();
+      localStorage.setItem('hotfix', hotfix);
       localStorage.setItem('version', version);
       localStorage.setItem('theme', theme);
       localStorage.setItem('completedUtc', completed);

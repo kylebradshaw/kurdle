@@ -66,6 +66,11 @@ export class GameComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // 2022.02.18 @ 07:23:38 hotfix KD, NB could not get daily word, they were frozen out. stuck on LYNCH
+    if (this.storageService.get('gameState') === GameState.ENDED && this.storageService.get('sequenceIdx') === `15`) {
+      this.storageService.set('hotfix', '2022.02.18-0015');
+      this.reloadGame(false);
+    }
     this.initTheme();
     this.initGame();
   }
@@ -118,31 +123,6 @@ export class GameComponent implements OnInit {
     }
   }
 
-  boardMatrix(classBoard: GuessClass[][]): GuessClass[][] {
-    return classBoard.map((r: GuessClass[]) => {
-      return r.map((c: GuessClass) => {
-        if (c === GuessClass.MISMATCH) {
-          return '🟨';
-        } else if (c === GuessClass.MATCH) {
-          return '🟩';
-        } else if (c === GuessClass.USED) {
-          return '⬛';
-        }
-        return;
-      });
-    }) as any;
-  }
-
-  /**
-   * Reloads game
-   * Gross but a mouse click that fires initGame() has downstream issues ¯\_(ツ)_/¯
-   * unsure if this even works tbh - need to use ServiceWorkers
-   */
-  reloadGame(mode: boolean): void {
-    this.storageService.clear(true);
-    forceRefresh(mode);
-  }
-
   /**
    * Sets Up Game / Resets
    * only works properly when toggled from desktop (shift + ~), not mouse click ¯\_(ツ)_/¯
@@ -177,7 +157,7 @@ export class GameComponent implements OnInit {
       if (roundIdx) {
         this.prevRound = Number(this.storageService.get('roundIdx'));
       }
-      if (version === undefined || version === null ) {
+      if (version === undefined || version === null) {
         this.storageService.set('version', response.version);
         version = this.storageService.get('version');
       }
@@ -212,6 +192,31 @@ export class GameComponent implements OnInit {
     this.board = this.emptyBoard('');
     this.classBoard = this.emptyBoard(GuessClass.DEFAULT);
     this.ghostBoard = this.emptyBoard('');
+  }
+
+  boardMatrix(classBoard: GuessClass[][]): GuessClass[][] {
+    return classBoard.map((r: GuessClass[]) => {
+      return r.map((c: GuessClass) => {
+        if (c === GuessClass.MISMATCH) {
+          return '🟨';
+        } else if (c === GuessClass.MATCH) {
+          return '🟩';
+        } else if (c === GuessClass.USED) {
+          return '⬛';
+        }
+        return;
+      });
+    }) as any;
+  }
+
+  /**
+   * Reloads game
+   * Gross but a mouse click that fires initGame() has downstream issues ¯\_(ツ)_/¯
+   * unsure if this even works tbh - need to use ServiceWorkers
+   */
+  reloadGame(mode: boolean): void {
+    this.storageService.clear(true);
+    forceRefresh(mode);
   }
 
   emptyBoard(fill: string | GuessClass): any[][] {
