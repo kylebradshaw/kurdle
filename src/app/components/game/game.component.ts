@@ -10,9 +10,8 @@ import { ThemeService } from '@bcodes/ngx-theme-service';
 import { StorageService } from 'src/app/services/storage.service';
 import { NgNavigatorShareService } from 'ng-navigator-share';
 import { StatsService } from 'src/app/services/stats.service';
-import { nextRoundTime } from 'src/app/helpers';
-import { forceRefresh } from 'src/app/helpers/utils';
-import { EST_OFFSET_MS_FROM_UTC } from 'src/app/models/time';
+import { GameMode } from 'src/app/models/game';
+import { GameService } from 'src/app/services/game.service';
 
 @Component({
   selector: 'app-game',
@@ -39,6 +38,8 @@ export class GameComponent implements OnInit {
   nextPos: number[] = [0, 0];
   indexCode: string = '';
   nextSequenceUtc: any;
+  randomPlay: GameMode = GameMode.RANDOM;
+  sequencePlay: GameMode = GameMode.SEQUENCE;
   private _play: string = '';
   private _soln: boolean = false;
 
@@ -49,7 +50,8 @@ export class GameComponent implements OnInit {
     private storageService: StorageService,
     private meta: Meta,
     public ngNavigatorShareService: NgNavigatorShareService,
-    private statsService: StatsService
+    private statsService: StatsService,
+    public gameService: GameService,
   ) {
     this.activatedRoute.queryParams.subscribe(params => {
       if (params[`debug`] !== undefined) {
@@ -66,11 +68,7 @@ export class GameComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // 2022.02.18 @ 07:23:38 hotfix KD, NB could not get daily word, they were frozen out. stuck on LYNCH
-    if (this.storageService.get('gameState') === GameState.ENDED && this.storageService.get('sequenceIdx') === `15`) {
-      this.storageService.set('hotfix', '2022.02.18-0015');
-      this.reloadGame(false);
-    }
+    this.initBandages();
     this.initTheme();
     this.initGame();
   }
@@ -163,7 +161,9 @@ export class GameComponent implements OnInit {
       }
       if (version !== response.version) {
         this.storageService.set('version', response.version);
-        this.reloadGame(false);
+        // realizing I do a hard refresh and dump them into SEQUENCE here.
+        // could use a scalpel
+        this.gameService.reloadGame(this.sequencePlay);
       }
       if (sequenceIdx !== response.sequence) {
         this.storageService.set('sequenceIdx', `${response.sequence}`);
@@ -207,16 +207,6 @@ export class GameComponent implements OnInit {
         return;
       });
     }) as any;
-  }
-
-  /**
-   * Reloads game
-   * Gross but a mouse click that fires initGame() has downstream issues ¯\_(ツ)_/¯
-   * unsure if this even works tbh - need to use ServiceWorkers
-   */
-  reloadGame(mode: boolean): void {
-    this.storageService.clear(true);
-    forceRefresh(mode);
   }
 
   emptyBoard(fill: string | GuessClass): any[][] {
@@ -502,6 +492,18 @@ export class GameComponent implements OnInit {
   set play(sequence: string) {
     if (sequence.length > 5) { return; }
     this._play = sequence;
+  }
+
+  /**
+   * Point of this message is to donkey-patch bad gameStates that I introduce in the PWA, whoops
+   * Always target a specific sequenceIdx to timebox the shenanigans
+   */
+  private initBandages(): void {
+    // 2022.02.18 @ 07:23:38 hotfix KD, NB could not get daily word, they were frozen out. stuck on LYNCH
+    if (this.storageService.get('gameState') === GameState.ENDED && this.storageService.get('sequenceIdx') === `15`) {
+      this.storageService.set('hotfix', '2022.02.18-0015');
+      this.gameService.reloadGame(this.sequencePlay);
+    }
   }
 
   private intendedTheme(currentTheme: string) {

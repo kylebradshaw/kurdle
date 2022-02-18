@@ -10,6 +10,11 @@ export enum GameState {
   RESTORED = 'RESTORED',
 }
 
+export enum GameMode {
+  SEQUENCE = 'SEQUENCE',
+  RANDOM = 'RANDOM'
+}
+
 export interface GameStats {
   currentStreak: number;
   maxStreak: number;

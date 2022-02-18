@@ -1,1 +1,1 @@
-export { nextRoundTime } from './utils';
+export { nextRoundTime, forceRefresh } from './utils';

@@ -3,6 +3,8 @@ import { StorageService } from 'src/app/services/storage.service';
 import { NgNavigatorShareService } from 'ng-navigator-share';
 import { Component, OnInit } from '@angular/core';
 import { string } from 'random-js';
+import { GameService } from 'src/app/services/game.service';
+import { GameMode } from 'src/app/models/game';
 
 @Component({
   selector: 'app-menu',
@@ -13,16 +15,17 @@ export class MenuComponent implements OnInit {
   shareText: any;
   drawToggled = false;
   aboutToggled: boolean = false;
-  sequenceIdentifier = '';
+  randomPlay: GameMode = GameMode.RANDOM;
+  sequencePlay: GameMode = GameMode.SEQUENCE;
 
   constructor(
     private storageService: StorageService,
     public ngNavigatorShareService: NgNavigatorShareService,
+    public gameService: GameService,
   ) {}
 
   ngOnInit(): void {
-    const sequenceIdx = this.storageService.get('sequenceIdx');
-    this.sequenceIdentifier = `${("0000" + sequenceIdx).slice(-4)}`;
+
   }
 
   toggleDrawer(): boolean {
@@ -44,16 +47,19 @@ export class MenuComponent implements OnInit {
       .catch((error) => { console.log(error); });
   }
 
-  /**
-   * Reloads game
-   * Gross but a mouse click that fires initGame() has downstream issues ¯\_(ツ)_/¯
-   * unsure if this even works tbh - need to use ServiceWorkers
-   */
-  reloadGame(mode: boolean): void {
-    this.storageService.clear(true);
-    forceRefresh(mode);
+  get sequenceIdentifier(): string {
+    let sequenceIdx = this.storageService.get('sequenceIdx') as string;
+    return (Number(sequenceIdx) > 0) ? ("0000" + Number(sequenceIdx)).slice(-4) : '????';
   }
 
+  /**
+   * expanded func should be a global utility function.
+   * This method informs us if we should load the daily word, or not
+   * ideally, on initGame. this completedUtc would exist and we could compare if it occured "yesterday"
+   * if it did occur yesterday and we are in a Game.ENDED state, assume they are back for daily play
+   * if it occurred yesterday but they are in a !Game.ENDED state, prompt them to do the daily word w/ a notice, also allow them to click the dailyword link
+   *
+   */
   get completedUtcCheck(): boolean {
     return !!(this.storageService.get('completedUtc') || 'null');
   }
