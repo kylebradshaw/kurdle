@@ -54,8 +54,4 @@ export class MenuComponent implements OnInit {
     return this.storageService.get('completedUtc');
   }
 
-  get alreadyPlayed(): boolean {
-    return new Date(this.completedUtc).getDate() === new Date().getUTCDate();
-  }
-
 }

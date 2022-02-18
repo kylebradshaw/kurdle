@@ -24,17 +24,17 @@ const handler: Handler = async (event, context) => {
   const now = new Date();
   const tomorrow = startOfDay(addDays(now, 1));
 
-  let baseDateUtc = zonedTimeToUtc(baseDate, 'UTC');
-  let nowUtc = zonedTimeToUtc(now, 'UTC');
-  let tomorrowUtc = zonedTimeToUtc(tomorrow, 'UTC');
+  // let baseDate = zonedTimeToUtc(baseDate, 'UTC');
+  // let now = zonedTimeToUtc(now, 'UTC');
+  // let tomorrow = zonedTimeToUtc(tomorrow, 'UTC');
 
-  const getWordOfTheDay = (baseDateUtc: any, targetDate: any = tomorrowUtc) => {
-    const idx = differenceInDays(targetDate, baseDateUtc);
-    console.log(idx, `difference`, baseDateUtc.toISOString(), targetDate.toISOString());
+  const getWordOfTheDay = (baseDate: any, targetDate: any = tomorrow) => {
+    const idx = differenceInDays(targetDate, baseDate);
+    console.log(idx, `difference`, baseDate.toISOString(), targetDate.toISOString());
     return { word: DICTIONARY[idx], sequence: idx };
   };
 
-  const periodicWord = getWordOfTheDay(baseDateUtc, tomorrowUtc);
+  const periodicWord = getWordOfTheDay(baseDate, tomorrow);
 
   // function to randomize
   const randomWord = (): Solution => {
@@ -59,9 +59,9 @@ const handler: Handler = async (event, context) => {
         action: 'random',
         version: PACKAGE.version,
         dates: [
-          baseDateUtc,
-          nowUtc,
-          tomorrowUtc,
+          baseDate,
+          now,
+          tomorrow,
         ],
         // process: process.env
       };
@@ -72,9 +72,9 @@ const handler: Handler = async (event, context) => {
         action: 'random',
         version: PACKAGE.version,
         dates: [
-          baseDateUtc,
-          nowUtc,
-          tomorrowUtc,
+          baseDate,
+          now,
+          tomorrow,
         ],
         // process: process.env
       };
@@ -85,9 +85,9 @@ const handler: Handler = async (event, context) => {
         action: 'periodic',
         version: PACKAGE.version,
         dates: [
-          baseDateUtc,
-          nowUtc,
-          tomorrowUtc,
+          baseDate,
+          now,
+          tomorrow,
         ],
         // process: process.env
       };
