@@ -153,6 +153,7 @@ export class GameComponent implements OnInit {
     this.play = '';
 
     if (this.storageService.get('sequenceIdx')) {
+      debugger;
       this.sequenceIdx = Number(this.storageService.get('sequenceIdx'));
       this.storageService.set('gameState', GameState.RESTORED);
     } else {
