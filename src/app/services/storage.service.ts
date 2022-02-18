@@ -1,5 +1,20 @@
 import { Injectable } from '@angular/core';
 
+export enum StorageKey {
+  ShareText = 'shareText',
+  SequenceIdx = 'sequenceIdx',
+  CompletedSequenceIdx = 'completedSequenceIdx',
+  CompletedGameMode = 'completedGameMode',
+  GameState = 'gameState',
+  GameMode = 'gameMode',
+  RoundIdx = 'roundIdx',
+  Hotfix = 'hotfix',
+  Version = 'version',
+  Theme = 'theme',
+  Word = 'word',
+  NextSequenceUtc = 'nextSequenceUtc',
+}
+
 @Injectable()
 export class StorageService {
   isClient = false;

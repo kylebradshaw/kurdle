@@ -7,7 +7,7 @@ import { GuessClass, GuessAction, AlphaDict, Letter } from 'src/app/models/guess
 import { Notice } from 'src/app/models/notice';
 import { ActivatedRoute } from '@angular/router';
 import { ThemeService } from '@bcodes/ngx-theme-service';
-import { StorageService } from 'src/app/services/storage.service';
+import { StorageKey, StorageService } from 'src/app/services/storage.service';
 import { NgNavigatorShareService } from 'ng-navigator-share';
 import { StatsService } from 'src/app/services/stats.service';
 import { GameMode } from 'src/app/models/game';
@@ -135,7 +135,7 @@ export class GameComponent implements OnInit {
       this.storageService.set('gameState', GameState.RESTORED);
     } else {
       this.storageService.set('gameState', GameState.INITIALIZED);
-      this.storageService.remove('completedUtc');
+      this.storageService.remove('completedUtc'); // 2022.02.18 temporary
     }
 
     this.wordService.seedWordFromFunc(this.rando, this.sequenceIdx).subscribe((response: FuncWord) => {
@@ -349,10 +349,13 @@ export class GameComponent implements OnInit {
   }
 
   endGame(ended: boolean): void {
+    const gameMode = this.storageService.get('gameMode') as GameMode;
     this.storageService.remove('sequenceIdx'); // not needed any longer
     this.storageService.set('shareText', JSON.stringify(this.shareText()));
     this.storageService.set('gameState', GameState.ENDED);
-    this.storageService.set('completedUtc', new Date().toISOString());
+    this.storageService.set('completedSequenceUtc', new Date().toISOString());
+    // introduce completedGameMode, the end state of the game mode will allow to determine where to pick up
+    this.storageService.set(StorageKey.CompletedGameMode, gameMode);
   }
 
   /**
