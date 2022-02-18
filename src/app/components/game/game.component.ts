@@ -188,8 +188,8 @@ export class GameComponent implements OnInit {
       if (sequenceIdx !== response.sequence) {
         this.storageService.set('sequenceIdx', `${response.sequence}`);
       }
-      if (response.dates[2] !== undefined) {
-        this.nextSequenceUtc = response.dates[2] as Date;
+      if (response.dates[1] !== undefined) {
+        this.nextSequenceUtc = response.dates[1] as Date;
         this.storageService.set('nextSequenceUtc', `${this.nextSequenceUtc}`);
       }
       this.currentWord = response.word;
@@ -357,7 +357,7 @@ export class GameComponent implements OnInit {
     this.storageService.remove('sequenceIdx'); // not needed any longer
     this.storageService.set('shareText', JSON.stringify(this.shareText()));
     this.storageService.set('gameState', GameState.ENDED);
-    this.storageService.set('completedUtc', new Date().toUTCString());
+    this.storageService.set('completedUtc', new Date().toISOString());
   }
 
   /**

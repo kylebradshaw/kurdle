@@ -15,10 +15,10 @@ interface Solution {
 const handler: Handler = async (event, context) => {
 
   // PERIODIC WORD
-  const baseDate = new Date(Date.UTC(2022,1,3,5,0,0));
+  const baseDate = new Date(Date.UTC(2022,1,3,5,0,0,0));
   let nowTomorrow = new Date(Date.now());
-  nowTomorrow.setDate(nowTomorrow.getUTCDate() + 1);
-  const midnightTomorrow = new Date(new Date(nowTomorrow).setHours(0,0,0,0));
+  nowTomorrow.setUTCDate(nowTomorrow.getUTCDate());
+  const midnightTomorrow = new Date(new Date(nowTomorrow).setUTCHours(5,0,0,0));
 
   const getWordOfTheDay = (baseDate: any, targetDate: any = midnightTomorrow) => {
     const idx = differenceInDays(new Date(targetDate), new Date(baseDate));
