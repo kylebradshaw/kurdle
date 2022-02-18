@@ -1,5 +1,5 @@
 // import * as base64 from 'base-64';
-import {zonedTimeToUtc} from 'date-fns-tz';
+import { zonedTimeToUtc, getTimezoneOffset } from 'date-fns-tz';
 import {
   differenceInDays,
   addDays,
@@ -10,6 +10,7 @@ import { Handler,  } from '@netlify/functions';
 import { Random } from "random-js";
 import * as PACKAGE from "./../../package.json";
 
+// const result = getTimezoneOffset('America/New_York', new Date(2016, 0, 1))
 const TIME_ZONE = 'America/New_York';
 
 interface Solution {
@@ -22,11 +23,15 @@ const handler: Handler = async (event, context) => {
   // PERIODIC WORD
   const baseDate = startOfDay(new Date(2022, 1, 3, 0, 0));
   const now = new Date();
-  const tomorrow = startOfDay(addDays(now, 1));
+  const tomorrow = addDays(now, 1);
 
-  // let baseDate = zonedTimeToUtc(baseDate, 'UTC');
-  // let now = zonedTimeToUtc(now, 'UTC');
-  // let tomorrow = zonedTimeToUtc(tomorrow, 'UTC');
+  // let baseDate2 = getTimezoneOffset(TIME_ZONE, baseDate);
+  // let now2 = getTimezoneOffset(TIME_ZONE, now);
+  // let tomorrow2 = getTimezoneOffset(TIME_ZONE, tomorrow);
+
+  // console.log(baseDate, baseDate2);
+  // console.log(now, now2);
+  // console.log(tomorrow, tomorrow2);
 
   const getWordOfTheDay = (baseDate: any, targetDate: any = tomorrow) => {
     const idx = differenceInDays(targetDate, baseDate);
