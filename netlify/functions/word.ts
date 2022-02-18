@@ -21,9 +21,9 @@ interface Solution {
 const handler: Handler = async (event, context) => {
 
   // PERIODIC WORD
-  const baseDate = startOfDay(new Date(2022, 1, 3, 0, 0));
-  const now = new Date();
-  const tomorrow = addDays(now, 1);
+  const baseDate = new Date(2022,1,3,0,0).toUTCString();
+  const now = new Date().toUTCString();
+  const tomorrow = addDays(new Date(now), 1).toUTCString();
 
   // let baseDate2 = getTimezoneOffset(TIME_ZONE, baseDate);
   // let now2 = getTimezoneOffset(TIME_ZONE, now);
