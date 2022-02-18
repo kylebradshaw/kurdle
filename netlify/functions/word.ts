@@ -1,11 +1,8 @@
 // import * as base64 from 'base-64';
 import {zonedTimeToUtc} from 'date-fns-tz';
 import {
-  parse,
   differenceInDays,
   addDays,
-  addHours,
-  subHours,
   startOfDay
 } from 'date-fns'
 import { DICTIONARY } from './dict';
@@ -27,9 +24,9 @@ const handler: Handler = async (event, context) => {
   const now = new Date();
   const tomorrow = startOfDay(addDays(now, 1));
 
-  let baseDateUtc = zonedTimeToUtc(addHours(baseDate, 5), 'UTC');
-  let nowUtc = zonedTimeToUtc(addHours(now, 5), 'UTC');
-  let tomorrowUtc = zonedTimeToUtc(addHours(tomorrow, 5), 'UTC');
+  let baseDateUtc = zonedTimeToUtc(baseDate, 'UTC');
+  let nowUtc = zonedTimeToUtc(now, 'UTC');
+  let tomorrowUtc = zonedTimeToUtc(tomorrow, 'UTC');
 
   const getWordOfTheDay = (baseDateUtc: any, targetDate: any = tomorrowUtc) => {
     const idx = differenceInDays(targetDate, baseDateUtc);

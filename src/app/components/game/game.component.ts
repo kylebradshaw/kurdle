@@ -153,7 +153,6 @@ export class GameComponent implements OnInit {
     this.play = '';
 
     if (this.storageService.get('sequenceIdx')) {
-      debugger;
       this.sequenceIdx = Number(this.storageService.get('sequenceIdx'));
       this.storageService.set('gameState', GameState.RESTORED);
     } else {
@@ -354,6 +353,7 @@ export class GameComponent implements OnInit {
   }
 
   endGame(ended: boolean): void {
+    this.storageService.remove('sequenceIdx'); // not needed any longer
     this.storageService.set('shareText', JSON.stringify(this.shareText()));
     this.storageService.set('gameState', GameState.ENDED);
     this.storageService.set('completedUtc', new Date().toISOString());
