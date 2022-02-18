@@ -29,8 +29,9 @@
         flex-grow: 1;
         &[disabled] {
           cursor: not-allowed;
-          color: theme-var($--theme-on-block);
-          background-color: theme-var($--theme-primary-disabled);
+          // color: theme-var($--theme-on-block);
+          // background-color: theme-var($--theme-primary-disabled);
+          opacity: 0.5;
           border: 1px solid transparent;
         }
       }
@@ -41,8 +42,9 @@
         flex-grow: 1;
         &[disabled] {
           cursor: not-allowed;
-          color: theme-var($--theme-on-block);
-          background-color: theme-var($--theme-bad-disabled);
+          // color: theme-var($--theme-on-block);
+          // background-color: theme-var($--theme-bad-disabled);
+          opacity: 0.5;
           border: 1px solid transparent;
         }
       }
