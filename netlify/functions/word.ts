@@ -17,7 +17,7 @@ const handler: Handler = async (event, context) => {
   // PERIODIC WORD
   const baseDate = new Date(Date.UTC(2022,1,3,5,0,0,0));
   let nowTomorrow = new Date(Date.now());
-  nowTomorrow.setUTCDate(nowTomorrow.getUTCDate());
+  nowTomorrow.setUTCDate(nowTomorrow.getUTCDate() + 1);
   const midnightTomorrow = new Date(new Date(nowTomorrow).setUTCHours(5,0,0,0));
 
   const getWordOfTheDay = (baseDate: any, targetDate: any = midnightTomorrow) => {

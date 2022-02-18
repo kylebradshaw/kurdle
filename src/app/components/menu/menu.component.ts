@@ -2,6 +2,7 @@ import { forceRefresh } from 'src/app/helpers/utils';
 import { StorageService } from 'src/app/services/storage.service';
 import { NgNavigatorShareService } from 'ng-navigator-share';
 import { Component, OnInit } from '@angular/core';
+import { string } from 'random-js';
 
 @Component({
   selector: 'app-menu',
@@ -12,6 +13,7 @@ export class MenuComponent implements OnInit {
   shareText: any;
   drawToggled = false;
   aboutToggled: boolean = false;
+  sequenceIdentifier = '';
 
   constructor(
     private storageService: StorageService,
@@ -19,6 +21,8 @@ export class MenuComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    const sequenceIdx = this.storageService.get('sequenceIdx');
+    this.sequenceIdentifier = `${("0000" + sequenceIdx).slice(-4)}`;
   }
 
   toggleDrawer(): boolean {
@@ -38,10 +42,6 @@ export class MenuComponent implements OnInit {
     this.ngNavigatorShareService.share(this.shareText)
       .then(() => { console.log(`Successful share`); })
       .catch((error) => { console.log(error); });
-  }
-
-  get sequenceIdx(): string {
-    return this.storageService.get('sequenceIdx');
   }
 
   /**
