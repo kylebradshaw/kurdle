@@ -157,6 +157,7 @@ export class GameComponent implements OnInit {
       this.storageService.set('gameState', GameState.RESTORED);
     } else {
       this.storageService.set('gameState', GameState.INITIALIZED);
+      this.storageService.remove('completedUtc');
     }
 
     this.wordService.seedWordFromFunc(this.rando, this.sequenceIdx).subscribe((response: FuncWord) => {
@@ -356,7 +357,7 @@ export class GameComponent implements OnInit {
     this.storageService.remove('sequenceIdx'); // not needed any longer
     this.storageService.set('shareText', JSON.stringify(this.shareText()));
     this.storageService.set('gameState', GameState.ENDED);
-    this.storageService.set('completedUtc', new Date().toISOString());
+    this.storageService.set('completedUtc', new Date().toUTCString());
   }
 
   /**

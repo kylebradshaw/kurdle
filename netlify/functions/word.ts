@@ -23,7 +23,7 @@ const handler: Handler = async (event, context) => {
   // PERIODIC WORD
   const baseDate = new Date(2022,1,3,0,0).toUTCString();
   const now = new Date().toUTCString();
-  const tomorrow = addDays(new Date(now), 1).toUTCString();
+  const tomorrow = startOfDay(addDays(new Date(now), 1)).toUTCString();
 
   // let baseDate2 = getTimezoneOffset(TIME_ZONE, baseDate);
   // let now2 = getTimezoneOffset(TIME_ZONE, now);
@@ -34,8 +34,7 @@ const handler: Handler = async (event, context) => {
   // console.log(tomorrow, tomorrow2);
 
   const getWordOfTheDay = (baseDate: any, targetDate: any = tomorrow) => {
-    const idx = differenceInDays(targetDate, baseDate);
-    console.log(idx, `difference`, baseDate.toISOString(), targetDate.toISOString());
+    const idx = differenceInDays(new Date(targetDate), new Date(baseDate));
     return { word: DICTIONARY[idx], sequence: idx };
   };
 

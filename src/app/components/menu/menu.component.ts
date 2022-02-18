@@ -50,8 +50,8 @@ export class MenuComponent implements OnInit {
     forceRefresh(mode);
   }
 
-  get completedUtc(): string {
-    return this.storageService.get('completedUtc');
+  get completedUtcCheck(): boolean {
+    return !!(this.storageService.get('completedUtc') || 'null');
   }
 
 }
