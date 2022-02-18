@@ -1,17 +1,11 @@
 // import * as base64 from 'base-64';
-import { zonedTimeToUtc, getTimezoneOffset } from 'date-fns-tz';
 import {
   differenceInDays,
-  addDays,
-  startOfDay
 } from 'date-fns'
 import { DICTIONARY } from './dict';
 import { Handler,  } from '@netlify/functions';
 import { Random } from "random-js";
 import * as PACKAGE from "./../../package.json";
-
-// const result = getTimezoneOffset('America/New_York', new Date(2016, 0, 1))
-const TIME_ZONE = 'America/New_York';
 
 interface Solution {
   word: string;
@@ -21,24 +15,17 @@ interface Solution {
 const handler: Handler = async (event, context) => {
 
   // PERIODIC WORD
-  const baseDate = new Date(2022,1,3,0,0).toUTCString();
-  const now = new Date().toUTCString();
-  const tomorrow = startOfDay(addDays(new Date(now), 1)).toUTCString();
+  const baseDate = new Date(Date.UTC(2022,1,3,5,0,0));
+  let nowTomorrow = new Date(Date.now());
+  nowTomorrow.setDate(nowTomorrow.getUTCDate() + 1);
+  const midnightTomorrow = new Date(new Date(nowTomorrow).setHours(0,0,0,0));
 
-  // let baseDate2 = getTimezoneOffset(TIME_ZONE, baseDate);
-  // let now2 = getTimezoneOffset(TIME_ZONE, now);
-  // let tomorrow2 = getTimezoneOffset(TIME_ZONE, tomorrow);
-
-  // console.log(baseDate, baseDate2);
-  // console.log(now, now2);
-  // console.log(tomorrow, tomorrow2);
-
-  const getWordOfTheDay = (baseDate: any, targetDate: any = tomorrow) => {
+  const getWordOfTheDay = (baseDate: any, targetDate: any = midnightTomorrow) => {
     const idx = differenceInDays(new Date(targetDate), new Date(baseDate));
     return { word: DICTIONARY[idx], sequence: idx };
   };
 
-  const periodicWord = getWordOfTheDay(baseDate, tomorrow);
+  const periodicWord = getWordOfTheDay(baseDate, midnightTomorrow);
 
   // function to randomize
   const randomWord = (): Solution => {
@@ -64,8 +51,7 @@ const handler: Handler = async (event, context) => {
         version: PACKAGE.version,
         dates: [
           baseDate,
-          now,
-          tomorrow,
+          midnightTomorrow,
         ],
         // process: process.env
       };
@@ -77,8 +63,7 @@ const handler: Handler = async (event, context) => {
         version: PACKAGE.version,
         dates: [
           baseDate,
-          now,
-          tomorrow,
+          midnightTomorrow,
         ],
         // process: process.env
       };
@@ -90,8 +75,7 @@ const handler: Handler = async (event, context) => {
         version: PACKAGE.version,
         dates: [
           baseDate,
-          now,
-          tomorrow,
+          midnightTomorrow,
         ],
         // process: process.env
       };
