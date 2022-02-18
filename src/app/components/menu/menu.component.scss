@@ -49,10 +49,12 @@
       font-weight: bold;
     }
   }
+  .r,
   .x {
     text-align: right;
     padding: 0.5rem;
-    // height: 0;
+  }
+  header {
     svg {
       transform: scale(0.9); // translateY(1.5rem) translateX(-0.5rem);
     }

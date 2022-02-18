@@ -1,5 +1,4 @@
 import { GameTime } from "src/app/models/game";
-import { EST_OFFSET_MS_FROM_UTC } from "src/app/models/time";
 
 export const nextRoundTime = (expires: string): GameTime => {
   const left = new Date(expires).getTime() - (new Date().getTime());

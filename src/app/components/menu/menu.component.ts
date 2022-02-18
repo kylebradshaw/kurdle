@@ -40,6 +40,10 @@ export class MenuComponent implements OnInit {
       .catch((error) => { console.log(error); });
   }
 
+  get sequenceIdx(): string {
+    return this.storageService.get('sequenceIdx');
+  }
+
   /**
    * Reloads game
    * Gross but a mouse click that fires initGame() has downstream issues ¯\_(ツ)_/¯

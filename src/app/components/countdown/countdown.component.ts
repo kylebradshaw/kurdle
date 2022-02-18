@@ -29,7 +29,7 @@ export class CountdownComponent implements OnInit {
         this.minutes = next.minutes;
         this.hours = next.hours;
       }),
-      map(c => `${this.hours}:${this.minutes}:${this.seconds}`),
+      map(_ => `${this.hours}:${this.minutes}:${this.seconds}`),
       takeWhile((val: string) => val !== `0:0:0`),
     );
   }
