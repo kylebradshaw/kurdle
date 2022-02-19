@@ -1,18 +1,23 @@
 import { Injectable } from '@angular/core';
 
 export enum StorageKey {
-  ShareText = 'shareText',
-  SequenceIdx = 'sequenceIdx',
-  CompletedSequenceIdx = 'completedSequenceIdx',
+  Board = 'board',
+  ClassBoard = 'classBoard',
+  CombinedBoard = 'combinedBoard',
   CompletedGameMode = 'completedGameMode',
+  CompletedSequenceIdx = 'completedSequenceIdx',
+  CompletedSequenceUtc = 'completedSequenceUtc',
   GameState = 'gameState',
   GameMode = 'gameMode',
-  RoundIdx = 'roundIdx',
   Hotfix = 'hotfix',
-  Version = 'version',
+  NextSequenceUtc = 'nextSequenceUtc',
+  RoundIdx = 'roundIdx',
+  SequenceIdx = 'sequenceIdx',
+  ShareText = 'shareText',
+  Stats = 'stats',
   Theme = 'theme',
   Word = 'word',
-  NextSequenceUtc = 'nextSequenceUtc',
+  Version = 'version',
 }
 
 @Injectable()

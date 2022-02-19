@@ -47,7 +47,7 @@ const handler: Handler = async (event, context) => {
       return {
         word: DICTIONARY[sequenceIdx],
         sequence: `${sequenceIdx}`,
-        action: 'random',
+        mode: 'RANDOM',
         version: PACKAGE.version,
         dates: [
           baseDate,
@@ -59,7 +59,7 @@ const handler: Handler = async (event, context) => {
       return {
         word: chooseRandom.word,
         sequence: chooseRandom.sequence,
-        action: 'random',
+        mode: 'RANDOM',
         version: PACKAGE.version,
         dates: [
           baseDate,
@@ -71,7 +71,7 @@ const handler: Handler = async (event, context) => {
       return {
         word: periodicWord.word,
         sequence: periodicWord.sequence,
-        action: 'periodic',
+        mode: 'SEQUENCE',
         version: PACKAGE.version,
         dates: [
           baseDate,

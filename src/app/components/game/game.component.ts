@@ -49,8 +49,8 @@ export class GameComponent implements OnInit {
     private themeService: ThemeService,
     private storageService: StorageService,
     private meta: Meta,
-    public ngNavigatorShareService: NgNavigatorShareService,
     private statsService: StatsService,
+    public ngNavigatorShareService: NgNavigatorShareService,
     public gameService: GameService,
   ) {
     this.activatedRoute.queryParams.subscribe(params => {
@@ -130,11 +130,13 @@ export class GameComponent implements OnInit {
     this.prevRound = 0;
     this.play = '';
 
+    this.gameService.directUserFlow();
+
     if (this.storageService.get('sequenceIdx')) {
       this.sequenceIdx = Number(this.storageService.get('sequenceIdx'));
-      this.storageService.set('gameState', GameState.RESTORED);
+      this.storageService.set(StorageKey.GameState, GameState.RESTORED);
     } else {
-      this.storageService.set('gameState', GameState.INITIALIZED);
+      this.storageService.set(StorageKey.GameState, GameState.INITIALIZED);
       this.storageService.remove('completedUtc'); // 2022.02.18 temporary
     }
 
@@ -143,34 +145,34 @@ export class GameComponent implements OnInit {
       const classBoard = this.storageService.get('classBoard');
       const word = this.storageService.get('word');
       const roundIdx = this.storageService.get('roundIdx');
-      let version = this.storageService.get('version');
       const sequenceIdx = Number(this.storageService.get('sequenceIdx'));
+      let version = this.storageService.get('version');
 
       if (board && classBoard) {
         this.loadGameState();
       }
       if (word !== response.word) {
-        this.storageService.set('word', response.word);
+        this.storageService.set(StorageKey.Word, response.word);
       }
       if (roundIdx) {
         this.prevRound = Number(this.storageService.get('roundIdx'));
       }
       if (version === undefined || version === null) {
-        this.storageService.set('version', response.version);
+        this.storageService.set(StorageKey.Version, response.version);
         version = this.storageService.get('version');
       }
       if (version !== response.version) {
-        this.storageService.set('version', response.version);
+        this.storageService.set(StorageKey.Version, response.version);
         // realizing I do a hard refresh and dump them into SEQUENCE here.
         // could use a scalpel
         this.gameService.reloadGame(this.sequencePlay);
       }
       if (sequenceIdx !== response.sequence) {
-        this.storageService.set('sequenceIdx', `${response.sequence}`);
+        this.storageService.set(StorageKey.SequenceIdx, `${response.sequence}`);
       }
       if (response.dates[1] !== undefined) {
         this.nextSequenceUtc = response.dates[1] as Date;
-        this.storageService.set('nextSequenceUtc', `${this.nextSequenceUtc}`);
+        this.storageService.set(StorageKey.NextSequenceUtc, `${this.nextSequenceUtc}`);
       }
       this.currentWord = response.word;
       this.sequenceIdx = response.sequence;
@@ -224,7 +226,7 @@ export class GameComponent implements OnInit {
     let nextTheme = (flip) ? this.intendedTheme(previousTheme) : previousTheme;
     this.themeService.switchTheme(nextTheme);
     this.meta.updateTag({ content: (nextTheme === 'light') ? '#ffffff' : '#0a0a0a' }, 'name=theme-color');
-    this.storageService.set('theme', nextTheme);
+    this.storageService.set(StorageKey.Theme, nextTheme);
     this.currentTheme = nextTheme;
   }
 
@@ -256,7 +258,7 @@ export class GameComponent implements OnInit {
       this.toggleNotice('Game Over. Wait or try Random Play.', 'warn');
       return;
     } else {
-      this.storageService.set('gameState', GameState.PLAYING);
+      this.storageService.set(StorageKey.GameState, GameState.PLAYING);
     }
     // leading GuessAction.ENTER, submit if populated but round hasn't ended
     if (sequence.startsWith(GuessAction.ENTER) && //check if the row is filled
@@ -298,17 +300,17 @@ export class GameComponent implements OnInit {
 
   saveBoard(type: string = 'board', targetBoard: string[][]): void {
     if (type === 'board') {
-      this.storageService.set('board', JSON.stringify(targetBoard));
-      this.storageService.set('combinedBoard', JSON.stringify(this.combinedBoard));
+      this.storageService.set(StorageKey.Board, JSON.stringify(targetBoard));
+      this.storageService.set(StorageKey.CombinedBoard, JSON.stringify(this.combinedBoard));
     } else if (type === 'class') {
-      this.storageService.set('classBoard', JSON.stringify(targetBoard));
+      this.storageService.set(StorageKey.ClassBoard, JSON.stringify(targetBoard));
     }
   }
 
   loadGameState(): void {
-    this.board = JSON.parse(this.storageService.get('board'));
-    this.classBoard = JSON.parse(this.storageService.get('classBoard'));
-    this.prevRound = Number(this.storageService.get('prevRound'));
+    this.board = JSON.parse(this.storageService.get(StorageKey.Board));
+    this.classBoard = JSON.parse(this.storageService.get(StorageKey.ClassBoard));
+    this.prevRound = Number(this.storageService.get(StorageKey.RoundIdx));
     this.updatePos();
   }
 
@@ -341,7 +343,7 @@ export class GameComponent implements OnInit {
       }, 0);
       this.play = '';
       this.prevRound = this.incrementRound(this.prevRound);
-      this.storageService.set('roundIdx', `${this.prevRound}`);
+      this.storageService.set(StorageKey.RoundIdx, `${this.prevRound}`);
       this.updatePos();
     } else {
       this.toggleNotice('The word is not the dictionary.', 'warn');
@@ -350,12 +352,12 @@ export class GameComponent implements OnInit {
 
   endGame(ended: boolean): void {
     const gameMode = this.storageService.get('gameMode') as GameMode;
-    this.storageService.remove('sequenceIdx'); // not needed any longer
-    this.storageService.set('shareText', JSON.stringify(this.shareText()));
-    this.storageService.set('gameState', GameState.ENDED);
-    this.storageService.set('completedSequenceUtc', new Date().toISOString());
+    this.storageService.remove(StorageKey.SequenceIdx); // not needed any longer
+    this.storageService.set(StorageKey.ShareText, JSON.stringify(this.shareText()));
+    this.storageService.set(StorageKey.GameState, GameState.ENDED);
+    this.storageService.set(StorageKey.CompletedSequenceUtc, new Date().toISOString());
     // introduce completedGameMode, the end state of the game mode will allow to determine where to pick up
-    this.storageService.set(StorageKey.CompletedGameMode, gameMode);
+    this.storageService.set(StorageKey.CompletedGameMode, gameMode)
   }
 
   /**
@@ -421,12 +423,12 @@ export class GameComponent implements OnInit {
   }
 
   recordStats(): void {
-    // this.storageService.set('stats', JSON.stringify(this.stats));
+    this.storageService.set(StorageKey.Stats, JSON.stringify({}));
   }
 
   showStats(): void {
-    // this.stats = this.storageService.get('stats');
-    this.storageService.set('gameState', GameState.PAUSED);
+    // this.stats = this.storageService.get(StorageKey.Stats);
+    this.storageService.set(StorageKey.GameState, GameState.PAUSED);
   }
 
   /**
@@ -504,7 +506,7 @@ export class GameComponent implements OnInit {
   private initBandages(): void {
     // 2022.02.18 @ 07:23:38 hotfix KD, NB could not get daily word, they were frozen out. stuck on LYNCH
     if (this.storageService.get('gameState') === GameState.ENDED && this.storageService.get('sequenceIdx') === `15`) {
-      this.storageService.set('hotfix', '2022.02.18-0015');
+      this.storageService.set(StorageKey.Hotfix, '2022.02.18-0015');
       this.gameService.reloadGame(this.sequencePlay);
     }
   }

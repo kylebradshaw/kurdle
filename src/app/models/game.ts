@@ -8,6 +8,7 @@ export enum GameState {
   PAUSED = 'PAUSED',
   ENDED = 'ENDED',
   RESTORED = 'RESTORED',
+  SKIP = 'SKIP',
 }
 
 export enum GameMode {

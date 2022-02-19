@@ -5,11 +5,12 @@ import { map } from 'rxjs/operators';
 import { DICTIONARY } from 'netlify/functions/dict';
 import { AlphaDict, GuessClass } from 'src/app/models/guess';
 import { Params } from '@angular/router';
+import { GameMode } from 'src/app/models/game';
 
 export interface FuncWord {
   word: string;
   sequence: number;
-  action: string;
+  mode: GameMode;
   version: string;
   dates: Date[];
 }
