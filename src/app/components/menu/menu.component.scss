@@ -87,6 +87,11 @@
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .slide-in {
+  opacity: 1;
   transform: translateY(0%);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+svg.active {
+  fill: theme-var($--theme-primary);
 }

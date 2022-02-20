@@ -1,5 +1,5 @@
 import { forceRefresh } from 'src/app/helpers/utils';
-import { StorageService } from 'src/app/services/storage.service';
+import { StorageKey, StorageService } from 'src/app/services/storage.service';
 import { NgNavigatorShareService } from 'ng-navigator-share';
 import { Component, OnInit } from '@angular/core';
 import { string } from 'random-js';
@@ -62,6 +62,14 @@ export class MenuComponent implements OnInit {
    */
   get completedUtcCheck(): boolean {
     return !!(this.storageService.get('completedUtc') || 'null');
+  }
+
+  get version(): string {
+    return this.storageService.get(StorageKey.Version) || '0.0.0';
+  }
+
+  get gameMode(): GameMode {
+    return this.storageService.get(StorageKey.GameMode) as GameMode;
   }
 
 }

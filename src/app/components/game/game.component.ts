@@ -186,9 +186,8 @@ export class GameComponent implements OnInit {
       // this.currentWord = btoa('prize'); // 'piece'
       this.decodedWord = this.wordService.decode(this.currentWord);
       this.alphabetKey = this.wordService.getAlphabetKey(this.decodedWord);
-      if (this.rando) {
-        this.indexCode = this.wordService.numberToLetters(response.sequence);
-      }
+      // this.indexCode = this.wordService.numberToLetters(response.sequence);
+      this.indexCode = `${response.sequence}`;
     });
 
     this.board = this.emptyBoard('');
