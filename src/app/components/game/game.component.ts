@@ -184,6 +184,7 @@ export class GameComponent implements OnInit {
       // this.currentWord = btoa('trend'); // 'terse'
       // this.currentWord = btoa('swift'); // 'stiff'
       // this.currentWord = btoa('prize'); // 'piece'
+      this.currentWord = btoa('bowel'); // 'evoke'
       this.decodedWord = this.wordService.decode(this.currentWord);
       this.alphabetKey = this.wordService.getAlphabetKey(this.decodedWord);
       // this.indexCode = this.wordService.numberToLetters(response.sequence);
@@ -392,8 +393,14 @@ export class GameComponent implements OnInit {
               return GuessClass.MISMATCH;
             }
           } else {
-            // the guess is the last instance letter of a repeated sequence and the previous guess was a (mis)match
-            return GuessClass.USED;
+            // evoke -> bowel
+            // the guess is the last letter of a repeated sequence and the previous guess was USED
+            if (sequence.lastIndexOf(letter) <= i) {
+              return GuessClass.MISMATCH;
+            } else {
+              // the guess is the last instance letter of a repeated sequence and the previous guess was a (mis)match
+              return GuessClass.USED;
+            }
           }
         }
         // the letter is at the improper index
