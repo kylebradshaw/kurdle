@@ -298,6 +298,15 @@ export class GameComponent implements OnInit {
     this.saveBoard('board', this.board);
   }
 
+  clearRow(rIdx: number): void {
+    this.board[rIdx] = ['', '', '', '', ''];
+    this.classBoard[rIdx] = [GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT, GuessClass.DEFAULT];
+    this.saveBoard('board', this.board);
+    this.saveBoard('classBoard', this.classBoard);
+    this.play = '';
+    this.updatePos();
+  }
+
   saveBoard(type: string = 'board', targetBoard: string[][]): void {
     if (type === 'board') {
       this.storageService.set(StorageKey.Board, JSON.stringify(targetBoard));

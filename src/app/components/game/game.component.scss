@@ -35,6 +35,13 @@
   color: theme-var($--theme-on-surface);
   text-transform: uppercase;
 }
+.clear-row {
+  transform: translateX(4rem) translateY(1rem) scale(0.5);
+  font-size: 1rem;
+  position: absolute;
+  padding: 1rem;
+  margin: -1rem;
+}
 header {
   margin: 0.1rem;
   h1 {
