@@ -62,14 +62,10 @@ export class GameComponent implements OnInit {
       }
     });
     this.ngNavigatorShareService = ngNavigatorShareService;
-    this.meta.addTag(
-      { name: 'theme-color', content: '#ffffff' }
-    );
   }
 
   ngOnInit(): void {
     this.initBandages();
-    this.initTheme();
     this.initGame();
   }
 
@@ -102,24 +98,6 @@ export class GameComponent implements OnInit {
     return this.buffer.slice(-5);
   }
 
-  /**
-   * Inits theme
-   * picks up native theme preference if available on first visit
-   * otherwise we set our own
-   */
-  initTheme(): void {
-    const theme = this.storageService.get('theme');
-    if (theme !== null) {
-      this.currentTheme = theme;
-      this.switchTheme(theme);
-    } else {
-      if (window.matchMedia('prefers-color-scheme: dark').matches) {
-        this.switchTheme('light'); // opposite of current theme
-      } else {
-        this.switchTheme('dark');// opposite of current theme
-      }
-    }
-  }
 
   /**
    * Sets Up Game / Resets
@@ -220,14 +198,6 @@ export class GameComponent implements OnInit {
       [fill, fill, fill, fill, fill],
       [fill, fill, fill, fill, fill]
     ];
-  }
-
-  switchTheme(previousTheme: string, flip = false): void {
-    let nextTheme = (flip) ? this.intendedTheme(previousTheme) : previousTheme;
-    this.themeService.switchTheme(nextTheme);
-    this.meta.updateTag({ content: (nextTheme === 'light') ? '#ffffff' : '#0a0a0a' }, 'name=theme-color');
-    this.storageService.set(StorageKey.Theme, nextTheme);
-    this.currentTheme = nextTheme;
   }
 
   removeLastSequenceLetter(play: string): void {
@@ -526,7 +496,4 @@ export class GameComponent implements OnInit {
     }
   }
 
-  private intendedTheme(currentTheme: string) {
-    return (currentTheme === 'light') ? 'dark' : 'light';
-  }
 }

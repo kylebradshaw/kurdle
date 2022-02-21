@@ -49,18 +49,11 @@
       font-weight: bold;
     }
   }
-  .r,
-  .x,
-  .d {
-    text-align: right;
-    padding: 0.5rem;
-  }
   header {
+    font-size: 1rem;
     svg {
+      padding: 0 0.5rem;
       transform: scale(0.9); // translateY(1.5rem) translateX(-0.5rem);
-    }
-    svg.hidden {
-      visibility: hidden;
     }
   }
   .collapsed {

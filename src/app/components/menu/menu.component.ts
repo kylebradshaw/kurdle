@@ -1,10 +1,10 @@
-import { forceRefresh } from 'src/app/helpers/utils';
+import { Meta } from '@angular/platform-browser';
 import { StorageKey, StorageService } from 'src/app/services/storage.service';
 import { NgNavigatorShareService } from 'ng-navigator-share';
 import { Component, OnInit } from '@angular/core';
-import { string } from 'random-js';
 import { GameService } from 'src/app/services/game.service';
 import { GameMode } from 'src/app/models/game';
+import { ThemeService } from '@bcodes/ngx-theme-service';
 
 @Component({
   selector: 'app-menu',
@@ -17,15 +17,41 @@ export class MenuComponent implements OnInit {
   aboutToggled: boolean = false;
   randomPlay: GameMode = GameMode.RANDOM;
   sequencePlay: GameMode = GameMode.SEQUENCE;
+  currentTheme = '';
 
   constructor(
     private storageService: StorageService,
     public ngNavigatorShareService: NgNavigatorShareService,
     public gameService: GameService,
-  ) {}
+    public themeService: ThemeService,
+    private meta: Meta,
+  ) {
+    this.meta.addTag(
+      { name: 'theme-color', content: '#ffffff' }
+    );
+  }
 
   ngOnInit(): void {
+    this.initTheme();
+  }
 
+  /**
+   * Inits theme
+   * picks up native theme preference if available on first visit
+   * otherwise we set our own
+   */
+  initTheme(): void {
+    const theme = this.storageService.get('theme');
+    if (theme !== null) {
+      this.currentTheme = theme;
+      this.switchTheme(theme);
+    } else {
+      if (window.matchMedia('prefers-color-scheme: dark').matches) {
+        this.switchTheme('light'); // opposite of current theme
+      } else {
+        this.switchTheme('dark');// opposite of current theme
+      }
+    }
   }
 
   toggleDrawer(): boolean {
@@ -45,6 +71,18 @@ export class MenuComponent implements OnInit {
     this.ngNavigatorShareService.share(this.shareText)
       .then(() => { console.log(`Successful share`); })
       .catch((error) => { console.log(error); });
+  }
+
+  switchTheme(previousTheme: string, flip = false): void {
+    let nextTheme = (flip) ? this.intendedTheme(previousTheme) : previousTheme;
+    this.themeService.switchTheme(nextTheme);
+    this.meta.updateTag({ content: (nextTheme === 'light') ? '#ffffff' : '#0a0a0a' }, 'name=theme-color');
+    this.storageService.set(StorageKey.Theme, nextTheme);
+    this.currentTheme = nextTheme;
+  }
+
+  private intendedTheme(currentTheme: string) {
+    return (currentTheme === 'light') ? 'dark' : 'light';
   }
 
   get sequenceIdentifier(): string {
