@@ -58,7 +58,7 @@
   </div>
   <main class="d-flex flex-column align-items-center justify-content-center flex-grow-1">
       <div class="d-flex" *ngFor="let r of board; let rIdx=index">
-      <div class="d-flex" *ngFor="let c of r; let cIdx=index">
+      <div class="d-flex position-relative" *ngFor="let c of r; let cIdx=index">
         <app-letter-block
           (click)="
             rIdx <= prevRound &&

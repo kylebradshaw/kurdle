@@ -88,6 +88,7 @@
         }
       }
       @media (orientation: landscape) {
+        padding: 0.5rem 0.6rem;
         @include media-breakpoint-up(md) {
           padding: 1rem;
         }

@@ -8,7 +8,7 @@
 
 .daily-icon,
 .random-icon {
-  transform: scale(1);
+  transform: scale(0.5);
 }
 .highlight-letters {
   @include transition(all 0.3s ease-in-out);
@@ -36,11 +36,51 @@
   text-transform: uppercase;
 }
 .clear-row {
-  transform: translateX(4rem) translateY(1rem) scale(0.5);
-  font-size: 1rem;
   position: absolute;
+  top: 0;
+  right: -2rem;
+  font-size: 1rem;
   padding: 1rem;
   margin: -1rem;
+  transform: scale(0.5);
+  @media (orientation: portrait) {
+    top: 1rem;
+    right: -1.5rem;
+    @include media-breakpoint-up(xs) {
+      right: -2rem;
+    }
+    @include media-breakpoint-up(ss) {
+    }
+    @include media-breakpoint-up(md) {
+      transform: scale(0.8);
+      right: -3rem;
+    }
+    @include media-breakpoint-up(lg) {
+      top: 1.2rem;
+    }
+    @include media-breakpoint-up(xl) {
+    }
+    @include media-breakpoint-up(xxl) {
+      top: 2rem;
+    }
+  }
+  @media (orientation: landscape) {
+    @include media-breakpoint-up(ss) {
+    }
+    @include media-breakpoint-up(md) {
+    }
+    @include media-breakpoint-up(lg) {
+      top: 1.2rem;
+      right: -3rem;
+      transform: scale(0.9);
+    }
+    @include media-breakpoint-up(xl) {
+    }
+    @include media-breakpoint-up(xxl) {
+    }
+    @include media-breakpoint-up(md) {
+    }
+  }
 }
 header {
   margin: 0.1rem;
