@@ -5,6 +5,7 @@ import { Component, OnInit } from '@angular/core';
 import { GameService } from 'src/app/services/game.service';
 import { GameMode } from 'src/app/models/game';
 import { ThemeService } from '@bcodes/ngx-theme-service';
+import { isAfter, addDays } from 'date-fns';
 
 @Component({
   selector: 'app-menu',
@@ -91,15 +92,14 @@ export class MenuComponent implements OnInit {
   }
 
   /**
-   * expanded func should be a global utility function.
-   * This method informs us if we should load the daily word, or not
-   * ideally, on initGame. this completedUtc would exist and we could compare if it occured "yesterday"
-   * if it did occur yesterday and we are in a Game.ENDED state, assume they are back for daily play
-   * if it occurred yesterday but they are in a !Game.ENDED state, prompt them to do the daily word w/ a notice, also allow them to click the dailyword link
+   * taking -1day as the window is not correct, but ¯\_(ツ)_/¯
    *
    */
-  get completedUtcCheck(): boolean {
-    return !!(this.storageService.get('completedUtc') || 'null');
+  get completedUtcCheckWithinDay(): boolean {
+    let nowUtc = new Date(Date.now()).toISOString();
+    let completedSequenceUtc = this.storageService.get(StorageKey.CompletedSequenceUtc);
+
+    return isAfter(new Date(nowUtc), addDays(new Date(completedSequenceUtc), 1));
   }
 
   get version(): string {

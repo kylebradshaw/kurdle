@@ -115,7 +115,8 @@ export class GameComponent implements OnInit {
       this.storageService.set(StorageKey.GameState, GameState.RESTORED);
     } else {
       this.storageService.set(StorageKey.GameState, GameState.INITIALIZED);
-      this.storageService.remove('completedUtc'); // 2022.02.18 temporary
+      this.storageService.remove('completedSequenceUtc');
+      this.storageService.remove('completedUtc');
     }
 
     this.wordService.seedWordFromFunc(this.rando, this.sequenceIdx).subscribe((response: FuncWord) => {
@@ -334,7 +335,10 @@ export class GameComponent implements OnInit {
     this.storageService.remove(StorageKey.SequenceIdx); // not needed any longer
     this.storageService.set(StorageKey.ShareText, JSON.stringify(this.shareText()));
     this.storageService.set(StorageKey.GameState, GameState.ENDED);
-    this.storageService.set(StorageKey.CompletedSequenceUtc, new Date().toISOString());
+    if (this.storageService.get(StorageKey.GameMode) === GameMode.SEQUENCE) {
+      this.storageService.set(StorageKey.CompletedSequenceUtc, new Date().toISOString());
+      this.storageService.set(StorageKey.CompletedSequenceIdx, `${this.sequenceIdx}`);
+    }
     // introduce completedGameMode, the end state of the game mode will allow to determine where to pick up
     this.storageService.set(StorageKey.CompletedGameMode, gameMode)
   }
