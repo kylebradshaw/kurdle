@@ -112,6 +112,7 @@ header {
   font-weight: bold;
   letter-spacing: 0.1rem;
   color: theme-var($--theme-surface);
+  transition: background-color 0.5s ease-in-out;
   @media (orientation: portrait) {
     @include media-breakpoint-down(sm) {
     }
