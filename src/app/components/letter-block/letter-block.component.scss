@@ -30,9 +30,14 @@
       height: 3rem;
       font-size: 1.5rem;
     }
+    @include media-breakpoint-up(ssl) {
+      width: 4rem;
+      height: 4rem;
+      font-size: 1.5rem;
+    }
     @include media-breakpoint-up(sm) {
-      width: 3.5rem;
-      height: 3.5rem;
+      // width: 3.5rem;
+      // height: 3.5rem;
       // font-size: 1.5rem;
     }
     @include media-breakpoint-up(md) {
@@ -70,6 +75,10 @@
       width: 5rem;
       height: 5rem;
       font-size: 2.5rem;
+    }
+    @media screen and (min-height: 650px) {
+      min-width: 3.5rem;
+      min-height: 3.5rem;
     }
   }
 
