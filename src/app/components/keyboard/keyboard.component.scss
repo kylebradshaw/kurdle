@@ -72,13 +72,14 @@
       padding-bottom: 0.6rem;
       font-size: 0.9rem; // good for mobile - go bigger in landscape
       font-weight: 800;
-      min-width: 0.6rem;
+      min-width: 1.8rem;
       text-align: center;
       @include media-breakpoint-up(sm) {
         // padding: 0.5rem;
         min-width: 1rem;
       }
       @media (orientation: portrait) {
+        min-height: 4rem;
         @include media-breakpoint-up(ss) {
           padding: 0.7rem;
           min-width: 2.2rem;
