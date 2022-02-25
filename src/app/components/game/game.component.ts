@@ -317,7 +317,7 @@ export class GameComponent implements OnInit {
           this._soln = true;
           this.endGame(true);
         } else if (final) {
-          this.toggleNotice(`${this.decodedWord.toUpperCase()}`, 'bad', true, 36e6);
+          this.toggleNotice(`<a class="wordnik" target="_blank" href="https://wordnik.com/words/${this.decodedWord.toLowerCase()}">${this.decodedWord.toUpperCase()}</a>`, 'bad', true, 36e6);
           this.endGame(true);
         }
       }, 0);
