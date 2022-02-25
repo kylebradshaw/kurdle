@@ -12,6 +12,7 @@ import { NgNavigatorShareService } from 'ng-navigator-share';
 import { StatsService } from 'src/app/services/stats.service';
 import { GameMode } from 'src/app/models/game';
 import { GameService } from 'src/app/services/game.service';
+declare var window: any;
 
 @Component({
   selector: 'app-game',
@@ -313,10 +314,12 @@ export class GameComponent implements OnInit {
       this.saveBoard('class', this.classBoard);
       setTimeout(() => {
         if (classBoardRow.every(letter => letter === 'match')) {
+          window.plausible('Solution', { props: { word: this.decodedWord, board: this.board } });
           this.toggleNotice('You won!', 'good', true, 36e6);
           this._soln = true;
           this.endGame(true);
         } else if (final) {
+          window.plausible('Failure', { props: { word: this.decodedWord, board: this.board } });
           this.toggleNotice(`<a class="wordnik" target="_blank" href="https://wordnik.com/words/${this.decodedWord.toLowerCase()}">${this.decodedWord.toUpperCase()}</a>`, 'bad', true, 36e6);
           this.endGame(true);
         }
@@ -440,9 +443,11 @@ export class GameComponent implements OnInit {
     //   alert(`This service/api is not supported in your Browser`);
     //   return;
     // }
-    this.ngNavigatorShareService.share(this.shareText())
+    const sharePls = () => this.ngNavigatorShareService.share(this.shareText())
       .then(() => { console.log(`Successful share`); })
       .catch((error) => { console.log(error); });
+
+    window.plausible('Share', { callback: sharePls, props: { text: this.shareText() } });
   }
 
   /**
