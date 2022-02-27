@@ -154,7 +154,6 @@ export class GameComponent implements OnInit {
         this.nextSequenceUtc = response.dates[1] as Date;
         this.storageService.set(StorageKey.NextSequenceUtc, `${this.nextSequenceUtc}`);
       }
-      this.currentWord = response.word;
       this.sequenceIdx = response.sequence;
       // this.currentWord = btoa('gonad');
       // this.currentWord = btoa('rebut'); // 'retry'
@@ -163,8 +162,11 @@ export class GameComponent implements OnInit {
       // this.currentWord = btoa('blurt'); // 'bully'
       // this.currentWord = btoa('trend'); // 'terse'
       // this.currentWord = btoa('swift'); // 'stiff'
+      // this.currentWord = btoa('stiff'); // 'swift'
       // this.currentWord = btoa('prize'); // 'piece'
       // this.currentWord = btoa('bowel'); // 'evoke'
+      // this.currentWord = btoa('talon'); // 'tally'
+      // this.currentWord = btoa('azure'); // 'apart'
       this.decodedWord = this.wordService.decode(this.currentWord);
       this.alphabetKey = this.wordService.getAlphabetKey(this.decodedWord);
       // this.indexCode = this.wordService.numberToLetters(response.sequence);
@@ -371,18 +373,26 @@ export class GameComponent implements OnInit {
           if (sequence.lastIndexOf(letter) !== i) {
             if (!repeatedDecoded.includes(letter)) {
               // the guess is the first instance of a guessRepeated, _but_ repeatedDecoded is not in the mix,
-              // so the first instance must be USED
-              return GuessClass.USED;
+              // so mark the first instance of the guess as MISMATCH
+              return GuessClass.MISMATCH;
             } else {
               // the guess is the first instance letter of a repeated sequence _and_
               // the repeatedDecoded also has a dupe just not at this index
-              return GuessClass.MISMATCH;
+              return GuessClass.USED;
             }
           } else {
             // evoke -> bowel
             // the guess is the last letter of a repeated sequence and the previous guess was USED
             if (sequence.lastIndexOf(letter) <= i) {
-              return GuessClass.MISMATCH;
+              // return GuessClass.MISMATCH;
+              // tally -> talon
+              // mismatch on second L, so, the last index of has to be compared to the last index of the decoded word and if the decoded word last index is not higher than current index, it is used
+              if (decodedWord.lastIndexOf(letter) > i) {
+                return GuessClass.MISMATCH;
+              } else {
+                return GuessClass.USED;
+              }
+
             } else {
               // the guess is the last instance letter of a repeated sequence and the previous guess was a (mis)match
               return GuessClass.USED;
