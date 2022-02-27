@@ -168,6 +168,7 @@ export class GameComponent implements OnInit {
       // this.currentWord = btoa('bowel'); // 'evoke'
       // this.currentWord = btoa('talon'); // 'tally'
       // this.currentWord = btoa('azure'); // 'apart'
+      this.currentWord = btoa('glove'); // 'woody'
       this.decodedWord = this.wordService.decode(this.currentWord);
       this.alphabetKey = this.wordService.getAlphabetKey(this.decodedWord);
       // this.indexCode = this.wordService.numberToLetters(response.sequence);
@@ -358,52 +359,120 @@ export class GameComponent implements OnInit {
   matchedLetters(sequence: string, decodedWord: string, alphabetKey: AlphaDict): GuessClass[] {
     const repeatedSequence = this.wordService.repeatedCharacters(sequence);
     const repeatedDecoded = this.wordService.repeatedCharacters(decodedWord);
+    const sequenceUsed = [] as any[];
+    const decodedArr = [...decodedWord];
+    // go through 3 iterations
+    // 1st pass does the match and unused
+    // 2nd pass figures out mismatch
 
-    return [...sequence].map((letter, i) => {
-      const soln = decodedWord;
-      if (soln[i] === letter) {
-        // letter in sequence at proper slot
+    const firstPass = [...sequence].map((letter, idx) => {
+      if (decodedWord[idx] === letter) {
+        sequenceUsed.push(null);
         return GuessClass.MATCH;
-      } else if (alphabetKey[letter].idx.length === 0) {
-        // the letter in sequence is not in solution
-        return GuessClass.USED;
       } else {
-        // the letter is in sequence but does not match
-        if (repeatedSequence.includes(letter)) {
-          // the guess is repeated
-          if (sequence.lastIndexOf(letter) !== i) {
-            if (!repeatedDecoded.includes(letter)) {
-              // the guess is the first instance of a guessRepeated, _but_ repeatedDecoded is not in the mix,
-              // so mark the first instance of the guess as MISMATCH
-              return GuessClass.MISMATCH;
-            } else {
-              // the guess is the first instance letter of a repeated sequence _and_
-              // the repeatedDecoded also has a dupe just not at this index
-              return GuessClass.USED;
-            }
-          } else {
-            // evoke -> bowel
-            // the guess is the last letter of a repeated sequence and the previous guess was USED
-            if (sequence.lastIndexOf(letter) <= i) {
-              // return GuessClass.MISMATCH;
-              // tally -> talon
-              // mismatch on second L, so, the last index of has to be compared to the last index of the decoded word and if the decoded word last index is not higher than current index, it is used
-              if (decodedWord.lastIndexOf(letter) > i) {
-                return GuessClass.MISMATCH;
-              } else {
-                return GuessClass.USED;
-              }
-
-            } else {
-              // the guess is the last instance letter of a repeated sequence and the previous guess was a (mis)match
-              return GuessClass.USED;
-            }
-          }
-        }
-        // the letter is at the improper index
-        return GuessClass.MISMATCH;
+        sequenceUsed.push(letter);
+        return GuessClass.USED;
       }
     });
+
+    // this is a mess how can I clean it up.
+    const secondPass = [...sequenceUsed].map((letter, idx) => {
+
+      const guessInSol = (!!letter) ? decodedArr.indexOf(letter) : -1;
+      // if letter exists in solution, match and splice it
+      console.log(guessInSol, letter, idx);
+      if (guessInSol >= 0) {
+        decodedArr.splice(idx, 1);
+        if (repeatedSequence.indexOf(letter) >= 0 && sequenceUsed.indexOf(letter) === idx) {
+          // [E]VOKE -> BOWEL
+          // if the guess is repeated and it is the first indexOf, it should be MISMATCH
+
+          // was the last repeat a match? if so, don't mismatch!
+
+          return GuessClass.MISMATCH;
+        } else if (repeatedSequence.indexOf(letter) >= 0 && sequenceUsed.lastIndexOf(letter) === idx) {
+          // if the letter is repeated in the guess but it is not repeated in the solution, it should be USED, ELSE MISMATCH
+          // if (repeatedSequence.indexOf(letter) >= 0 && repeatedDecoded.indexOf(letter) < 0) {
+            // STIF[F] -> SWIFT MISFIRE I almost need to know the match indexes
+            return GuessClass.USED;
+          // } else {
+          //   // EVOK[E] -> BOWEL
+          //   return GuessClass.MISMATCH;
+          // }
+        } else if (repeatedSequence.indexOf(letter) >= 0 && repeatedDecoded.indexOf(letter) < 0) {
+          // WOODY -> GLOVE
+          // if the guess is repeated but there are no repeats in the solution, it should be USED
+          return GuessClass.USED;
+        } else {
+          return GuessClass.MISMATCH;
+        }
+      } else {
+        decodedArr.splice(idx, 1);
+        return null;
+      }
+    })
+
+    const ret = secondPass.map((guessClass, idx) => {
+      if (guessClass === null) {
+        return firstPass[idx];
+      } else {
+        return guessClass;
+      }
+    });
+
+    console.log(firstPass, secondPass, ret);
+
+    return ret;
+
+    // return [...sequence].map((letter, i) => {
+    //   const soln = decodedWord;
+    //   // woody -> glove
+    //   // before even the first iteration, the play should be split out so we know which indexes are straight on,
+    //   // we should direct-hit all letters immediately
+    //   // then, we will know which letters are direct hits or mismatched or used all at once.
+    //   if (soln[i] === letter) {
+    //     // letter in sequence at proper slot
+    //     return GuessClass.MATCH;
+    //   } else if (alphabetKey[letter].idx.length === 0) {
+    //     // the letter in sequence is not in solution
+    //     return GuessClass.USED;
+    //   } else {
+    //     // the letter is in sequence but does not match
+    //     if (repeatedSequence.includes(letter)) {
+    //       // the guess is repeated
+    //       if (sequence.lastIndexOf(letter) !== i) {
+    //         if (!repeatedDecoded.includes(letter)) {
+    //           // the guess is the first instance of a guessRepeated, _but_ repeatedDecoded is not in the mix,
+    //           // so mark the first instance of the guess as MISMATCH
+    //           return GuessClass.MISMATCH;
+    //         } else {
+    //           // the guess is the first instance letter of a repeated sequence _and_
+    //           // the repeatedDecoded also has a dupe just not at this index
+    //           return GuessClass.USED;
+    //         }
+    //       } else {
+    //         // evoke -> bowel
+    //         // the guess is the last letter of a repeated sequence and the previous guess was USED
+    //         if (sequence.lastIndexOf(letter) <= i) {
+    //           // return GuessClass.MISMATCH;
+    //           // tally -> talon
+    //           // mismatch on second L, so, the last index of has to be compared to the last index of the decoded word and if the decoded word last index is not higher than current index, it is used
+    //           if (decodedWord.lastIndexOf(letter) > i) {
+    //             return GuessClass.MISMATCH;
+    //           } else {
+    //             return GuessClass.USED;
+    //           }
+
+    //         } else {
+    //           // the guess is the last instance letter of a repeated sequence and the previous guess was a (mis)match
+    //           return GuessClass.USED;
+    //         }
+    //       }
+    //     }
+    //     // the letter is at the improper index
+    //     return GuessClass.MISMATCH;
+    //   }
+    // });
   }
 
   incrementRound(prevRound: number): number {
