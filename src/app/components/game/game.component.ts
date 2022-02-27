@@ -154,6 +154,7 @@ export class GameComponent implements OnInit {
         this.nextSequenceUtc = response.dates[1] as Date;
         this.storageService.set(StorageKey.NextSequenceUtc, `${this.nextSequenceUtc}`);
       }
+      this.currentWord = response.word;
       this.sequenceIdx = response.sequence;
       // this.currentWord = btoa('gonad');
       // this.currentWord = btoa('rebut'); // 'retry'
