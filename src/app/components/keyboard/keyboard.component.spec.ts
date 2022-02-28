@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { StorageService } from 'src/app/services/storage.service';
 
 import { KeyboardComponent } from './keyboard.component';
 
@@ -8,7 +9,10 @@ describe('KeyboardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ KeyboardComponent ]
+      declarations: [ KeyboardComponent ],
+      providers: [
+        { provide: StorageService }
+      ]
     })
     .compileComponents();
   });

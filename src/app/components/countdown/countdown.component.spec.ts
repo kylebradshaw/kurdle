@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { StorageService } from 'src/app/services/storage.service';
 
 import { CountdownComponent } from './countdown.component';
 
@@ -8,7 +9,10 @@ describe('CountdownComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CountdownComponent ]
+      declarations: [ CountdownComponent ],
+      providers: [
+        { provide: StorageService }
+      ]
     })
     .compileComponents();
   });

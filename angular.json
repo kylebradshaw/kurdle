@@ -108,8 +108,18 @@
               "src/favicon.ico",
               "src/assets"
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/stylings",
+                "node_modules/bootstrap/scss"
+              ]
+            },
             "styles": [
-              "src/styles.scss"
+              {
+                "input": "src/stylings/themes.scss",
+                "bundleName": "themes"
+              },
+              "src/stylings/styles.scss"
             ],
             "scripts": []
           }
