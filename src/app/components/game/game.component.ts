@@ -168,7 +168,7 @@ export class GameComponent implements OnInit {
       // this.currentWord = btoa('bowel'); // 'evoke'
       // this.currentWord = btoa('talon'); // 'tally'
       // this.currentWord = btoa('azure'); // 'apart'
-      // this.currentWord = btoa('glove'); // 'woody'
+      this.currentWord = btoa('glove'); // 'woody'
       // this.currentWord = btoa('admit'); // 'attic'
       this.decodedWord = this.wordService.decode(this.currentWord);
       this.alphabetKey = this.wordService.getAlphabetKey(this.decodedWord);
@@ -314,7 +314,7 @@ export class GameComponent implements OnInit {
   submitRound(prevRound: number, sequence: string, final?: boolean): void {
     if (sequence.length !== 5) { return }
     if (this.wordService.inDict(sequence)) {
-      const classBoardRow = this.matchedLetters(sequence, this.decodedWord, this.alphabetKey);
+      const classBoardRow = this.gameService.solver(sequence, this.decodedWord);
       this.classBoard[prevRound] = classBoardRow;
       this.saveBoard('class', this.classBoard);
       setTimeout(() => {
@@ -357,40 +357,38 @@ export class GameComponent implements OnInit {
    * @param solutionWord
    * @returns an array of GuessClass for each letter in sequence based on solution
    */
-  matchedLetters(sequence: string, decodedWord: string, alphabetKey: AlphaDict): GuessClass[] {
-    const repeatedSequence = this.wordService.repeatedCharacters(sequence);
-    // const repeatedDecoded = this.wordService.repeatedCharacters(decodedWord);
+  // matchedLetters(sequence: string, decodedWord: string): GuessClass[] {
+    // const repeatedSequence = this.wordService.repeatedCharacters(sequence);
 
-    // 1st pass does the match and unused
-    // 2nd pass figures out mismatch resolution
-
-    return [...sequence]
-      .map((letter, idx) => {
-        if (decodedWord[idx] === letter) {
-          return GuessClass.MATCH;
-        } else if ([...decodedWord].includes(letter)) {
-          return GuessClass.MISMATCH;
-        } else {
-          return GuessClass.USED;
-        }
-      })
-      .map((guessClass: GuessClass, idx) => {
-        const letter = [...sequence][idx];
-        if (guessClass === GuessClass.MISMATCH && repeatedSequence.includes(letter)) {
-          // what are the indicies of the repeated letter
-          const indicies = [...sequence.matchAll(new RegExp(letter, 'g'))].map(match => match.index);
-          if (indicies.length === 2 && indicies[0] === idx) {
-            // only take the first index into consideration
-            return GuessClass.MISMATCH;
-          } else if (indicies.length === 3 && (indicies[0] === idx || indicies[1] === idx)) {
-            // only take the first 2 indicies into consideration
-            return GuessClass.MISMATCH;
-          }
-          return GuessClass.USED;
-        }
-        return guessClass;
-      });
-  }
+    // return [...sequence]
+    //   // 1st pass does the match and unused
+    //   .map((letter, idx) => {
+    //     if (decodedWord[idx] === letter) {
+    //       return GuessClass.MATCH;
+    //     } else if ([...decodedWord].includes(letter)) {
+    //       return GuessClass.MISMATCH;
+    //     } else {
+    //       return GuessClass.USED;
+    //     }
+    //   })
+    //   // 2nd pass figures out mismatch resolution
+    //   .map((guessClass: GuessClass, idx) => {
+    //     const letter = [...sequence][idx];
+    //     if (guessClass === GuessClass.MISMATCH && repeatedSequence.includes(letter)) {
+    //       // what are the indicies of the repeated letter
+    //       const indicies = [...sequence.matchAll(new RegExp(letter, 'g'))].map(match => match.index);
+    //       if (indicies.length === 2 && indicies[0] === idx) {
+    //         // only take the first index into consideration
+    //         return GuessClass.MISMATCH;
+    //       } else if (indicies.length === 3 && (indicies[0] === idx || indicies[1] === idx)) {
+    //         // only take the first 2 indicies into consideration
+    //         return GuessClass.MISMATCH;
+    //       }
+    //       return GuessClass.USED;
+    //     }
+    //     return guessClass;
+    //   });
+  // }
 
   incrementRound(prevRound: number): number {
     return prevRound < 6 ? prevRound + 1 : 0;
