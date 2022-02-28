@@ -83,8 +83,12 @@ export class GameService {
           // what are the indicies of the repeated letter
           const indicies = [...sequence.matchAll(new RegExp(letter, 'g'))].map(match => match.index);
           if (indicies.length === 2 && indicies[0] === idx) {
-            // only take the first index into consideration
-            return GuessClass.MISMATCH;
+            // only take the first index into consideration IF the second one is not a MATCH
+            if (decodedWord.lastIndexOf(letter) === indicies.pop()) {
+              return GuessClass.USED;
+            } else {
+              return GuessClass.MISMATCH;
+            }
           } else if (indicies.length === 3 && (indicies[0] === idx || indicies[1] === idx)) {
             // only take the first 2 indicies into consideration
             return GuessClass.MISMATCH;
