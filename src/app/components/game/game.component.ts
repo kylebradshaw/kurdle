@@ -168,7 +168,7 @@ export class GameComponent implements OnInit {
       // this.currentWord = btoa('bowel'); // 'evoke'
       // this.currentWord = btoa('talon'); // 'tally'
       // this.currentWord = btoa('azure'); // 'apart'
-      this.currentWord = btoa('glove'); // 'woody'
+      // this.currentWord = btoa('glove'); // 'woody'
       // this.currentWord = btoa('admit'); // 'attic'
       this.decodedWord = this.wordService.decode(this.currentWord);
       this.alphabetKey = this.wordService.getAlphabetKey(this.decodedWord);
