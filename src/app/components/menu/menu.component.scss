@@ -63,7 +63,7 @@
     // width: auto;
     overflow: hidden;
     transition: all cubic-bezier(0.6, -0.28, 0.735, 0.045) 0.3s;
-    &.about-expanded {
+    &.expanded {
       opacity: 1;
       height: auto;
       line-height: 2rem;
@@ -87,4 +87,11 @@
 
 svg.active {
   fill: theme-var($--theme-primary);
+}
+
+.news {
+  li {
+    font-family: consolas, "courier new", monospace;
+    font-size: 0.9rem;
+  }
 }

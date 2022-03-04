@@ -1,8 +1,8 @@
+import { PLURAL_DICTIONARY } from './plural-dict';
 // import * as base64 from 'base-64';
 import {
   differenceInDays,
 } from 'date-fns'
-import { DICTIONARY } from './dict';
 import { Handler,  } from '@netlify/functions';
 import { Random } from "random-js";
 import * as PACKAGE from "./../../package.json";
@@ -22,15 +22,15 @@ const handler: Handler = async (event, context) => {
 
   const getWordOfTheDay = (baseDate: any, targetDate: any = midnightTomorrow) => {
     const idx = differenceInDays(new Date(targetDate), new Date(baseDate));
-    return { word: DICTIONARY[idx], sequence: idx };
+    return { word: PLURAL_DICTIONARY[idx], sequence: idx };
   };
 
   const periodicWord = getWordOfTheDay(baseDate, midnightTomorrow);
 
   // function to randomize
   const randomWord = (): Solution => {
-    const idx = new Random().integer(0, DICTIONARY.length);
-    return { word: DICTIONARY[idx], sequence: idx };
+    const idx = new Random().integer(0, PLURAL_DICTIONARY.length);
+    return { word: PLURAL_DICTIONARY[idx], sequence: idx };
   }
 
   const rawQuery = event.rawQuery;
@@ -45,7 +45,7 @@ const handler: Handler = async (event, context) => {
     const sequenceIdx = Number(rawQuery.split('sequenceIdx=')[1]);
     if (sequenceIdx  > 0) {
       return {
-        word: DICTIONARY[sequenceIdx],
+        word: PLURAL_DICTIONARY[sequenceIdx],
         sequence: `${sequenceIdx}`,
         mode: 'RANDOM',
         version: PACKAGE.version,

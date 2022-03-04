@@ -12,6 +12,7 @@ import { NgNavigatorShareService } from 'ng-navigator-share';
 import { StatsService } from 'src/app/services/stats.service';
 import { GameMode } from 'src/app/models/game';
 import { GameService } from 'src/app/services/game.service';
+import { sample } from 'lodash';
 declare var window: any;
 
 @Component({
@@ -41,6 +42,8 @@ export class GameComponent implements OnInit {
   nextSequenceUtc: any;
   randomPlay: GameMode = GameMode.RANDOM;
   sequencePlay: GameMode = GameMode.SEQUENCE;
+  successMsg: string[] = ['Good Job!', 'Nice!', 'Great!', 'Awesome!', 'Fantastic!', '👍'];
+  failMsg: string[] = ['Sad Times.', 'Try Again.', 'Oh no.', 'Nope.', 'Nah.', '😢'];
   private _play: string = '';
   private _soln: boolean = false;
 
@@ -320,12 +323,13 @@ export class GameComponent implements OnInit {
       setTimeout(() => {
         if (classBoardRow.every(letter => letter === 'match')) {
           window.plausible('Solution', { props: { word: this.decodedWord, board: this.board } });
-          this.toggleNotice('You won!', 'good', true, 36e6);
+          // this.toggleNotice('You won!', 'good', true, 36e6);
+          this.toggleNotice(`${sample(this.successMsg)}`, 'good', true, 36e6);
           this._soln = true;
           this.endGame(true);
         } else if (final) {
           window.plausible('Failure', { props: { word: this.decodedWord, board: this.board } });
-          this.toggleNotice(`<a class="wordnik" target="_blank" href="https://wordnik.com/words/${this.decodedWord.toLowerCase()}">${this.decodedWord.toUpperCase()}</a>`, 'bad', true, 36e6);
+          this.toggleNotice(`${sample(this.failMsg)}`, 'bad', true, 36e6);
           this.endGame(true);
         }
       }, 0);
@@ -348,7 +352,8 @@ export class GameComponent implements OnInit {
       this.storageService.set(StorageKey.CompletedSequenceIdx, `${this.sequenceIdx}`);
     }
     // introduce completedGameMode, the end state of the game mode will allow to determine where to pick up
-    this.storageService.set(StorageKey.CompletedGameMode, gameMode)
+    this.storageService.set(StorageKey.CompletedGameMode, gameMode);
+    this.endState = true;
   }
 
   /**

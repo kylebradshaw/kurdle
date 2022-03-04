@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { DICTIONARY } from 'netlify/functions/dict';
+import { PLURAL_DICTIONARY } from 'netlify/functions/plural-dict';
 import { AlphaDict, GuessClass } from 'src/app/models/guess';
 import { Params } from '@angular/router';
 import { GameMode } from 'src/app/models/game';
@@ -42,7 +42,7 @@ export class WordService {
   }
 
   public seedWord(index?: number): string {
-    return (index) ? DICTIONARY[index] : DICTIONARY[Math.floor(Math.random() * DICTIONARY.length)];
+    return (index) ? PLURAL_DICTIONARY[index] : PLURAL_DICTIONARY[Math.floor(Math.random() * PLURAL_DICTIONARY.length)];
   }
 
   public compare(play: string, obfuscated: string): boolean {
@@ -70,7 +70,7 @@ export class WordService {
   }
 
   public inDict(word: string): boolean {
-    return DICTIONARY.includes(btoa(word));
+    return PLURAL_DICTIONARY.includes(btoa(word));
   }
 
   public lettersMatch(): number[] {

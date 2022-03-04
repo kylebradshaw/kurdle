@@ -4,8 +4,10 @@
       <app-menu></app-menu>
     </div>
     <h1>
-      <span *ngIf="!debugMode" [routerLink]="['/']">Kurdle</span>
-      <span *ngIf="debugMode">{{decodedWord}}</span>
+      <span *ngIf="!debugMode && !endState" [routerLink]="['/']">Kurdle</span>
+      <span *ngIf="debugMode || endState">
+        <a class="wordnik" target="_blank" [href]="'https://wordnik.com/words/' + decodedWord.toLowerCase()">{{decodedWord}}</a>
+      </span>
     </h1>
     <div class="bare">
       <span class="kurdle-code d-flex justify-content-center align-items-center" *ngIf="!rando">

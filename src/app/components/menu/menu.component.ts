@@ -16,6 +16,7 @@ export class MenuComponent implements OnInit {
   shareText: any;
   drawToggled = false;
   aboutToggled: boolean = false;
+  updatesToggled: boolean = false;
   randomPlay: GameMode = GameMode.RANDOM;
   sequencePlay: GameMode = GameMode.SEQUENCE;
   currentTheme = '';

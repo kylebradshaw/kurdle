@@ -47,6 +47,10 @@
 }
 header {
   margin: 0.1rem;
+  a {
+    color: theme-var($--theme-on-surface);
+    text-decoration: underline;
+  }
   h1 {
     text-transform: uppercase;
     font-size: 2rem;
@@ -84,15 +88,15 @@ header {
       min-height: 1rem;
     }
   }
+  // ::ng-deep a.wordnik {
+  //   color: theme-var($--theme-surface);
+  //   text-decoration: underline;
+  // }
   &.good {
     background-color: theme-var($--theme-good);
   }
   &.bad {
     background-color: theme-var($--theme-bad);
-    ::ng-deep a.wordnik {
-      color: theme-var($--theme-surface);
-      text-decoration: underline;
-    }
   }
   &.warn {
     background-color: theme-var($--theme-warn);
