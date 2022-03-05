@@ -76,7 +76,7 @@ export class GameComponent implements OnInit {
   @HostListener('window:keyup', ['$event'])
   keyEvent($event: KeyboardEvent): void {
     if (this.storageService.get('gameState') === GameState.ENDED) {
-      this.toggleNotice('Game Over. Wait or try Random Play.', 'warn');
+      this.toggleNotice('Game Over. Wait or try Random Play.', 'warn', true, 36e6);
       return;
     }
     if ($event.code === 'Backquote' && $event.shiftKey === true) {
@@ -147,7 +147,6 @@ export class GameComponent implements OnInit {
       if (version !== response.version) {
         this.storageService.set(StorageKey.Version, response.version);
         // realizing I do a hard refresh and dump them into SEQUENCE here.
-        // could use a scalpel
         this.gameService.reloadGame(this.sequencePlay);
       }
       if (sequenceIdx !== response.sequence) {
@@ -159,20 +158,6 @@ export class GameComponent implements OnInit {
       }
       this.currentWord = response.word;
       this.sequenceIdx = response.sequence;
-      // this.currentWord = btoa('gonad');
-      // this.currentWord = btoa('rebut'); // 'retry'
-      // this.currentWord = btoa('mammy'); // 'mommy'
-      // this.currentWord = btoa('pleat'); // 'plate
-      // this.currentWord = btoa('blurt'); // 'bully'
-      // this.currentWord = btoa('trend'); // 'terse'
-      // this.currentWord = btoa('swift'); // 'stiff'
-      // this.currentWord = btoa('stiff'); // 'swift'
-      // this.currentWord = btoa('prize'); // 'piece'
-      // this.currentWord = btoa('bowel'); // 'evoke'
-      // this.currentWord = btoa('talon'); // 'tally'
-      // this.currentWord = btoa('azure'); // 'apart'
-      // this.currentWord = btoa('glove'); // 'woody'
-      // this.currentWord = btoa('admit'); // 'attic'
       this.decodedWord = this.wordService.decode(this.currentWord);
       this.alphabetKey = this.wordService.getAlphabetKey(this.decodedWord);
       // this.indexCode = this.wordService.numberToLetters(response.sequence);

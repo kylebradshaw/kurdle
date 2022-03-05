@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { PLURAL_DICTIONARY } from 'netlify/functions/plural-dict';
+// import { PLURAL_DICTIONARY } from 'netlify/functions/plural-dict';
 import { AlphaDict, GuessClass } from 'src/app/models/guess';
 import { Params } from '@angular/router';
 import { GameMode } from 'src/app/models/game';
+import { PLURAL_DICTIONARY } from 'netlify/functions/plural-dict';
 
 export interface FuncWord {
   word: string;

@@ -2330,3 +2330,38 @@ export const DICTIONARY = [
 ];
 
 // copy(`"${btoa("mommy".toLowerCase())}",`)
+
+// INITIAL SEQUENCE BEFORE DICTIONARY FUCKERY
+// [
+//   "ratty",
+//   "blurb",
+//   "slick",
+//   "skier",
+//   "align",
+//   "spare",
+//   "windy",
+//   "gamer",
+//   "noise",
+//   "sugar",
+//   "swift",
+//   "rural",
+//   "chunk",
+//   "gruff",
+//   "touch",
+//   "lynch",
+//   "tribe",
+//   "judge",
+//   "bowel",
+//   "cower",
+//   "lever",
+//   "spice",
+//   "lapse",
+//   "happy",
+//   "talon",
+//   "azure",
+//   "abled",
+//   "warty",
+//   "chess",
+//   "equip",
+//   "flint"
+// ]
