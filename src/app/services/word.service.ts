@@ -2,11 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-// import { PLURAL_DICTIONARY } from 'netlify/functions/plural-dict';
 import { AlphaDict, GuessClass } from 'src/app/models/guess';
 import { Params } from '@angular/router';
 import { GameMode } from 'src/app/models/game';
-import { PLURAL_DICTIONARY } from 'netlify/functions/plural-dict';
+import { PLURAL_PAST_DICTIONARY } from 'netlify/functions/plural-past-dict';
 
 export interface FuncWord {
   word: string;
@@ -43,7 +42,7 @@ export class WordService {
   }
 
   public seedWord(index?: number): string {
-    return (index) ? PLURAL_DICTIONARY[index] : PLURAL_DICTIONARY[Math.floor(Math.random() * PLURAL_DICTIONARY.length)];
+    return (index) ? PLURAL_PAST_DICTIONARY[index] : PLURAL_PAST_DICTIONARY[Math.floor(Math.random() * PLURAL_PAST_DICTIONARY.length)];
   }
 
   public compare(play: string, obfuscated: string): boolean {
@@ -71,7 +70,7 @@ export class WordService {
   }
 
   public inDict(word: string): boolean {
-    return PLURAL_DICTIONARY.includes(btoa(word));
+    return PLURAL_PAST_DICTIONARY.includes(btoa(word));
   }
 
   public numberToLetters(num: number): string {

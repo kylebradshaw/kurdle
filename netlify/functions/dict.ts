@@ -2363,5 +2363,10 @@ export const DICTIONARY = [
 //   "warty",
 //   "chess",
 //   "equip",
-//   "flint"
+//   "flint",
+//   "admit",
 // ]
+
+// https://www.wordhippo.com/what-is/word-finder-unscrambler.html
+// let words = document.querySelectorAll('a[href^="/what-is/another-word-for/"]')
+// copy([...words].map((word) => word.innerHTML));

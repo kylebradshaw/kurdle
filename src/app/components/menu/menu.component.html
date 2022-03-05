@@ -44,7 +44,8 @@
     <li (click)="updatesToggled = !updatesToggled"><span class="clickable">Updates</span></li>
     <li class="collapsed" [ngClass]="{'expanded': updatesToggled}">
       <ul class="news">
-        <li>2022.03.04 expanded dictionary</li>
+        <li>2022.03.05 expanded dictionary with past tense</li>
+        <li>2022.03.04 expanded dictionary with plurals</li>
       </ul>
     </li>
     <li *ngIf="ngNavigatorShareService.canShare() && shareText"
