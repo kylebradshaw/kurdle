@@ -42,8 +42,8 @@ export class GameComponent implements OnInit {
   nextSequenceUtc: any;
   randomPlay: GameMode = GameMode.RANDOM;
   sequencePlay: GameMode = GameMode.SEQUENCE;
-  successMsg: string[] = ['Good Job!', 'Nice!', 'Great!', 'Awesome!', 'Fantastic!', '👍'];
-  failMsg: string[] = ['Sad Times.', 'Try Again.', 'Oh no.', 'Nope.', 'Nah.', '😢'];
+  successMsg: string[] = ['Good Job!', 'Nice!', 'Satisfactory!', 'Great!', 'Awesome!', 'Fantastic!', '👍'];
+  failMsg: string[] = ['Sad Times.', 'Sans Win.', 'Try Again.', 'Oh no.', 'Nope.', 'Nah.', '😢'];
   private _play: string = '';
   private _soln: boolean = false;
 
@@ -308,7 +308,6 @@ export class GameComponent implements OnInit {
       setTimeout(() => {
         if (classBoardRow.every(letter => letter === 'match')) {
           window.plausible('Solution', { props: { word: this.decodedWord, board: this.board } });
-          // this.toggleNotice('You won!', 'good', true, 36e6);
           this.toggleNotice(`${sample(this.successMsg)}`, 'good', true, 36e6);
           this._soln = true;
           this.endGame(true);
@@ -341,44 +340,6 @@ export class GameComponent implements OnInit {
     this.endState = true;
   }
 
-  /**
-   * Matched letters
-   * @param sequence
-   * @param solutionWord
-   * @returns an array of GuessClass for each letter in sequence based on solution
-   */
-  // matchedLetters(sequence: string, decodedWord: string): GuessClass[] {
-    // const repeatedSequence = this.wordService.repeatedCharacters(sequence);
-
-    // return [...sequence]
-    //   // 1st pass does the match and unused
-    //   .map((letter, idx) => {
-    //     if (decodedWord[idx] === letter) {
-    //       return GuessClass.MATCH;
-    //     } else if ([...decodedWord].includes(letter)) {
-    //       return GuessClass.MISMATCH;
-    //     } else {
-    //       return GuessClass.USED;
-    //     }
-    //   })
-    //   // 2nd pass figures out mismatch resolution
-    //   .map((guessClass: GuessClass, idx) => {
-    //     const letter = [...sequence][idx];
-    //     if (guessClass === GuessClass.MISMATCH && repeatedSequence.includes(letter)) {
-    //       // what are the indicies of the repeated letter
-    //       const indicies = [...sequence.matchAll(new RegExp(letter, 'g'))].map(match => match.index);
-    //       if (indicies.length === 2 && indicies[0] === idx) {
-    //         // only take the first index into consideration
-    //         return GuessClass.MISMATCH;
-    //       } else if (indicies.length === 3 && (indicies[0] === idx || indicies[1] === idx)) {
-    //         // only take the first 2 indicies into consideration
-    //         return GuessClass.MISMATCH;
-    //       }
-    //       return GuessClass.USED;
-    //     }
-    //     return guessClass;
-    //   });
-  // }
 
   incrementRound(prevRound: number): number {
     return prevRound < 6 ? prevRound + 1 : 0;

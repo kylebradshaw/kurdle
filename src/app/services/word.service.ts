@@ -74,10 +74,6 @@ export class WordService {
     return PLURAL_DICTIONARY.includes(btoa(word));
   }
 
-  public lettersMatch(): number[] {
-    return [0, 1, 2, 3, 4]
-  }
-
   public numberToLetters(num: number): string {
     const alphabet = 'abcdefghijklmnopqrstuvwxyz';
     const alphabetArr = alphabet.split('');
