@@ -41,12 +41,12 @@
       <!-- <span><a target="_blank" href="https://github.com/tabatkins/wordle-list">using @tabatkins wordle-list</a></span> -->
       <span>Made with ♥ by <a target="_blank" rel="noreferrer noopener" href="https://twitter.com/ky">@ky</a></span>
     </li>
-    <!-- <li (click)="updatesToggled = !updatesToggled"><span class="clickable">Updates</span></li>
+    <li (click)="updatesToggled = !updatesToggled"><span class="clickable">Updates</span></li>
     <li class="collapsed" [ngClass]="{'expanded': updatesToggled}">
       <ul class="news">
         <li>2022.03.04 expanded dictionary</li>
       </ul>
-    </li> -->
+    </li>
     <li *ngIf="ngNavigatorShareService.canShare() && shareText"
       (click)="shareGame()"
       class="d-flex align-items-center justify-content-center"
