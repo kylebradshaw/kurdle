@@ -68,7 +68,10 @@ export class KeyboardComponent implements OnInit, OnChanges {
     combinedBoard.map((boardRow: any, idx: number) => {
       if (((idx == this.prevRound - 1) || (this.prevRound === 0)) && boardRow.some((x: any) => x.class !== 'default')) { //boardRow[4].letter !== '' &&
         boardRow.map((letterObj: any, jdx: number) => {
-          if (this.playedAlphabetKey[letterObj.letter]?.class === GuessClass.MATCH) {
+          // if the letter is a match don't override the playedAlphabetKey[letter] OR
+          // if the first letter is a match or mismatch, but it's a repeat and the second instance is used, don't override playedAlphabetKey[letter]
+          if (this.playedAlphabetKey[letterObj.letter]?.class === GuessClass.MATCH ||
+              this.playedAlphabetKey[letterObj.letter]?.class === GuessClass.MISMATCH && letterObj.class === GuessClass.USED) {
             return;
           } else if (letterObj.class === GuessClass.MISMATCH &&
             this.playedAlphabetKey[letterObj.letter]?.class === GuessClass.USED) {
