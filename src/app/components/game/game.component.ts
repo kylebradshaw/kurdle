@@ -157,7 +157,7 @@ export class GameComponent implements OnInit {
         this.storageService.set(StorageKey.NextSequenceUtc, `${this.nextSequenceUtc}`);
       }
       this.currentWord = response.word;
-      this.currentWord = btoa('forth'); //trust #87
+      // this.currentWord = btoa('forth'); //trust #87
       this.sequenceIdx = response.sequence;
       this.decodedWord = this.wordService.decode(this.currentWord);
       this.alphabetKey = this.wordService.getAlphabetKey(this.decodedWord);
