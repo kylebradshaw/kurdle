@@ -70,5 +70,8 @@ describe('GameService', () => {
     it('should solve salsa/lasso', () => {
       expect(service.solver('salsa', 'lasso')).toEqual([GuessClass.MISMATCH, GuessClass.MATCH, GuessClass.MISMATCH, GuessClass.MATCH, GuessClass.USED]);
     });
+    it('should solve moody/motto', () => {
+      expect(service.solver('moody', 'motto')).toEqual([GuessClass.MATCH, GuessClass.MATCH, GuessClass.MISMATCH, GuessClass.USED, GuessClass.USED]);
+    });
   });
 });

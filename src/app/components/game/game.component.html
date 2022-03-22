@@ -51,7 +51,7 @@
     </svg> -->
   </div>
   <main class="d-flex flex-column align-items-center justify-content-center flex-grow-1">
-      <div class="d-flex letter-row" *ngFor="let r of board; let rIdx=index">
+    <div class="d-flex letter-row" *ngFor="let r of board; let rIdx=index">
       <div class="d-flex align-items-center" *ngFor="let c of r; let cIdx=index">
         <app-letter-block
           (click)="

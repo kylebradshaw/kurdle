@@ -95,6 +95,9 @@ export class GameService {
           } else if (indicies.length === 3 && (indicies[0] === idx || indicies[1] === idx)) {
             // only take the first 2 indicies into consideration
             return GuessClass.MISMATCH;
+          } else if (indicies.length === solIndicies.length) {
+            // MO[O]DY/MOTTO
+            return GuessClass.MISMATCH;
           }
           return GuessClass.USED;
         }
