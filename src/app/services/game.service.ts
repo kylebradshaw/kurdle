@@ -80,9 +80,14 @@ export class GameService {
         if (guessClass === GuessClass.MISMATCH && repeatedSequence.includes(letter)) {
           // what are the indicies of the repeated letter
           const indicies = [...sequence.matchAll(new RegExp(letter, 'g'))].map(match => match.index);
+          const solIndicies = [...decodedWord.matchAll(new RegExp(letter, 'g'))].map(match => match.index);
           if (indicies.length === 2 && indicies[0] === idx) {
             // only take the first index into consideration IF the second one is not a MATCH
-            if (decodedWord.lastIndexOf(letter) === indicies.pop()) {
+            if (indicies.length === solIndicies.length) {
+              // repeated letter in guess is just in the wrong slot as the sol'n repeat, odds are it will mismatch
+              // [S]ALSA/LASSO
+              return GuessClass.MISMATCH;
+            } else if (decodedWord.lastIndexOf(letter) === indicies.pop()) {
               return GuessClass.USED;
             } else {
               return GuessClass.MISMATCH;

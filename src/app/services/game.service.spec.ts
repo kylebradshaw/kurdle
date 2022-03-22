@@ -67,5 +67,8 @@ describe('GameService', () => {
     it('should solve attic/admit', () => {
       expect(service.solver('attic', 'admit')).toEqual([GuessClass.MATCH, GuessClass.MISMATCH, GuessClass.USED, GuessClass.MATCH, GuessClass.USED]);
     });
+    it('should solve salsa/lasso', () => {
+      expect(service.solver('salsa', 'lasso')).toEqual([GuessClass.MISMATCH, GuessClass.MATCH, GuessClass.MISMATCH, GuessClass.MATCH, GuessClass.USED]);
+    });
   });
 });
