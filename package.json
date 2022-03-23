@@ -1,6 +1,6 @@
 {
   "name": "kurdle",
-  "version": "0.14.7",
+  "version": "0.14.8",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
