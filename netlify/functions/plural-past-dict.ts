@@ -2417,7 +2417,8 @@ export const PLURAL_PAST_DICTIONARY = [
   "d2lyZWQ=",
   "d29vZWQ=",
   "d293ZWQ=",
-  "Y2xhc3M="
+  "Y2xhc3M=",
+  "bGFzZXI="
 ];
 
-// past jammed at end
+// past & missing word list words jammed at end
