@@ -2418,7 +2418,9 @@ export const PLURAL_PAST_DICTIONARY = [
   "d29vZWQ=",
   "d293ZWQ=",
   "Y2xhc3M=",
-  "bGFzZXI="
+  "bGFzZXI=",
+  "Z3Vlc3M="
 ];
 
 // past & missing word list words jammed at end
+// guess 'Z3Vlc3M='
