@@ -131,13 +131,13 @@ The `@bcodes/ngx-theme-service` package is not compatible with Angular 21. Repla
 
 ### Acceptance Criteria
 
-- [ ] `ThemeService` is a new `@Injectable({ providedIn: 'root' })` class in `src/app/services/`
-- [ ] It exposes `theme = signal<'light' | 'dark'>('light')` backed by `StorageService`
-- [ ] `toggle()` method switches theme and updates the `<html>` element's `data-theme` attribute
-- [ ] `@bcodes/ngx-theme-service` is completely removed from `package.json` and all imports
-- [ ] `theme.service.spec.ts` covers toggle, persistence, and initialization from storage
-- [ ] Coverage for `theme.service.ts` is 100%
-- [ ] git commit created: `feat: task 7 - theme service modernization`
+- [x] `ThemeService` is a new `@Injectable({ providedIn: 'root' })` class in `src/app/services/`
+- [x] It exposes `theme = signal<'light' | 'dark'>('light')` backed by `StorageService`
+- [x] `toggle()` method switches theme and updates the `<html>` element's `data-theme` attribute
+- [x] `@bcodes/ngx-theme-service` is completely removed from `package.json` and all imports
+- [x] `theme.service.spec.ts` covers toggle, persistence, and initialization from storage
+- [x] Coverage for `theme.service.ts` is 100%
+- [x] git commit created: `feat: task 7 - theme service modernization`
 
 **Completion signal:** When all acceptance criteria above are satisfied and the git commit exists, output exactly: `<promise>TESTS COMPLETE</promise>`
 
