@@ -184,13 +184,13 @@ Convert `KeyboardComponent` to standalone. Replace `@Input`/`@Output` with signa
 
 ### Acceptance Criteria
 
-- [ ] `@Component({ standalone: true, ... })`
-- [ ] `alphabetKey` input is `input<AlphaDict>({})`
-- [ ] Key-click event uses `output<string>()` (replaces `@Output() EventEmitter`)
-- [ ] Template uses new control flow syntax
-- [ ] `keyboard.component.spec.ts` migrated to Vitest; all key states and emit paths tested
-- [ ] Coverage is 100%
-- [ ] git commit created: `feat: task 10 - keyboard component modernization`
+- [x] `@Component({ standalone: true, ... })`
+- [x] `alphabetKey` input is `input<AlphaDict>({})`
+- [x] Key-click event uses `output<string>()` (replaces `@Output() EventEmitter`)
+- [x] Template uses new control flow syntax
+- [x] `keyboard.component.spec.ts` migrated to Vitest; all key states and emit paths tested
+- [x] Coverage is 100%
+- [x] git commit created: `feat: task 10 - keyboard component modernization`
 
 **Completion signal:** When all acceptance criteria above are satisfied and the git commit exists, output exactly: `<promise>TESTS COMPLETE</promise>`
 ---

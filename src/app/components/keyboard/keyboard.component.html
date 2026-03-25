@@ -1,18 +1,19 @@
 <div class="keyboard d-flex flex-column align-items-center justify-content-center">
-  <div class="keyboard__row d-flex align-items-start justify-content-center"
-    *ngFor="let t of keys"
-    >
-    <button
-      *ngFor="let k of t"
-      [disabled]="
-        (sequence.length !== 5 && k === guessAction.ENTER) ||
-        (sequence.length === 0 && k === guessAction.DEL)
-      "
-      class="keyboard__key char"
-      [class]="'char--' + playedAlphabetKey[k]?.class"
-      (click)="onLetter(k)"
-      [innerText]="k || '&nbsp;'"
-      >
-    </button>
-  </div>
+  @for (t of keys; track $index) {
+    <div class="keyboard__row d-flex align-items-start justify-content-center">
+      @for (k of t; track k) {
+        <button
+          [disabled]="
+            (internalSequence.length !== 5 && k === guessAction.ENTER) ||
+            (internalSequence.length === 0 && k === guessAction.DEL)
+          "
+          class="keyboard__key char"
+          [class]="'char--' + playedAlphabetKey[k]?.class"
+          (click)="onLetter(k)"
+          >
+          {{k || '&nbsp;'}}
+        </button>
+      }
+    </div>
+  }
 </div>

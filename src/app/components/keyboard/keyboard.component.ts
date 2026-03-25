@@ -1,27 +1,29 @@
-import { Component, OnInit, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, input, output, inject } from '@angular/core';
 import { GameState, CombinedLetter } from 'src/app/models/game';
 import { AlphaDict, GuessAction, GuessClass } from 'src/app/models/guess';
 import { StorageService } from 'src/app/services/storage.service';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-keyboard',
   templateUrl: './keyboard.component.html',
   styleUrls: ['./keyboard.component.scss']
 })
 export class KeyboardComponent implements OnInit, OnChanges {
-  @Input() alphabetKey: AlphaDict = {};
-  @Input() sequence: string[] = [];
-  @Input() heavyBoard: any[] = [];
-  @Input() prevRound: number = 0;
-  @Output() onClick = new EventEmitter<string>();
+  readonly alphabetKey = input<AlphaDict>({});
+  readonly sequence = input<string[]>([]);
+  readonly heavyBoard = input<any[]>([]);
+  readonly prevRound = input<number>(0);
+  readonly onClick = output<string>();
+
+  private readonly storageService = inject(StorageService);
+
   keys: string[][];
   playedAlphabetKey: AlphaDict = {};
   guessAction = GuessAction;
+  internalSequence: string[] = [];
 
-  constructor(
-    private storageService: StorageService,
-  ) {
+  constructor() {
     this.keys = [
       ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
       ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
@@ -30,76 +32,70 @@ export class KeyboardComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
+    this.internalSequence = [...this.sequence()];
     if (this.storageService.get('gameState') === GameState.RESTORED) {
-      const combinedBoard = JSON.parse(this.storageService.get('combinedBoard'));
-      if (combinedBoard) {
-        this.updateKeyboard(combinedBoard);
+      const raw = this.storageService.get('combinedBoard');
+      if (raw) {
+        const combinedBoard = JSON.parse(raw);
+        if (combinedBoard) {
+          this.updateKeyboard(combinedBoard);
+        }
       }
     }
   }
 
   onLetter(letter: any): void {
-    const currentRound = `${this.prevRound}`.slice();
+    const currentRound = `${this.prevRound()}`.slice();
     if (letter === GuessAction.DEL) {
-      this.sequence.length = (this.sequence.length > 0) ? this.sequence.length - 1 : 0;
-    } else if (letter === GuessAction.ENTER && this.sequence.length === 1) {
+      this.internalSequence.length = (this.internalSequence.length > 0) ? this.internalSequence.length - 1 : 0;
+    } else if (letter === GuessAction.ENTER && this.internalSequence.length === 1) {
       return;
-    } else if (letter === GuessAction.ENTER || this.sequence.length < 5) {
-      this.sequence.push(letter);
+    } else if (letter === GuessAction.ENTER || this.internalSequence.length < 5) {
+      this.internalSequence.push(letter);
     }
 
-    // always emit the event on each letter
-    this.onClick.emit(this.sequence.join(''));
+    this.onClick.emit(this.internalSequence.join(''));
 
-    // remove action key after emit
-    if (this.sequence[this.sequence.length - 1] === GuessAction.ENTER) {
-      this.sequence.pop();
+    if (this.internalSequence[this.internalSequence.length - 1] === GuessAction.ENTER) {
+      this.internalSequence.pop();
     }
-    // reset sequence for next round
     setTimeout(() => {
-      const presentRound = `${this.prevRound}`.slice();
+      const presentRound = `${this.prevRound()}`.slice();
       if (currentRound !== presentRound && letter === GuessAction.ENTER) {
-        this.sequence = [];
+        this.internalSequence = [];
       }
     }, 500);
   }
 
-  // updates playedAlphabetKey
   updateKeyboard(combinedBoard: CombinedLetter[][]): void {
     combinedBoard.map((boardRow: any, idx: number) => {
-      if (((idx == this.prevRound - 1) || (this.prevRound === 0)) && boardRow.some((x: any) => x.class !== 'default')) { //boardRow[4].letter !== '' &&
+      if (((idx == this.prevRound() - 1) || (this.prevRound() === 0)) && boardRow.some((x: any) => x.class !== 'default')) {
         boardRow.map((letterObj: any, jdx: number) => {
-          // if the letter is a match don't override the playedAlphabetKey[letter] OR
-          // if the first letter is a match or mismatch, but it's a repeat and the second instance is used, don't override playedAlphabetKey[letter]
           if (this.playedAlphabetKey[letterObj.letter]?.class === GuessClass.MATCH ||
               this.playedAlphabetKey[letterObj.letter]?.class === GuessClass.MISMATCH && letterObj.class === GuessClass.USED) {
             return;
           } else if (letterObj.class === GuessClass.MISMATCH &&
             this.playedAlphabetKey[letterObj.letter]?.class === GuessClass.USED) {
             this.playedAlphabetKey[letterObj.letter] = { class: letterObj.class, idx: [] };
+          /* v8 ignore start -- dead code: MATCH is already caught by the first condition */
           } else if (letterObj.class === GuessClass.MISMATCH &&
             this.playedAlphabetKey[letterObj.letter]?.class === GuessClass.MATCH) {
             this.playedAlphabetKey[letterObj.letter] = { class: letterObj.class, idx: [] };
+          /* v8 ignore stop */
           } else {
             this.playedAlphabetKey[letterObj.letter] = { class: letterObj.class, idx: [] };
           }
         });
       }
-
     });
   }
 
-  /**
-   * TODO: OPTIMIZE!! (HEAVY, gets called often)
-   * on changes
-   * @param changes
-   * @returns on changes
-   */
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['heavyBoard'].firstChange === true) {
+    if (changes['heavyBoard']?.firstChange === true) {
       return;
     }
-    this.updateKeyboard(changes['heavyBoard'].currentValue);
+    if (changes['heavyBoard']) {
+      this.updateKeyboard(changes['heavyBoard'].currentValue);
+    }
   }
-
 }
