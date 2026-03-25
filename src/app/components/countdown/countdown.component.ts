@@ -1,38 +1,44 @@
-import { Observable, interval, of } from 'rxjs';
-import { map, tap, takeWhile} from 'rxjs/operators';
+import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { StorageService } from 'src/app/services/storage.service';
-import { Component, Input, OnInit } from '@angular/core';
 import { nextRoundTime } from 'src/app/helpers';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-countdown',
   templateUrl: './countdown.component.html',
   styleUrls: ['./countdown.component.scss']
 })
-export class CountdownComponent implements OnInit {
-  seconds: number = 0;
-  minutes: number = 0;
-  hours: number = 0;
-  now: number = 0;
-  countdown$: Observable<any> = of({});
+export class CountdownComponent implements OnInit, OnDestroy {
+  private readonly storageService = inject(StorageService);
+  private intervalId: ReturnType<typeof setInterval> | null = null;
 
-  constructor(
-    private storageService: StorageService
-  ) { }
+  readonly seconds = signal(0);
+  readonly minutes = signal(0);
+  readonly hours = signal(0);
+  readonly active = signal(false);
 
   ngOnInit(): void {
-    this.countdown$ = interval(1000).pipe(
-      tap(() => {
-        const expires = this.storageService.get('nextSequenceUtc');
-        const next = nextRoundTime(expires);
-        this.seconds = next.seconds;
-        this.minutes = next.minutes;
-        this.hours = next.hours;
-      }),
-      map(_ => `${this.hours}:${this.minutes}:${this.seconds}`),
-      takeWhile((val: string) => val !== `0:0:0`),
-    );
+    this.tick();
+    this.intervalId = setInterval(() => this.tick(), 1000);
   }
 
+  ngOnDestroy(): void {
+    if (this.intervalId !== null) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
+  }
+
+  private tick(): void {
+    const expires = this.storageService.get('nextSequenceUtc');
+    if (!expires) {
+      this.active.set(false);
+      return;
+    }
+    const next = nextRoundTime(expires);
+    this.seconds.set(next.seconds);
+    this.minutes.set(next.minutes);
+    this.hours.set(next.hours);
+    this.active.set(next.hours > 0 || next.minutes > 0 || next.seconds > 0);
+  }
 }

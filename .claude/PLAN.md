@@ -166,14 +166,14 @@ Convert `CountdownComponent` to standalone. Timer logic should use `signal()` + 
 
 ### Acceptance Criteria
 
-- [ ] `@Component({ standalone: true, ... })`
-- [ ] All `@Input()` replaced with `input<T>()`
-- [ ] Any `@Output()` replaced with `output<T>()`
-- [ ] Countdown timer uses `signal<string>()` updated on interval; interval cleaned up `onDestroy`
-- [ ] Template uses new control flow syntax
-- [ ] `countdown.component.spec.ts` migrated to Vitest; timer ticks and cleanup tested with fake timers
-- [ ] Coverage is 100%
-- [ ] git commit created: `feat: task 9 - countdown component modernization`
+- [x] `@Component({ standalone: true, ... })`
+- [x] All `@Input()` replaced with `input<T>()`
+- [x] Any `@Output()` replaced with `output<T>()`
+- [x] Countdown timer uses `signal<string>()` updated on interval; interval cleaned up `onDestroy`
+- [x] Template uses new control flow syntax
+- [x] `countdown.component.spec.ts` migrated to Vitest; timer ticks and cleanup tested with fake timers
+- [x] Coverage is 100%
+- [x] git commit created: `feat: task 9 - countdown component modernization`
 
 **Completion signal:** When all acceptance criteria above are satisfied and the git commit exists, output exactly: `<promise>TESTS COMPLETE</promise>`
 ---

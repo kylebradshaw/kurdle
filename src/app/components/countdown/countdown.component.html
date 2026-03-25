@@ -1,3 +1,5 @@
-<div *ngIf="countdown$ | async" class="d-flex justify-content-center align-items-center">
-  {{hours}}h {{minutes}}m {{seconds}}s
-</div>
+@if (active()) {
+  <div class="d-flex justify-content-center align-items-center">
+    {{hours()}}h {{minutes()}}m {{seconds()}}s
+  </div>
+}
