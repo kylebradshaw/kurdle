@@ -201,12 +201,12 @@ Convert `MenuComponent` to standalone. Remove `ThemeService` constructor injecti
 
 ### Acceptance Criteria
 
-- [ ] `@Component({ standalone: true, ... })`
-- [ ] Uses `inject(ThemeService)` and `inject(StorageService)`
-- [ ] Theme toggle calls the new `ThemeService.toggle()`
-- [ ] `menu.component.spec.ts` migrated to Vitest
-- [ ] Coverage is 100%
-- [ ] git commit created: `feat: task 11 - menu component modernization`
+- [x] `@Component({ standalone: true, ... })`
+- [x] Uses `inject(ThemeService)` and `inject(StorageService)`
+- [x] Theme toggle calls the new `ThemeService.toggle()`
+- [x] `menu.component.spec.ts` migrated to Vitest
+- [x] Coverage is 100%
+- [x] git commit created: `feat: task 11 - menu component modernization`
 
 **Completion signal:** When all acceptance criteria above are satisfied and the git commit exists, output exactly: `<promise>TESTS COMPLETE</promise>`
 ---

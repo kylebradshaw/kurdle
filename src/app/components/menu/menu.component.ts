@@ -1,51 +1,43 @@
 import { Meta } from '@angular/platform-browser';
 import { StorageKey, StorageService } from 'src/app/services/storage.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { NgClass } from '@angular/common';
 import { GameService } from 'src/app/services/game.service';
+import { ThemeService } from 'src/app/services/theme.service';
 import { GameMode } from 'src/app/models/game';
 import { isAfter, addDays } from 'date-fns';
+import { CountdownComponent } from 'src/app/components/countdown/countdown.component';
 
 @Component({
-  standalone: false,
+  standalone: true,
+  imports: [NgClass, CountdownComponent],
   selector: 'app-menu',
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.scss']
 })
 export class MenuComponent implements OnInit {
+  private readonly storageService = inject(StorageService);
+  readonly gameService = inject(GameService);
+  private readonly themeService = inject(ThemeService);
+  private readonly meta = inject(Meta);
+
   shareText: any;
   drawToggled = false;
-  aboutToggled: boolean = false;
-  updatesToggled: boolean = false;
-  randomPlay: GameMode = GameMode.RANDOM;
-  sequencePlay: GameMode = GameMode.SEQUENCE;
-  currentTheme = '';
+  aboutToggled = false;
+  updatesToggled = false;
+  randomPlay = GameMode.RANDOM;
+  sequencePlay = GameMode.SEQUENCE;
 
-  constructor(
-    private storageService: StorageService,
-    public gameService: GameService,
-    private meta: Meta,
-  ) {
-    this.meta.addTag(
-      { name: 'theme-color', content: '#ffffff' }
-    );
+  get currentTheme(): string {
+    return this.themeService.theme();
+  }
+
+  constructor() {
+    this.meta.addTag({ name: 'theme-color', content: '#ffffff' });
   }
 
   ngOnInit(): void {
-    this.initTheme();
-  }
-
-  initTheme(): void {
-    const theme = this.storageService.get('theme');
-    if (theme !== null) {
-      this.currentTheme = theme;
-      this.switchTheme(theme);
-    } else {
-      if (window.matchMedia('prefers-color-scheme: dark').matches) {
-        this.switchTheme('light');
-      } else {
-        this.switchTheme('dark');
-      }
-    }
+    this.updateMetaThemeColor();
   }
 
   toggleDrawer(): boolean {
@@ -64,26 +56,27 @@ export class MenuComponent implements OnInit {
       .catch((error: any) => { console.log(error); });
   }
 
-  switchTheme(previousTheme: string, flip = false): void {
-    let nextTheme = (flip) ? this.intendedTheme(previousTheme) : previousTheme;
-    document.documentElement.setAttribute('data-theme', nextTheme);
-    this.meta.updateTag({ content: (nextTheme === 'light') ? '#ffffff' : '#0a0a0a' }, 'name=theme-color');
-    this.storageService.set(StorageKey.Theme, nextTheme);
-    this.currentTheme = nextTheme;
+  toggleTheme(): void {
+    this.themeService.toggle();
+    this.updateMetaThemeColor();
   }
 
-  private intendedTheme(currentTheme: string) {
-    return (currentTheme === 'light') ? 'dark' : 'light';
+  private updateMetaThemeColor(): void {
+    const theme = this.themeService.theme();
+    this.meta.updateTag(
+      { content: theme === 'light' ? '#ffffff' : '#0a0a0a' },
+      'name=theme-color'
+    );
   }
 
   get sequenceIdentifier(): string {
-    let sequenceIdx = this.storageService.get('sequenceIdx') as string;
+    const sequenceIdx = this.storageService.get('sequenceIdx') as string;
     return (Number(sequenceIdx) > 0) ? ("0000" + Number(sequenceIdx)).slice(-4) : '????';
   }
 
   get completedUtcCheckWithinDay(): boolean {
-    let nowUtc = new Date(Date.now()).toISOString();
-    let completedSequenceUtc = this.storageService.get(StorageKey.CompletedSequenceUtc);
+    const nowUtc = new Date(Date.now()).toISOString();
+    const completedSequenceUtc = this.storageService.get(StorageKey.CompletedSequenceUtc);
 
     return isAfter(new Date(nowUtc), addDays(new Date(completedSequenceUtc), 1));
   }
