@@ -88,6 +88,9 @@
           },
           "defaultConfiguration": "development"
         },
+        "test": {
+          "builder": "@analogjs/vitest-angular:test"
+        },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n"
         }
