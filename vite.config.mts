@@ -4,7 +4,7 @@ import angular from '@analogjs/vite-plugin-angular';
 import { resolve } from 'node:path';
 
 export default defineConfig(({ mode }) => ({
-  plugins: [angular()],
+  plugins: [angular({ include: ['src/**/*.ts'] })],
   resolve: {
     alias: {
       'src': resolve(__dirname, 'src'),
@@ -20,7 +20,7 @@ export default defineConfig(({ mode }) => ({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov', 'html'],
-      include: ['src/app/**/*.ts'],
+      include: ['src/app/**/*.ts', 'netlify/functions/**/*.ts'],
       exclude: [
         'src/app/**/*.spec.ts',
         'src/app/testing/**',

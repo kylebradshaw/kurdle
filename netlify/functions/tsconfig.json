@@ -1,15 +1,16 @@
 {
-  "extends": "./../../tsconfig.json",
   "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "esModuleInterop": true,
     "isolatedModules": true,
+    "resolveJsonModule": true,
     "outDir": "./",
-    "types": []
+    "strict": true,
+    "types": ["node"]
   },
   "files": [
-    "word.ts",
-  ],
-  "include": [
-    "src/**/*.d.ts"
+    "word.ts"
   ]
 }

@@ -1,90 +1,84 @@
 import { PLURAL_PAST_DICTIONARY } from './plural-past-dict';
-// import * as base64 from 'base-64';
-import {
-  differenceInDays,
-} from 'date-fns'
-import { Handler,  } from '@netlify/functions';
-import { Random } from "random-js";
-import * as PACKAGE from "./../../package.json";
+import { differenceInDays } from 'date-fns';
+import { Random } from 'random-js';
 
 interface Solution {
   word: string;
   sequence: number;
 }
 
-const handler: Handler = async (event, context) => {
+interface WordResponse {
+  word: string;
+  sequence: number | string;
+  mode: string;
+  version: string;
+  dates: Date[];
+}
 
-  // PERIODIC WORD
-  const baseDate = new Date(Date.UTC(2022,1,3,5,0,0,0));
-  let nowTomorrow = new Date(Date.now());
-  nowTomorrow.setUTCDate(nowTomorrow.getUTCDate() + 1);
-  const midnightTomorrow = new Date(new Date(nowTomorrow).setUTCHours(5,0,0,0));
+export const BASE_DATE = new Date(Date.UTC(2022, 1, 3, 5, 0, 0, 0));
 
-  const getWordOfTheDay = (baseDate: any, targetDate: any = midnightTomorrow) => {
-    const idx = differenceInDays(new Date(targetDate), new Date(baseDate));
-    return { word: PLURAL_PAST_DICTIONARY[idx], sequence: idx };
-  };
+export function getMidnightTomorrow(now: Date = new Date()): Date {
+  const tomorrow = new Date(now);
+  tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
+  return new Date(tomorrow.setUTCHours(5, 0, 0, 0));
+}
 
-  const periodicWord = getWordOfTheDay(baseDate, midnightTomorrow);
+export function getWordOfTheDay(baseDate: Date, targetDate: Date): Solution {
+  const idx = differenceInDays(targetDate, baseDate);
+  return { word: PLURAL_PAST_DICTIONARY[idx], sequence: idx };
+}
 
-  // function to randomize
-  const randomWord = (): Solution => {
-    const idx = new Random().integer(0, PLURAL_PAST_DICTIONARY.length);
-    return { word: PLURAL_PAST_DICTIONARY[idx], sequence: idx };
+export function getRandomWord(): Solution {
+  const idx = new Random().integer(0, PLURAL_PAST_DICTIONARY.length);
+  return { word: PLURAL_PAST_DICTIONARY[idx], sequence: idx };
+}
+
+export function buildResponse(
+  rawQuery: string,
+  version: string,
+  baseDate: Date = BASE_DATE,
+  midnightTomorrow: Date = getMidnightTomorrow(),
+): WordResponse {
+  const sequenceIdx = Number(rawQuery.split('sequenceIdx=')[1]);
+  const dates = [baseDate, midnightTomorrow];
+
+  if (sequenceIdx > 0) {
+    return {
+      word: PLURAL_PAST_DICTIONARY[sequenceIdx],
+      sequence: `${sequenceIdx}`,
+      mode: 'RANDOM',
+      version,
+      dates,
+    };
+  } else if (rawQuery.includes('rando=true')) {
+    const random = getRandomWord();
+    return {
+      word: random.word,
+      sequence: random.sequence,
+      mode: 'RANDOM',
+      version,
+      dates,
+    };
+  } else {
+    const periodic = getWordOfTheDay(baseDate, midnightTomorrow);
+    return {
+      word: periodic.word,
+      sequence: periodic.sequence,
+      mode: 'SEQUENCE',
+      version,
+      dates,
+    };
   }
+}
 
-  const rawQuery = event.rawQuery;
-  const chooseRandom = randomWord();
+// Netlify Functions v2 handler
+export default async (request: Request) => {
+  const url = new URL(request.url);
+  const rawQuery = url.search.replace('?', '');
+  const version = '0.14.11';
 
-  /**
-   * Periodic for Daily Word in Sequence, else Random
-   * to send plaintext btoa(word), use base64.decode(word)
-   * @returns proper word in context
-   */
-  const bodyText = () => {
-    const sequenceIdx = Number(rawQuery.split('sequenceIdx=')[1]);
-    if (sequenceIdx  > 0) {
-      return {
-        word: PLURAL_PAST_DICTIONARY[sequenceIdx],
-        sequence: `${sequenceIdx}`,
-        mode: 'RANDOM',
-        version: PACKAGE.version,
-        dates: [
-          baseDate,
-          midnightTomorrow,
-        ],
-        // process: process.env
-      };
-    } else if (rawQuery.includes('rando=true')) {
-      return {
-        word: chooseRandom.word,
-        sequence: chooseRandom.sequence,
-        mode: 'RANDOM',
-        version: PACKAGE.version,
-        dates: [
-          baseDate,
-          midnightTomorrow,
-        ],
-        // process: process.env
-      };
-    } else {
-      return {
-        word: periodicWord.word,
-        sequence: periodicWord.sequence,
-        mode: 'SEQUENCE',
-        version: PACKAGE.version,
-        dates: [
-          baseDate,
-          midnightTomorrow,
-        ],
-        // process: process.env
-      };
-    }
-  }
-  return {
-    statusCode: 200,
-    body: JSON.stringify(bodyText())
-  };
+  return new Response(JSON.stringify(buildResponse(rawQuery, version)), {
+    status: 200,
+    headers: { 'Content-Type': 'application/json' },
+  });
 };
-
-export { handler };
