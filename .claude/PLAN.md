@@ -69,7 +69,7 @@ Convert `StorageService` from an `@Injectable()` class with constructor-based DI
 - [x] `StorageKey` enum is unchanged (public API parity)
 - [x] `storage.service.spec.ts` is migrated to Vitest and tests signal reactivity, `clear()` preservation of hotfix/version/theme/completedSequenceUtc keys
 - [x] Coverage for `storage.service.ts` is 100%
-- [ ] git commit created: `feat: task 3 - storage service modernization`
+- [x] git commit created: `feat: task 3 - storage service modernization`
 
 **Completion signal:** When all acceptance criteria above are satisfied and the git commit exists, output exactly: `<promise>TESTS COMPLETE</promise>`
 
@@ -81,12 +81,12 @@ Convert `GameService` to standalone injectable using `inject()`. The `solver()` 
 
 ### Acceptance Criteria
 
-- [ ] `GameService` uses `inject(StorageService)` and `inject(WordService)` instead of constructor params
-- [ ] `solver()` logic is extracted to a pure function `solveGuess(sequence, decodedWord): GuessClass[]` in `helpers/` and re-exported from `GameService` for backwards compat
-- [ ] `directUserFlow()` and `reloadGame()` are tested with mocked storage/word services
-- [ ] `game.service.spec.ts` migrated to Vitest; all edge cases for duplicate-letter resolution covered
-- [ ] Coverage for `game.service.ts` and `solveGuess` is 100%
-- [ ] git commit created: `feat: task 4 - game service modernization`
+- [x] `GameService` uses `inject(StorageService)` and `inject(WordService)` instead of constructor params
+- [x] `solver()` logic is extracted to a pure function `solveGuess(sequence, decodedWord): GuessClass[]` in `helpers/` and re-exported from `GameService` for backwards compat
+- [x] `directUserFlow()` and `reloadGame()` are tested with mocked storage/word services
+- [x] `game.service.spec.ts` migrated to Vitest; all edge cases for duplicate-letter resolution covered
+- [x] Coverage for `game.service.ts` and `solveGuess` is 100%
+- [x] git commit created: `feat: task 4 - game service modernization`
 
 **Completion signal:** When all acceptance criteria above are satisfied and the git commit exists, output exactly: `<promise>TESTS COMPLETE</promise>`
 

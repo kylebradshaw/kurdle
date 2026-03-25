@@ -1,30 +1,126 @@
 import { TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
 import { GuessClass } from 'src/app/models/guess';
-import { StorageService } from 'src/app/services/storage.service';
-import { HttpClientModule } from '@angular/common/http';
-
-import { GameService } from './game.service';
+import { StorageKey, StorageService } from 'src/app/services/storage.service';
+import { GameMode, GameState } from 'src/app/models/game';
+import { GameService, ProceedState } from './game.service';
+import * as helpers from 'src/app/helpers/utils';
 
 describe('GameService', () => {
   let service: GameService;
+  let storage: StorageService;
 
   beforeEach(() => {
+    localStorage.clear();
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientModule
-      ],
-      providers: [
-        { provide: StorageService }
-      ]
+      providers: [provideHttpClient()],
     });
     service = TestBed.inject(GameService);
+    storage = TestBed.inject(StorageService);
+  });
+
+  afterEach(() => {
+    localStorage.clear();
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  describe('solver() algo', () => {
+  it('exposes randomPlay and sequencePlay mode constants', () => {
+    expect(service.randomPlay).toBe(GameMode.RANDOM);
+    expect(service.sequencePlay).toBe(GameMode.SEQUENCE);
+  });
+
+  describe('ProceedState enum', () => {
+    it('has expected values', () => {
+      expect(ProceedState.SequenceNew).toBe('sequenceNew');
+      expect(ProceedState.RandomNew).toBe('randomNew');
+    });
+  });
+
+  describe('directUserFlow()', () => {
+    it('reloads game to SEQUENCE when state is RESTORED and next sequence is in the past', () => {
+      const past = new Date(Date.now() - 60000).toISOString();
+      storage.set(StorageKey.GameState, GameState.RESTORED);
+      storage.set(StorageKey.NextSequenceUtc, past);
+
+      const spy = vi.spyOn(helpers, 'forceRefresh').mockImplementation(() => {});
+      service.directUserFlow();
+
+      expect(spy).toHaveBeenCalledWith(GameMode.SEQUENCE);
+      spy.mockRestore();
+    });
+
+    it('reloads game to SEQUENCE when state is ENDED and next sequence is in the past', () => {
+      const past = new Date(Date.now() - 60000).toISOString();
+      storage.set(StorageKey.GameState, GameState.ENDED);
+      storage.set(StorageKey.NextSequenceUtc, past);
+
+      const spy = vi.spyOn(helpers, 'forceRefresh').mockImplementation(() => {});
+      service.directUserFlow();
+
+      expect(spy).toHaveBeenCalledWith(GameMode.SEQUENCE);
+      spy.mockRestore();
+    });
+
+    it('does nothing when state is PLAYING', () => {
+      storage.set(StorageKey.GameState, GameState.PLAYING);
+      storage.set(StorageKey.NextSequenceUtc, new Date(Date.now() - 60000).toISOString());
+
+      const spy = vi.spyOn(helpers, 'forceRefresh').mockImplementation(() => {});
+      service.directUserFlow();
+
+      expect(spy).not.toHaveBeenCalled();
+      spy.mockRestore();
+    });
+
+    it('does nothing when next sequence is in the future', () => {
+      const future = new Date(Date.now() + 3600000).toISOString();
+      storage.set(StorageKey.GameState, GameState.RESTORED);
+      storage.set(StorageKey.NextSequenceUtc, future);
+
+      const spy = vi.spyOn(helpers, 'forceRefresh').mockImplementation(() => {});
+      service.directUserFlow();
+
+      expect(spy).not.toHaveBeenCalled();
+      spy.mockRestore();
+    });
+
+    it('does nothing when no game state is set', () => {
+      const spy = vi.spyOn(helpers, 'forceRefresh').mockImplementation(() => {});
+      service.directUserFlow();
+
+      expect(spy).not.toHaveBeenCalled();
+      spy.mockRestore();
+    });
+  });
+
+  describe('reloadGame()', () => {
+    it('clears storage, sets game mode, and force refreshes for SEQUENCE', () => {
+      storage.set(StorageKey.Word, 'test');
+      const spy = vi.spyOn(helpers, 'forceRefresh').mockImplementation(() => {});
+
+      service.reloadGame(GameMode.SEQUENCE);
+
+      expect(storage.get(StorageKey.Word)).toBeNull();
+      expect(storage.get(StorageKey.GameMode)).toBe('SEQUENCE');
+      expect(spy).toHaveBeenCalledWith(GameMode.SEQUENCE);
+      spy.mockRestore();
+    });
+
+    it('clears storage, sets game mode, and force refreshes for RANDOM', () => {
+      const spy = vi.spyOn(helpers, 'forceRefresh').mockImplementation(() => {});
+
+      service.reloadGame(GameMode.RANDOM);
+
+      expect(storage.get(StorageKey.GameMode)).toBe('RANDOM');
+      expect(spy).toHaveBeenCalledWith(GameMode.RANDOM);
+      spy.mockRestore();
+    });
+  });
+
+  describe('solver() delegates to solveGuess', () => {
     it('should solve frame/frame', () => {
       expect(service.solver('frame', 'frame')).toEqual([GuessClass.MATCH, GuessClass.MATCH, GuessClass.MATCH, GuessClass.MATCH, GuessClass.MATCH]);
     });
