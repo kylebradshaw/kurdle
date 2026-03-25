@@ -1,77 +1,77 @@
-$--theme-primary: --theme-primary;
-$--theme-primary-disabled: --theme-primary-disabled;
-$--theme-on-primary: --theme-on-primary;
-$--theme-secondary: --theme-secondary;
-$--theme-on-secondary: --theme-on-secondary;
-$--theme-surface: --theme-surface;
-$--theme-on-surface: --theme-on-surface;
-$--theme-background: --theme-background;
-$--theme-match: --theme-match;
-$--theme-on-match: --theme-on-match;
-$--theme-mismatch: --theme-mismatch;
-$--theme-on-mismatch: --theme-on-mismatch;
-$--theme-used: --theme-used;
-$--theme-on-used: --theme-on-used;
-$--theme-default: --theme-default;
-$--theme-on-default: --theme-on-default;
-$--theme-good: --theme-good;
-$--theme-bad: --theme-bad;
-$--theme-bad-disabled: --theme-bad-disabled;
-$--theme-warn: --theme-warn;
-$--theme-neutral: --theme-neutral;
-$--theme-on-block: --theme-on-block;
-$--theme-shadow: --theme-shadow;
+$theme-primary: --theme-primary;
+$theme-primary-disabled: --theme-primary-disabled;
+$theme-on-primary: --theme-on-primary;
+$theme-secondary: --theme-secondary;
+$theme-on-secondary: --theme-on-secondary;
+$theme-surface: --theme-surface;
+$theme-on-surface: --theme-on-surface;
+$theme-background: --theme-background;
+$theme-match: --theme-match;
+$theme-on-match: --theme-on-match;
+$theme-mismatch: --theme-mismatch;
+$theme-on-mismatch: --theme-on-mismatch;
+$theme-used: --theme-used;
+$theme-on-used: --theme-on-used;
+$theme-default: --theme-default;
+$theme-on-default: --theme-on-default;
+$theme-good: --theme-good;
+$theme-bad: --theme-bad;
+$theme-bad-disabled: --theme-bad-disabled;
+$theme-warn: --theme-warn;
+$theme-neutral: --theme-neutral;
+$theme-on-block: --theme-on-block;
+$theme-shadow: --theme-shadow;
 
 // Default theme
 $theme-map-light: (
-  $--theme-primary: #0ba5c4,
-  $--theme-primary-disabled: #07505e,
-  $--theme-on-primary: #0a0a0a,
-  $--theme-secondary: #d5d5d5,
-  $--theme-on-secondary: #444,
-  $--theme-surface: #fff,
-  $--theme-on-surface: #0a0a0a,
-  $--theme-background: #fafafa,
-  $--theme-match: #08b306,
-  $--theme-on-match: #fff,
-  $--theme-mismatch: #f7c910,
-  $--theme-on-mismatch: #fff,
-  $--theme-used: #666,
-  $--theme-on-used: #fff,
-  $--theme-default: inherit,
-  $--theme-on-default: #383735,
-  $--theme-good: #08b306,
-  $--theme-bad: #cd1e1eee,
-  $--theme-bad-disabled: #6a0404ee,
-  $--theme-warn: #f7c910,
-  $--theme-neutral: #999,
-  $--theme-on-block: #fff,
-  $--theme-shadow: rgba(0, 0, 0, 0.2),
+  $theme-primary: #0ba5c4,
+  $theme-primary-disabled: #07505e,
+  $theme-on-primary: #0a0a0a,
+  $theme-secondary: #d5d5d5,
+  $theme-on-secondary: #444,
+  $theme-surface: #fff,
+  $theme-on-surface: #0a0a0a,
+  $theme-background: #fafafa,
+  $theme-match: #08b306,
+  $theme-on-match: #fff,
+  $theme-mismatch: #f7c910,
+  $theme-on-mismatch: #fff,
+  $theme-used: #666,
+  $theme-on-used: #fff,
+  $theme-default: inherit,
+  $theme-on-default: #383735,
+  $theme-good: #08b306,
+  $theme-bad: #cd1e1eee,
+  $theme-bad-disabled: #6a0404ee,
+  $theme-warn: #f7c910,
+  $theme-neutral: #999,
+  $theme-on-block: #fff,
+  $theme-shadow: rgba(0, 0, 0, 0.2),
 );
 
 // Override the default light theme
 $theme-map-dark: (
-  $--theme-primary: #0ba5c4,
-  $--theme-primary-disabled: #07505e,
-  $--theme-on-primary: #fff,
-  $--theme-secondary: #444,
-  $--theme-on-secondary: #d5d5d5,
-  $--theme-surface: #0a0a0a,
-  $--theme-on-surface: #fafafa,
-  $--theme-background: #010101,
-  $--theme-match: #08b306,
-  $--theme-on-match: #fff,
-  $--theme-mismatch: #f7c910,
-  $--theme-on-mismatch: #fff,
-  $--theme-used: #666,
-  $--theme-on-used: #fff,
-  $--theme-default: inherit,
-  $--theme-on-default: #fafafa,
-  $--theme-good: #08b306,
-  $--theme-bad: #cd1e1eee,
-  $--theme-bad-disabled: #6a0404ee,
-  $--theme-warn: #f7c910,
-  $--theme-neutral: #999,
-  $--theme-on-block: #fff,
-  $--theme-shadow: rgba(255, 255, 255, 0.3),
+  $theme-primary: #0ba5c4,
+  $theme-primary-disabled: #07505e,
+  $theme-on-primary: #fff,
+  $theme-secondary: #444,
+  $theme-on-secondary: #d5d5d5,
+  $theme-surface: #0a0a0a,
+  $theme-on-surface: #fafafa,
+  $theme-background: #010101,
+  $theme-match: #08b306,
+  $theme-on-match: #fff,
+  $theme-mismatch: #f7c910,
+  $theme-on-mismatch: #fff,
+  $theme-used: #666,
+  $theme-on-used: #fff,
+  $theme-default: inherit,
+  $theme-on-default: #fafafa,
+  $theme-good: #08b306,
+  $theme-bad: #cd1e1eee,
+  $theme-bad-disabled: #6a0404ee,
+  $theme-warn: #f7c910,
+  $theme-neutral: #999,
+  $theme-on-block: #fff,
+  $theme-shadow: rgba(255, 255, 255, 0.3),
 );

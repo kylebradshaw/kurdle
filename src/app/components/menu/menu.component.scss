@@ -1,10 +1,5 @@
-// [ req for media query helpers
-@import "./functions";
-@import "./my-bs-overrides";
-@import "./variables";
-@import "./mixins";
-// ]
-@import "./themes";
+@use "my-variables" as *;
+@use "my-mixins" as *;
 
 .clickable {
   text-decoration: underline;
@@ -20,22 +15,12 @@
   right: 1rem;
   text-transform: uppercase;
   letter-spacing: 2px;
-  // background: theme-var($--theme-secondary);
-  // color: theme-var($--theme-on-secondary);
-  // box-shadow: 1px 2px 0px 2px theme-var($--theme-shadow);
-  // border-top-right-radius: 1rem;
-  // border-bottom-right-radius: 1rem;
-  // border-top: inset 2px theme-var($--theme-surface);
-  // border-right: inset 2px theme-var($--theme-surface);
-  // border-bottom: inset 2px theme-var($--theme-surface);
-  border: 2px solid theme-var($--theme-on-surface);
-  // border-left: 0;
-  // border-top: 0;
-  color: theme-var($--theme-on-surface);
-  color: theme-var($--theme-surface);
-  background-color: theme-var($--theme-surface);
-  background-color: theme-var($--theme-on-surface);
-  box-shadow: 2px 0px 0px theme-var($--theme-shadow);
+  border: 2px solid theme-var($theme-on-surface);
+  color: theme-var($theme-on-surface);
+  color: theme-var($theme-surface);
+  background-color: theme-var($theme-surface);
+  background-color: theme-var($theme-on-surface);
+  box-shadow: 2px 0px 0px theme-var($theme-shadow);
   ul,
   li {
     list-style-type: none;
@@ -53,21 +38,19 @@
     font-size: 1rem;
     svg {
       padding: 0 0.5rem;
-      transform: scale(0.9); // translateY(1.5rem) translateX(-0.5rem);
+      transform: scale(0.9);
     }
   }
   .collapsed {
     padding: 0 !important;
     opacity: 0;
     height: 0;
-    // width: auto;
     overflow: hidden;
     transition: all cubic-bezier(0.6, -0.28, 0.735, 0.045) 0.3s;
     &.expanded {
       opacity: 1;
       height: auto;
       line-height: 2rem;
-      // width: 100vw;
       text-transform: lowercase;
     }
     span {
@@ -86,7 +69,7 @@
 }
 
 svg.active {
-  fill: theme-var($--theme-primary);
+  fill: theme-var($theme-primary);
 }
 
 .news {

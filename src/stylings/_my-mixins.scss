@@ -1,3 +1,7 @@
+@use "sass:map";
+@use "my-variables" as *;
+@use "my-bs-overrides" as *;
+
 @mixin spread-map($map: ()) {
   @each $key, $value in $map {
     #{$key}: $value;
@@ -5,7 +9,7 @@
 }
 
 @function theme-var($key, $fallback: null, $map: $theme-map-light) {
-  @if not map-has-key($map, $key) {
+  @if not map.has-key($map, $key) {
     @error "key: '#{$key}', is not a key in map: #{$map}";
   }
   @if ($fallback) {
@@ -13,4 +17,35 @@
   } @else {
     @return var($key);
   }
+}
+
+// Lightweight breakpoint mixins (replaces Bootstrap SCSS dependency)
+@mixin media-breakpoint-up($name) {
+  $min: map.get($grid-breakpoints, $name);
+  @if $min and $min > 0 {
+    @media (min-width: $min) {
+      @content;
+    }
+  } @else {
+    @content;
+  }
+}
+
+@mixin media-breakpoint-down($name) {
+  // Get the next breakpoint value and subtract 0.02px (Bootstrap convention)
+  $keys: map.keys($grid-breakpoints);
+  $idx: index($keys, $name);
+  @if $idx and $idx < length($keys) {
+    $next-key: nth($keys, $idx + 1);
+    $max: map.get($grid-breakpoints, $next-key) - 0.02px;
+    @media (max-width: $max) {
+      @content;
+    }
+  } @else {
+    @content;
+  }
+}
+
+@mixin transition($values...) {
+  transition: $values;
 }

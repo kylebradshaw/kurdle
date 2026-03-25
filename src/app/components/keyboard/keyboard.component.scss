@@ -1,10 +1,5 @@
-// [ req for media query helpers
-@import "./functions";
-@import "./my-bs-overrides";
-@import "./variables";
-@import "./mixins";
-// ]
-@import "./themes";
+@use "my-variables" as *;
+@use "my-mixins" as *;
 
 .keyboard {
   max-width: 100vw;
@@ -19,31 +14,24 @@
     }
     &:nth-of-type(3) {
       width: 100%;
-      // > div {
-      // min-height: 1rem;
-      // }
       > button:first-of-type {
-        color: theme-var($--theme-on-block);
-        background-color: theme-var($--theme-primary);
+        color: theme-var($theme-on-block);
+        background-color: theme-var($theme-primary);
         border: 1px solid transparent;
         flex-grow: 1;
         &[disabled] {
           cursor: not-allowed;
-          // color: theme-var($--theme-on-block);
-          // background-color: theme-var($--theme-primary-disabled);
           opacity: 0.5;
           border: 1px solid transparent;
         }
       }
       > button:last-of-type {
-        color: theme-var($--theme-on-block);
-        background-color: theme-var($--theme-bad);
+        color: theme-var($theme-on-block);
+        background-color: theme-var($theme-bad);
         border: 1px solid transparent;
         flex-grow: 1;
         &[disabled] {
           cursor: not-allowed;
-          // color: theme-var($--theme-on-block);
-          // background-color: theme-var($--theme-bad-disabled);
           opacity: 0.5;
           border: 1px solid transparent;
         }
@@ -54,28 +42,25 @@
     margin: 0.05rem;
     text-transform: uppercase;
     color: #333;
-    // margin: 0.1rem;
     cursor: pointer;
-    // prevent annoying copy prompt
-    -webkit-touch-callout: none; /* Safari */
-    -webkit-user-select: none; /* Chrome */
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* Internet Explorer/Edge */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
     user-select: none;
 
     &.char {
       text-shadow: 1px 0 0 rgba(0, 0, 0, 0.1);
       transition: background-color 0.5s ease-in-out;
-      border: 1px solid theme-var($--theme-on-default);
-      color: theme-var($--theme-on-default);
+      border: 1px solid theme-var($theme-on-default);
+      color: theme-var($theme-on-default);
       padding-top: 0.6rem;
       padding-bottom: 0.6rem;
-      font-size: 0.9rem; // good for mobile - go bigger in landscape
+      font-size: 0.9rem;
       font-weight: 800;
       min-width: 1.8rem;
       text-align: center;
       @include media-breakpoint-up(sm) {
-        // padding: 0.5rem;
         min-width: 1rem;
       }
       @media (orientation: portrait) {
@@ -104,26 +89,26 @@
         }
       }
       &--null {
-        color: theme-var($--theme-on-default);
-        background: theme-var($--theme-default);
+        color: theme-var($theme-on-default);
+        background: theme-var($theme-default);
       }
       &--default {
-        color: theme-var($--theme-on-default);
-        background: theme-var($--theme-default);
+        color: theme-var($theme-on-default);
+        background: theme-var($theme-default);
       }
       &--used {
-        color: theme-var($--theme-on-block) !important;
-        background: theme-var($--theme-used);
+        color: theme-var($theme-on-block) !important;
+        background: theme-var($theme-used);
         border: 1px solid transparent !important;
       }
       &--match {
-        color: theme-var($--theme-on-block);
-        background: theme-var($--theme-match);
+        color: theme-var($theme-on-block);
+        background: theme-var($theme-match);
         border: 1px solid transparent !important;
       }
       &--mismatch {
-        color: theme-var($--theme-on-block);
-        background: theme-var($--theme-mismatch);
+        color: theme-var($theme-on-block);
+        background: theme-var($theme-mismatch);
         border: 1px solid transparent !important;
       }
     }

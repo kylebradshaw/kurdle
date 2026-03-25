@@ -37,11 +37,11 @@
             ],
             "stylePreprocessorOptions": {
               "includePaths": [
-                "src/stylings",
-                "node_modules/bootstrap/scss"
+                "src/stylings"
               ]
             },
             "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap-grid.min.css",
               {
                 "input": "src/stylings/themes.scss",
                 "bundleName": "themes"
