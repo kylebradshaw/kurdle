@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter, ActivatedRoute } from '@angular/router';
@@ -29,7 +29,6 @@ describe('GameComponent', () => {
   beforeEach(async () => {
     localStorage.clear();
     vi.spyOn(helpers, 'forceRefresh').mockImplementation(() => {});
-    (window as any).plausible = vi.fn();
 
     await TestBed.configureTestingModule({
       imports: [GameComponent],
@@ -58,9 +57,6 @@ describe('GameComponent', () => {
   }
 
   afterEach(() => {
-    // Re-assign plausible as a no-op before verify, since setTimeout callbacks
-    // from submitRound may fire after test cleanup
-    (window as any).plausible = () => {};
     httpMock.verify();
     localStorage.clear();
     vi.restoreAllMocks();
@@ -74,7 +70,7 @@ describe('GameComponent', () => {
   describe('initGame', () => {
     it('resets game state', () => {
       createComponent();
-      expect(component.endState).toBe(false);
+      expect(component.endState()).toBe(false);
       expect(component.prevRound).toBe(0);
     });
 
@@ -151,7 +147,7 @@ describe('GameComponent', () => {
       createComponent();
       storage.set(StorageKey.GameState, GameState.ENDED);
       component.keyEvent(new KeyboardEvent('keyup', { code: 'KeyA', key: 'a' }));
-      expect(component.notice.message).toContain('Game Over');
+      expect(component.notice().message).toContain('Game Over');
     });
 
     it('handles backspace', () => {
@@ -269,7 +265,7 @@ describe('GameComponent', () => {
       createComponent();
       storage.set(StorageKey.GameState, GameState.ENDED);
       component.refreshLetters('a');
-      expect(component.notice.message).toContain('Game Over');
+      expect(component.notice().message).toContain('Game Over');
     });
 
     it('handles ENTER at start with empty board', () => {
@@ -326,50 +322,48 @@ describe('GameComponent', () => {
     it('shows notice for word not in dictionary', () => {
       createComponent();
       component.submitRound(0, 'zzzzz');
-      expect(component.notice.message).toContain('not the dictionary');
+      expect(component.notice().message).toContain('not the dictionary');
     });
 
-    it('processes valid guess', fakeAsync(() => {
+    it('processes valid guess', async () => {
       createComponent();
       component.decodedWord = 'frame';
       vi.spyOn(wordService, 'inDict').mockReturnValue(true);
 
       component.submitRound(0, 'retry', false);
-      tick(10);
+      await new Promise(resolve => setTimeout(resolve, 10));
 
       expect(component.prevRound).toBe(1);
-    }));
+    });
 
-    it('ends game on correct guess', fakeAsync(() => {
+    it('ends game on correct guess', async () => {
       createComponent();
       component.decodedWord = 'frame';
       vi.spyOn(wordService, 'inDict').mockReturnValue(true);
 
       component.submitRound(0, 'frame', false);
-      tick(100);
-      flushWordRequests();
+      await new Promise(resolve => setTimeout(resolve, 10));
 
-      expect(component.endState).toBe(true);
-    }));
+      expect(component.endState()).toBe(true);
+    });
 
-    it('ends game on final round failure', fakeAsync(() => {
+    it('ends game on final round failure', async () => {
       createComponent();
       component.decodedWord = 'frame';
       vi.spyOn(wordService, 'inDict').mockReturnValue(true);
 
       component.submitRound(0, 'retry', true);
-      tick(100);
-      flushWordRequests();
+      await new Promise(resolve => setTimeout(resolve, 10));
 
-      expect(component.endState).toBe(true);
-    }));
+      expect(component.endState()).toBe(true);
+    });
   });
 
   describe('endGame', () => {
     it('sets ended state and saves share text', () => {
       createComponent();
       component.endGame(true);
-      expect(component.endState).toBe(true);
+      expect(component.endState()).toBe(true);
       expect(storage.get(StorageKey.GameState)).toBe(GameState.ENDED);
     });
 
@@ -478,24 +472,26 @@ describe('GameComponent', () => {
     it('sets notice', () => {
       createComponent();
       component.toggleNotice('test', 'warn', true, 5000);
-      expect(component.notice.message).toBe('test');
-      expect(component.notice.type).toBe('warn');
-      expect(component.notice.again).toBe(true);
+      expect(component.notice().message).toBe('test');
+      expect(component.notice().type).toBe('warn');
+      expect(component.notice().again).toBe(true);
     });
 
-    it('clears notice after timeout', fakeAsync(() => {
+    it('clears notice after timeout', () => {
       createComponent();
+      vi.useFakeTimers();
       component.toggleNotice('test', 'warn');
-      tick(9000);
-      expect(component.notice.message).toBe('');
-    }));
+      vi.advanceTimersByTime(9000);
+      expect(component.notice().message).toBe('');
+      vi.useRealTimers();
+    });
   });
 
   describe('attribution', () => {
     it('shows attribution notice', () => {
       createComponent();
       component.attribution();
-      expect(component.notice.message).toContain('Built by');
+      expect(component.notice().message).toContain('Built by');
     });
   });
 
@@ -539,46 +535,26 @@ describe('GameComponent', () => {
       expect(() => component.shareGame()).not.toThrow();
     });
 
-    it('calls plausible and navigator.share when available', () => {
+    it('calls navigator.share when available', async () => {
       createComponent();
       vi.spyOn(component, 'canShare').mockReturnValue(true);
-      const plausibleSpy = vi.fn();
-      (window as any).plausible = plausibleSpy;
-
-      component.shareGame();
-
-      expect(plausibleSpy).toHaveBeenCalledWith('Share', expect.objectContaining({
-        callback: expect.any(Function),
-        props: expect.objectContaining({ text: expect.any(Object) }),
-      }));
-    });
-
-    it('sharePls callback calls navigator.share', async () => {
-      createComponent();
-      vi.spyOn(component, 'canShare').mockReturnValue(true);
-      let capturedCallback: Function;
-      (window as any).plausible = (_: string, opts: any) => { capturedCallback = opts.callback; };
       const shareSpy = vi.fn().mockResolvedValue(undefined);
       Object.defineProperty(navigator, 'share', { value: shareSpy, configurable: true, writable: true });
 
       component.shareGame();
-      capturedCallback!();
       await new Promise(resolve => setTimeout(resolve, 10));
 
       expect(shareSpy).toHaveBeenCalled();
     });
 
-    it('sharePls callback handles rejection', async () => {
+    it('handles navigator.share rejection', async () => {
       createComponent();
       vi.spyOn(component, 'canShare').mockReturnValue(true);
-      let capturedCallback: Function;
-      (window as any).plausible = (_: string, opts: any) => { capturedCallback = opts.callback; };
       const shareSpy = vi.fn().mockRejectedValue(new Error('cancelled'));
       Object.defineProperty(navigator, 'share', { value: shareSpy, configurable: true, writable: true });
       const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
       component.shareGame();
-      capturedCallback!();
       await new Promise(resolve => setTimeout(resolve, 10));
 
       expect(consoleSpy).toHaveBeenCalled();

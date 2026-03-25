@@ -2,12 +2,12 @@ import { PLURAL_PAST_DICTIONARY } from './plural-past-dict';
 import { differenceInDays } from 'date-fns';
 import { Random } from 'random-js';
 
-interface Solution {
+export interface Solution {
   word: string;
   sequence: number;
 }
 
-interface WordResponse {
+export interface WordResponse {
   word: string;
   sequence: number | string;
   mode: string;
@@ -70,15 +70,3 @@ export function buildResponse(
     };
   }
 }
-
-// Netlify Functions v2 handler
-export default async (request: Request) => {
-  const url = new URL(request.url);
-  const rawQuery = url.search.replace('?', '');
-  const version = '0.14.11';
-
-  return new Response(JSON.stringify(buildResponse(rawQuery, version)), {
-    status: 200,
-    headers: { 'Content-Type': 'application/json' },
-  });
-};

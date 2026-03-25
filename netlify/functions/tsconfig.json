@@ -11,6 +11,6 @@
     "types": ["node"]
   },
   "files": [
-    "word.ts"
+    "word.mts"
   ]
 }

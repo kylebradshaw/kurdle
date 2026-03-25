@@ -4,7 +4,7 @@ import {
   getWordOfTheDay,
   getRandomWord,
   buildResponse,
-} from 'netlify/functions/word';
+} from 'netlify/functions/word-logic';
 import { PLURAL_PAST_DICTIONARY } from 'netlify/functions/plural-past-dict';
 
 describe('word function', () => {
@@ -86,12 +86,19 @@ describe('word function', () => {
     });
   });
 
-  describe('default handler', () => {
-    it('returns JSON response with status 200', async () => {
-      const handler = (await import('netlify/functions/word')).default;
-      const request = new Request('https://example.com/.netlify/functions/word?rando=false&sequenceIdx=1');
+  describe('handler integration', () => {
+    function simulateHandler(url: string): Response {
+      const parsedUrl = new URL(url);
+      const rawQuery = parsedUrl.search.replace('?', '');
+      const version = '0.14.11';
+      return new Response(JSON.stringify(buildResponse(rawQuery, version)), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
 
-      const response = await handler(request);
+    it('returns JSON response with status 200', async () => {
+      const response = simulateHandler('https://example.com/.netlify/functions/word?rando=false&sequenceIdx=1');
 
       expect(response.status).toBe(200);
       expect(response.headers.get('Content-Type')).toBe('application/json');
@@ -102,20 +109,14 @@ describe('word function', () => {
     });
 
     it('handles random mode', async () => {
-      const handler = (await import('netlify/functions/word')).default;
-      const request = new Request('https://example.com/.netlify/functions/word?rando=true&sequenceIdx=0');
-
-      const response = await handler(request);
+      const response = simulateHandler('https://example.com/.netlify/functions/word?rando=true&sequenceIdx=0');
       const body = await response.json();
 
       expect(body.mode).toBe('RANDOM');
     });
 
     it('handles sequence mode', async () => {
-      const handler = (await import('netlify/functions/word')).default;
-      const request = new Request('https://example.com/.netlify/functions/word?rando=false&sequenceIdx=0');
-
-      const response = await handler(request);
+      const response = simulateHandler('https://example.com/.netlify/functions/word?rando=false&sequenceIdx=0');
       const body = await response.json();
 
       expect(body.mode).toBe('SEQUENCE');

@@ -362,12 +362,35 @@ These tests stay in the suite indefinitely and must pass on every build.
 
 ---
 
+## Task 17 — Sass `@import` → `@use` Migration
+
+The Angular build emits ~30 deprecation warnings because all SCSS files use Sass `@import` rules, which are deprecated and will be removed in Dart Sass 3.0.0. Migrate all stylesheets to the modern `@use` / `@forward` module system.
+
+### Background
+
+Every component SCSS file (`game`, `keyboard`, `letter-block`, `menu`) and the global `src/stylings/styles.scss` use `@import` to pull in shared partials (`_functions.scss`, `_variables.scss`, `_mixins.scss`, `_my-bs-overrides.scss`, `_themes.scss`). The `_my-mixins.scss` file also uses the deprecated global `map-has-key()` built-in instead of `map.has-key()`.
+
+### Acceptance Criteria
+
+- [ ] All `@import` rules in `src/stylings/` replaced with `@use` / `@forward`
+- [ ] All `@import` rules in component SCSS files (`src/app/components/*/`) replaced with `@use`
+- [ ] Namespaced references updated (e.g., `$variable` → `variables.$variable`, or use `@use "..." as *` where appropriate)
+- [ ] `map-has-key()` in `_my-mixins.scss` replaced with `@use "sass:map"` and `map.has-key()`
+- [ ] `npm run build` produces zero Sass deprecation warnings
+- [ ] `npm test` still passes (283 tests, 100% coverage)
+- [ ] Visual spot-check: no styling regressions (light/dark themes, grid layout, keyboard)
+- [ ] git commit created: `feat: task 17 - sass @import to @use migration`
+
+**Completion signal:** When all acceptance criteria above are satisfied and the git commit exists, output exactly: `<promise>TESTS COMPLETE</promise>`
+
+---
+
 ## Running Order for Ralph Loop
 
 ```
 Task 0 → Task 1 → Task 2 → Task 3 → Task 4 → Task 5 → Task 6 → Task 7
 → Task 8 → Task 9 → Task 10 → Task 11 → Task 12 → Task 13 → Task 14 → Task 15
-→ Task 16
+→ Task 16 → Task 17
 ```
 
 Each task: implement → write/migrate tests → verify coverage → commit → next.

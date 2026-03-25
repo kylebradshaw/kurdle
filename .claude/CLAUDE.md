@@ -11,11 +11,13 @@ Node version: 20+ (Angular 21 requirement)
 ## Commands
 
 ```bash
-npm start           # Dev server
+npm start           # Dev server (ng serve)
+npm run dev         # Dev server with Netlify functions (netlify dev)
 npm run build       # Production build (ESBuild)
 npm test            # Run tests (Vitest)
 npm run tdd         # Run tests in watch mode
 npm run test:coverage # Run tests with 100% coverage enforcement
+npm run e2e         # Run Playwright E2E tests
 npm run start-pwa   # Build + serve PWA locally on port 8080
 ```
 
@@ -23,9 +25,9 @@ Run a single test file: `npx vitest run path/to/file.spec.ts`
 
 ## Architecture
 
-### Frontend (Angular 21 — Standalone Components + Signals)
+### Frontend (Angular 21 — Standalone Components + Signals + Zoneless)
 
-All components are `standalone: true` using `inject()` for DI and `@if`/`@for` control flow.
+All components are `standalone: true` using `inject()` for DI and `@if`/`@for` control flow. The app runs **zoneless** (`provideZonelessChangeDetection()`) — no zone.js polyfill. State that changes outside event handlers (e.g., in `setTimeout` callbacks) must use Angular signals to trigger change detection.
 
 **Components** (`src/app/components/`):
 - `game/` — Main orchestrator: keyboard events, board state, guess submission, win/loss handling
@@ -51,8 +53,8 @@ All components are `standalone: true` using `inject()` for DI and `@if`/`@for` c
 - `time.ts` — Timing interfaces
 
 **Bootstrap** (`src/main.ts`):
-- Uses `bootstrapApplication(AppComponent, { providers: [provideRouter(routes), provideHttpClient()] })`
-- No NgModules — fully standalone
+- Uses `bootstrapApplication(AppComponent, { providers: [provideZonelessChangeDetection(), provideRouter(routes), provideHttpClient()] })`
+- No NgModules — fully standalone, fully zoneless
 
 ### Backend (Netlify Functions v2)
 
@@ -75,7 +77,7 @@ All components are `standalone: true` using `inject()` for DI and `@if`/`@for` c
 - **Framework:** Vitest with `@analogjs/vitest-angular`
 - **Coverage:** 100% across branches, functions, lines, and statements (enforced by thresholds)
 - **Config:** `vite.config.mts` with `@analogjs/vite-plugin-angular`
-- **Setup:** `src/test-setup.ts` bootstraps zone.js for Angular tests
+- **Setup:** `src/test-setup.ts` uses zoneless mode (`setupTestBed({ zoneless: true })`)
 - **Patterns:**
   - `v8 ignore start/stop` for SSR guards (`typeof window/document !== 'undefined'`)
   - Test host component pattern for signal inputs

@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, HostListener, ChangeDetectorRef, inject, signal, computed } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Meta } from '@angular/platform-browser';
 import { FuncWord, WordService } from 'src/app/services/word.service';
@@ -28,6 +28,7 @@ export class GameComponent implements OnInit {
   private readonly storageService = inject(StorageService);
   private readonly meta = inject(Meta);
   private readonly statsService = inject(StatsService);
+  private readonly cdr = inject(ChangeDetectorRef);
   readonly gameService = inject(GameService);
 
   prevRound = 0;
@@ -38,8 +39,8 @@ export class GameComponent implements OnInit {
   decodedWord = '';
   alphabetKey: AlphaDict = {};
   debugMode = false;
-  notice: Notice = { message: '', type: '', again: false };
-  endState = false;
+  readonly notice = signal<Notice>({ message: '', type: '', again: false });
+  readonly endState = signal(false);
   buffer = '';
   rando = false;
   sequenceIdx = 0;
@@ -100,7 +101,7 @@ export class GameComponent implements OnInit {
   }
 
   initGame(): void {
-    this.endState = false;
+    this.endState.set(false);
     this.prevRound = 0;
     this.play = '';
 
@@ -152,6 +153,7 @@ export class GameComponent implements OnInit {
       this.decodedWord = this.wordService.decode(this.currentWord);
       this.alphabetKey = this.wordService.getAlphabetKey(this.decodedWord);
       this.indexCode = `${response.sequence}`;
+      this.cdr.markForCheck();
     });
 
     this.board = this.emptyBoard('');
@@ -288,12 +290,10 @@ export class GameComponent implements OnInit {
       this.saveBoard('class', this.classBoard);
       setTimeout(() => {
         if (classBoardRow.every(letter => letter === 'match')) {
-          window.plausible('Solution', { props: { word: this.decodedWord, board: this.board } });
           this.toggleNotice(`${sample(this.successMsg)}`, 'good', true, 36e6);
           this._soln = true;
           this.endGame(true);
         } else if (final) {
-          window.plausible('Failure', { props: { word: this.decodedWord, board: this.board } });
           this.toggleNotice(`${sample(this.failMsg)}`, 'bad', true, 36e6);
           this.endGame(true);
         }
@@ -317,7 +317,7 @@ export class GameComponent implements OnInit {
       this.storageService.set(StorageKey.CompletedSequenceIdx, `${this.sequenceIdx}`);
     }
     this.storageService.set(StorageKey.CompletedGameMode, gameMode);
-    this.endState = true;
+    this.endState.set(true);
   }
 
   incrementRound(prevRound: number): number {
@@ -329,13 +329,13 @@ export class GameComponent implements OnInit {
   }
 
   toggleNotice(message: string, type: string, again = false, timeOut = 8000): void {
-    this.notice = { message, type, again };
+    this.notice.set({ message, type, again });
     this.clearNotice(timeOut);
   }
 
   clearNotice(timeout = 1500): void {
     setTimeout(() => {
-      this.notice = { message: '', type: '', again: false };
+      this.notice.set({ message: '', type: '', again: false });
     }, timeout);
   }
 
@@ -365,7 +365,7 @@ export class GameComponent implements OnInit {
       .then(() => { console.log(`Successful share`); })
       .catch((error: any) => { console.log(error); });
 
-    window.plausible('Share', { callback: sharePls, props: { text: this.shareText() } });
+    sharePls();
   }
 
   carryForward(char: string, letterClass: GuessClass, pos: GamePosition): void {

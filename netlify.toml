@@ -1,0 +1,9 @@
+[build]
+  command = "ng build"
+  publish = "dist/ng-kurdle/browser"
+  functions = "netlify/functions"
+
+[dev]
+  command = "ng serve"
+  port = 8888
+  targetPort = 4200

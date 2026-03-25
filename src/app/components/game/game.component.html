@@ -4,10 +4,10 @@
       <app-menu></app-menu>
     </div>
     <h1>
-      @if (!debugMode && !endState) {
+      @if (!debugMode && !endState()) {
         <span [routerLink]="['/']">Kurdle</span>
       }
-      @if (debugMode || endState) {
+      @if (debugMode || endState()) {
         <span>
           <a class="wordnik" target="_blank" [href]="'https://wordnik.com/words/' + decodedWord.toLowerCase()">{{decodedWord}}</a>
         </span>
@@ -26,12 +26,12 @@
       }
     </div>
   </header>
-  <div class="flash d-flex align-items-center" [class]="notice.type">
-    <span [innerHTML]="notice.message"></span>
-    @if (notice.again) {
+  <div class="flash d-flex align-items-center" [class]="notice().type">
+    <span [innerHTML]="notice().message"></span>
+    @if (notice().again) {
       <span>&nbsp;<button (click)="gameService.reloadGame(randomPlay)">Play again?</button></span>
     }
-    @if (notice.again && canShare()) {
+    @if (notice().again && canShare()) {
       <button (click)="shareGame()">Share</button>
       <svg class="share-icon" (click)="shareGame()" fill="currentColor" width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd">
         <path d="M16 2v7h-2v-5h-12v16h12v-5h2v7h-16v-20h16zm2 9v-4l6 5-6 5v-4h-10v-2h10z"/>

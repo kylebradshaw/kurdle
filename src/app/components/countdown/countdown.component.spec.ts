@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { StorageKey, StorageService } from 'src/app/services/storage.service';
 import { CountdownComponent } from './countdown.component';
 
@@ -22,6 +22,7 @@ describe('CountdownComponent', () => {
     if (component) {
       component.ngOnDestroy();
     }
+    vi.useRealTimers();
   });
 
   function create() {
@@ -41,7 +42,7 @@ describe('CountdownComponent', () => {
     expect(component.active()).toBe(false);
   });
 
-  it('displays countdown when expiry is in the future', fakeAsync(() => {
+  it('displays countdown when expiry is in the future', () => {
     const future = new Date(Date.now() + 2 * 3600000 + 30 * 60000 + 15000).toISOString();
     storage.set(StorageKey.NextSequenceUtc, future);
 
@@ -53,16 +54,17 @@ describe('CountdownComponent', () => {
     expect(component.minutes()).toBe(30);
 
     component.ngOnDestroy();
-  }));
+  });
 
-  it('ticks every second', fakeAsync(() => {
+  it('ticks every second', () => {
+    vi.useFakeTimers();
     const future = new Date(Date.now() + 60000).toISOString();
     storage.set(StorageKey.NextSequenceUtc, future);
 
     create();
     fixture.detectChanges();
 
-    tick(1000);
+    vi.advanceTimersByTime(1000);
     fixture.detectChanges();
 
     // After tick, component should still be active and have updated values
@@ -70,24 +72,26 @@ describe('CountdownComponent', () => {
     expect(typeof component.seconds()).toBe('number');
 
     component.ngOnDestroy();
-  }));
+  });
 
-  it('sets active to false when countdown reaches zero', fakeAsync(() => {
+  it('sets active to false when countdown reaches zero', () => {
+    vi.useFakeTimers();
     const almostNow = new Date(Date.now() + 500).toISOString();
     storage.set(StorageKey.NextSequenceUtc, almostNow);
 
     create();
     fixture.detectChanges();
 
-    tick(2000);
+    vi.advanceTimersByTime(2000);
     fixture.detectChanges();
 
     expect(component.active()).toBe(false);
 
     component.ngOnDestroy();
-  }));
+  });
 
-  it('cleans up interval on destroy', fakeAsync(() => {
+  it('cleans up interval on destroy', () => {
+    vi.useFakeTimers();
     const future = new Date(Date.now() + 3600000).toISOString();
     storage.set(StorageKey.NextSequenceUtc, future);
 
@@ -97,9 +101,9 @@ describe('CountdownComponent', () => {
     component.ngOnDestroy();
     // Verify double-destroy is safe
     component.ngOnDestroy();
-  }));
+  });
 
-  it('renders time in the template', fakeAsync(() => {
+  it('renders time in the template', () => {
     const future = new Date(Date.now() + 2 * 3600000 + 15 * 60000 + 30000).toISOString();
     storage.set(StorageKey.NextSequenceUtc, future);
 
@@ -112,7 +116,7 @@ describe('CountdownComponent', () => {
     expect(text).toContain('s');
 
     component.ngOnDestroy();
-  }));
+  });
 
   it('does not render when inactive', () => {
     create();

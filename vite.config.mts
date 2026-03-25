@@ -20,7 +20,7 @@ export default defineConfig(({ mode }) => ({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov', 'html'],
-      include: ['src/app/**/*.ts', 'netlify/functions/**/*.ts'],
+      include: ['src/app/**/*.ts', 'netlify/functions/**/*.{ts,mts}'],
       exclude: [
         'src/app/**/*.spec.ts',
         'src/app/testing/**',

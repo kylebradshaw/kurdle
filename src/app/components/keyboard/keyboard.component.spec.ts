@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
 import { StorageKey, StorageService } from 'src/app/services/storage.service';
 import { GameState, CombinedLetter } from 'src/app/models/game';
@@ -115,7 +115,8 @@ describe('KeyboardComponent', () => {
       expect(host.lastEmit).toContain(GuessAction.ENTER);
     });
 
-    it('resets sequence after round change', fakeAsync(() => {
+    it('resets sequence after round change', () => {
+      vi.useFakeTimers();
       const kb = getKeyboard();
       host.prevRound = 0;
       fixture.detectChanges();
@@ -126,9 +127,10 @@ describe('KeyboardComponent', () => {
       host.prevRound = 1;
       fixture.detectChanges();
 
-      tick(600);
+      vi.advanceTimersByTime(600);
       expect(kb.internalSequence.length).toBe(0);
-    }));
+      vi.useRealTimers();
+    });
   });
 
   describe('updateKeyboard', () => {
