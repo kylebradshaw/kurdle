@@ -9,23 +9,25 @@ export const nextRoundTime = (expires: string): GameTime => {
   }
 };
 
+export interface LocationLike {
+  href: string;
+  origin: string;
+  search: string;
+  reload(): void;
+}
+
 /**
  * forceRefresh is a way to toggle GameState with hard reloads
- * @param randomPls boolean value to toggle between SEQUENCE and RANDOM game modes
  * if ?rando=true is added to the URL, the FE will request a word at a random sequenceIdx
  * if ?rando=false is added to the URL, the FE will request a word in sequence (sets sequenceIdx === 0)
  */
-export const forceRefresh = (gameMode: GameMode): void => {
-  const l = window.location;
-  if (gameMode === GameMode.RANDOM && !l.href.includes('rando')) {
-    // entering RANDOM gameplay for the first time
-    l.href = l.href.includes(`?`) ? `${l.href}/${l.search}&rando=true` : `${l.href}?rando=true`;
-  } else if (gameMode === GameMode.RANDOM && l.href.includes('rando')) {
-    // already in RANDOM gameplay but want a different index
-    window.location.reload();
+export const forceRefresh = (gameMode: GameMode, loc: LocationLike = window.location): void => {
+  if (gameMode === GameMode.RANDOM && !loc.href.includes('rando')) {
+    loc.href = loc.href.includes(`?`) ? `${loc.href}/${loc.search}&rando=true` : `${loc.href}?rando=true`;
+  } else if (gameMode === GameMode.RANDOM && loc.href.includes('rando')) {
+    loc.reload();
   } else if (gameMode === GameMode.SEQUENCE) {
-    // start SEQUENCE gameplay
-    window.location.href = window.origin;
+    loc.href = loc.origin;
   } else {
     return;
   }

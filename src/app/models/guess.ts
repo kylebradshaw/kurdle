@@ -11,7 +11,7 @@ export enum GuessAction {
   DEL = '⌫'
 }
 
-interface GuessLetter {
+export interface GuessLetter {
   class: GuessClass;
   idx: number[];
 }
