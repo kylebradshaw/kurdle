@@ -1,58 +1,61 @@
+import { Component, OnInit, HostListener, inject, signal, computed } from '@angular/core';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Meta } from '@angular/platform-browser';
-import { FuncWord } from 'src/app/services/word.service';
-import { Component, OnInit, HostListener } from '@angular/core';
-import { WordService } from 'src/app/services/word.service';
-import { GamePosition, GameState } from 'src/app/models/game';
-import { GuessClass, GuessAction, AlphaDict, Letter } from 'src/app/models/guess';
+import { NgClass } from '@angular/common';
+import { FuncWord, WordService } from 'src/app/services/word.service';
+import { GamePosition, GameState, GameMode } from 'src/app/models/game';
+import { GuessClass, GuessAction, AlphaDict } from 'src/app/models/guess';
 import { Notice } from 'src/app/models/notice';
-import { ActivatedRoute } from '@angular/router';
 import { StorageKey, StorageService } from 'src/app/services/storage.service';
 import { StatsService } from 'src/app/services/stats.service';
-import { GameMode } from 'src/app/models/game';
 import { GameService } from 'src/app/services/game.service';
+import { LetterBlockComponent } from 'src/app/components/letter-block/letter-block.component';
+import { KeyboardComponent } from 'src/app/components/keyboard/keyboard.component';
+import { CountdownComponent } from 'src/app/components/countdown/countdown.component';
+import { MenuComponent } from 'src/app/components/menu/menu.component';
 import { sample } from 'lodash';
 declare var window: any;
 
 @Component({
-  standalone: false,
+  standalone: true,
+  imports: [RouterModule, NgClass, LetterBlockComponent, KeyboardComponent, CountdownComponent, MenuComponent],
   selector: 'app-game',
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.scss']
 })
 export class GameComponent implements OnInit {
-  prevRound: number = 0;
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly wordService = inject(WordService);
+  private readonly storageService = inject(StorageService);
+  private readonly meta = inject(Meta);
+  private readonly statsService = inject(StatsService);
+  readonly gameService = inject(GameService);
+
+  prevRound = 0;
   board: string[][] = [[]];
   classBoard: GuessClass[][] = [[]];
   ghostBoard: string[][] = [[]];
-  currentWord = "";
-  decodedWord = "";
+  currentWord = '';
+  decodedWord = '';
   alphabetKey: AlphaDict = {};
-  debugMode: boolean = false;
+  debugMode = false;
   notice: Notice = { message: '', type: '', again: false };
-  currentTheme = '';
   endState = false;
   buffer = '';
   rando = false;
-  sequenceIdx: number = 0;
+  sequenceIdx = 0;
   currPos: number[] = [0, 0];
   nextPos: number[] = [0, 0];
-  indexCode: string = '';
+  indexCode = '';
   nextSequenceUtc: any;
-  randomPlay: GameMode = GameMode.RANDOM;
-  sequencePlay: GameMode = GameMode.SEQUENCE;
+  randomPlay = GameMode.RANDOM;
+  sequencePlay = GameMode.SEQUENCE;
   successMsg: string[] = ['Good Job!', 'Nice!', 'Satisfactory!', 'Great!', 'Awesome!', 'Fantastic!', '\u{1F44D}'];
   failMsg: string[] = ['Sad Times.', 'Sans Win.', 'Try Again.', 'Oh no.', 'Nope.', 'Nah.', '\u{1F622}'];
-  private _play: string = '';
-  private _soln: boolean = false;
+  private _play = '';
+  private _soln = false;
 
-  constructor(
-    private activatedRoute: ActivatedRoute,
-    private wordService: WordService,
-    private storageService: StorageService,
-    private meta: Meta,
-    private statsService: StatsService,
-    public gameService: GameService,
-  ) {
+  constructor() {
     this.activatedRoute.queryParams.subscribe(params => {
       if (params[`debug`] !== undefined) {
         this.debugMode = true;
@@ -400,7 +403,7 @@ export class GameComponent implements OnInit {
     this._play = sequence;
   }
 
-  private initBandages(): void {
+  initBandages(): void {
     if (this.storageService.get('gameState') === GameState.ENDED && this.storageService.get('sequenceIdx') === `15`) {
       this.storageService.set(StorageKey.Hotfix, '2022.02.18-0015');
       this.gameService.reloadGame(this.sequencePlay);
