@@ -98,12 +98,12 @@ Convert `WordService` to use `inject(HttpClient)`. Expose `currentWord` and `dec
 
 ### Acceptance Criteria
 
-- [ ] `WordService` uses `inject(HttpClient)` instead of constructor param
-- [ ] `seedWordFromFunc()` still returns `Observable<FuncWord>` (no breaking change)
-- [ ] `inDict()`, `decode()`, `repeatedCharacters()`, `getAlphabetKey()`, `numberToLetters()` are fully tested pure-function style
-- [ ] `word.service.spec.ts` migrated to Vitest with HTTP mocked via `provideHttpClientTesting()`
-- [ ] Coverage for `word.service.ts` is 100%
-- [ ] git commit created: `feat: task 5 - word service modernization`
+- [x] `WordService` uses `inject(HttpClient)` instead of constructor param
+- [x] `seedWordFromFunc()` still returns `Observable<FuncWord>` (no breaking change)
+- [x] `inDict()`, `decode()`, `repeatedCharacters()`, `getAlphabetKey()`, `numberToLetters()` are fully tested pure-function style
+- [x] `word.service.spec.ts` migrated to Vitest with HTTP mocked via `provideHttpClientTesting()`
+- [x] Coverage for `word.service.ts` is 100%
+- [x] git commit created: `feat: task 5 - word service modernization`
 
 **Completion signal:** When all acceptance criteria above are satisfied and the git commit exists, output exactly: `<promise>TESTS COMPLETE</promise>`
 
