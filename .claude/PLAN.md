@@ -115,12 +115,12 @@ Convert `WordService` to use `inject(HttpClient)`. Expose `currentWord` and `dec
 
 ### Acceptance Criteria
 
-- [ ] `ngOnInit` removed; any initialization done in constructor body or via `effect()`
-- [ ] `StatsService` exposes a `stats` signal of type `GameStats` (define the interface)
-- [ ] `recordGame(won: boolean, round: number, mode: GameMode): void` writes to localStorage and updates the signal
-- [ ] `stats.service.spec.ts` migrated to Vitest and covers all stat aggregation logic
-- [ ] Coverage for `stats.service.ts` is 100%
-- [ ] git commit created: `feat: task 6 - stats service modernization`
+- [x] `ngOnInit` removed; any initialization done in constructor body or via `effect()`
+- [x] `StatsService` exposes a `stats` signal of type `GameStats` (define the interface)
+- [x] `recordGame(won: boolean, round: number, mode: GameMode): void` writes to localStorage and updates the signal
+- [x] `stats.service.spec.ts` migrated to Vitest and covers all stat aggregation logic
+- [x] Coverage for `stats.service.ts` is 100%
+- [x] git commit created: `feat: task 6 - stats service modernization`
 
 **Completion signal:** When all acceptance criteria above are satisfied and the git commit exists, output exactly: `<promise>TESTS COMPLETE</promise>`
 ---
