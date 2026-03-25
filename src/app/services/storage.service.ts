@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal, WritableSignal } from '@angular/core';
+import { GameState } from 'src/app/models/game';
 
 export enum StorageKey {
   Board = 'board',
@@ -20,14 +21,25 @@ export enum StorageKey {
   Version = 'version',
 }
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class StorageService {
   isClient = false;
 
+  readonly gameState: WritableSignal<string>;
+  readonly gameMode: WritableSignal<string>;
+  readonly theme: WritableSignal<string>;
+
   constructor() {
+    /* v8 ignore start -- SSR guard; always true in jsdom/browser */
     if (typeof window !== 'undefined') {
+    /* v8 ignore stop */
       this.isClient = true;
     }
+    this.gameState = signal(this.get(StorageKey.GameState) ?? '');
+    this.gameMode = signal(this.get(StorageKey.GameMode) ?? '');
+    this.theme = signal(this.get(StorageKey.Theme) ?? '');
   }
 
   public clear(force = false) {
@@ -41,12 +53,22 @@ export class StorageService {
       localStorage.setItem('version', version);
       localStorage.setItem('theme', theme);
       localStorage.setItem('completedSequenceUtc', completed);
+      this.gameState.set('');
+      this.gameMode.set('');
+      this.theme.set(theme ?? '');
     }
   }
 
   public set(key: string, data: string) {
     if (this.isClient) {
       localStorage.setItem(key, data);
+      if (key === StorageKey.GameState) {
+        this.gameState.set(data);
+      } else if (key === StorageKey.GameMode) {
+        this.gameMode.set(data);
+      } else if (key === StorageKey.Theme) {
+        this.theme.set(data);
+      }
     }
   }
 
@@ -60,5 +82,12 @@ export class StorageService {
 
   public remove(key: string): void {
     localStorage.removeItem(key);
+    if (key === StorageKey.GameState) {
+      this.gameState.set('');
+    } else if (key === StorageKey.GameMode) {
+      this.gameMode.set('');
+    } else if (key === StorageKey.Theme) {
+      this.theme.set('');
+    }
   }
 }
