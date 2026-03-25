@@ -1,13 +1,12 @@
 import { Meta } from '@angular/platform-browser';
 import { StorageKey, StorageService } from 'src/app/services/storage.service';
-import { NgNavigatorShareService } from 'ng-navigator-share';
 import { Component, OnInit } from '@angular/core';
 import { GameService } from 'src/app/services/game.service';
 import { GameMode } from 'src/app/models/game';
-import { ThemeService } from '@bcodes/ngx-theme-service';
 import { isAfter, addDays } from 'date-fns';
 
 @Component({
+  standalone: false,
   selector: 'app-menu',
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.scss']
@@ -23,9 +22,7 @@ export class MenuComponent implements OnInit {
 
   constructor(
     private storageService: StorageService,
-    public ngNavigatorShareService: NgNavigatorShareService,
     public gameService: GameService,
-    public themeService: ThemeService,
     private meta: Meta,
   ) {
     this.meta.addTag(
@@ -37,11 +34,6 @@ export class MenuComponent implements OnInit {
     this.initTheme();
   }
 
-  /**
-   * Inits theme
-   * picks up native theme preference if available on first visit
-   * otherwise we set our own
-   */
   initTheme(): void {
     const theme = this.storageService.get('theme');
     if (theme !== null) {
@@ -49,9 +41,9 @@ export class MenuComponent implements OnInit {
       this.switchTheme(theme);
     } else {
       if (window.matchMedia('prefers-color-scheme: dark').matches) {
-        this.switchTheme('light'); // opposite of current theme
+        this.switchTheme('light');
       } else {
-        this.switchTheme('dark');// opposite of current theme
+        this.switchTheme('dark');
       }
     }
   }
@@ -61,23 +53,20 @@ export class MenuComponent implements OnInit {
     return this.drawToggled = !this.drawToggled;
   }
 
-  /**
-   * Shares game
-   */
-  shareGame(): void {
-    // if (!this.ngNavigatorShareService.canShare()) {
-    //   alert(`This service/api is not supported in your Browser`);
-    //   return;
-    // }
+  canShare(): boolean {
+    return typeof navigator !== 'undefined' && 'share' in navigator;
+  }
 
-    this.ngNavigatorShareService.share(this.shareText)
+  shareGame(): void {
+    if (!this.canShare()) { return; }
+    navigator.share(this.shareText)
       .then(() => { console.log(`Successful share`); })
-      .catch((error) => { console.log(error); });
+      .catch((error: any) => { console.log(error); });
   }
 
   switchTheme(previousTheme: string, flip = false): void {
     let nextTheme = (flip) ? this.intendedTheme(previousTheme) : previousTheme;
-    this.themeService.switchTheme(nextTheme);
+    document.documentElement.setAttribute('data-theme', nextTheme);
     this.meta.updateTag({ content: (nextTheme === 'light') ? '#ffffff' : '#0a0a0a' }, 'name=theme-color');
     this.storageService.set(StorageKey.Theme, nextTheme);
     this.currentTheme = nextTheme;
@@ -92,10 +81,6 @@ export class MenuComponent implements OnInit {
     return (Number(sequenceIdx) > 0) ? ("0000" + Number(sequenceIdx)).slice(-4) : '????';
   }
 
-  /**
-   * taking -1day as the window is not correct, but ¯\_(ツ)_/¯
-   *
-   */
   get completedUtcCheckWithinDay(): boolean {
     let nowUtc = new Date(Date.now()).toISOString();
     let completedSequenceUtc = this.storageService.get(StorageKey.CompletedSequenceUtc);
@@ -110,5 +95,4 @@ export class MenuComponent implements OnInit {
   get gameMode(): GameMode {
     return this.storageService.get(StorageKey.GameMode) as GameMode;
   }
-
 }

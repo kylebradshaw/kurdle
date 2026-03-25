@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ThemeService } from '@bcodes/ngx-theme-service';
 import { StorageService } from 'src/app/services/storage.service';
 
 import { MenuComponent } from './menu.component';
@@ -13,7 +12,6 @@ describe('MenuComponent', () => {
       declarations: [ MenuComponent ],
       providers: [
         { provide: StorageService },
-        { provide: ThemeService }
       ]
     })
     .compileComponents();

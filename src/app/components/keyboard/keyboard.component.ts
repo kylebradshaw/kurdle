@@ -4,6 +4,7 @@ import { AlphaDict, GuessAction, GuessClass } from 'src/app/models/guess';
 import { StorageService } from 'src/app/services/storage.service';
 
 @Component({
+  standalone: false,
   selector: 'app-keyboard',
   templateUrl: './keyboard.component.html',
   styleUrls: ['./keyboard.component.scss']

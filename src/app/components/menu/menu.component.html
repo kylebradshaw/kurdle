@@ -48,7 +48,7 @@
         <li>2022.03.04 expanded dictionary with plurals</li>
       </ul>
     </li>
-    <li *ngIf="ngNavigatorShareService.canShare() && shareText"
+    <li *ngIf="canShare() && shareText"
       (click)="shareGame()"
       class="d-flex align-items-center justify-content-center"
       >

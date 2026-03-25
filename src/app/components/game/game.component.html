@@ -23,10 +23,10 @@
     <span [innerHTML]="notice.message"></span>
     <span *ngIf="notice.again">&nbsp;<button (click)="gameService.reloadGame(randomPlay)">Play again?</button></span>
     <button
-      *ngIf="notice.again && ngNavigatorShareService.canShare()"
+      *ngIf="notice.again && canShare()"
       (click)="shareGame()">Share</button>
     <svg
-      *ngIf="notice.again && ngNavigatorShareService.canShare()"
+      *ngIf="notice.again && canShare()"
       class="share-icon"
       (click)="shareGame()"
       fill="currentColor"

@@ -5,6 +5,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { nextRoundTime } from 'src/app/helpers';
 
 @Component({
+  standalone: false,
   selector: 'app-countdown',
   templateUrl: './countdown.component.html',
   styleUrls: ['./countdown.component.scss']

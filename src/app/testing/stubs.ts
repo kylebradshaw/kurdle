@@ -1,5 +1,9 @@
 import { of } from 'rxjs';
-export class MockThemeService { }
+
+export class MockThemeService {
+  switchTheme(_theme: string) {}
+}
+
 export class MockWordService {
   seedWordFromFunc() {
     return of({});

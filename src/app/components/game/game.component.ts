@@ -6,9 +6,7 @@ import { GamePosition, GameState } from 'src/app/models/game';
 import { GuessClass, GuessAction, AlphaDict, Letter } from 'src/app/models/guess';
 import { Notice } from 'src/app/models/notice';
 import { ActivatedRoute } from '@angular/router';
-import { ThemeService } from '@bcodes/ngx-theme-service';
 import { StorageKey, StorageService } from 'src/app/services/storage.service';
-import { NgNavigatorShareService } from 'ng-navigator-share';
 import { StatsService } from 'src/app/services/stats.service';
 import { GameMode } from 'src/app/models/game';
 import { GameService } from 'src/app/services/game.service';
@@ -16,6 +14,7 @@ import { sample } from 'lodash';
 declare var window: any;
 
 @Component({
+  standalone: false,
   selector: 'app-game',
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.scss']
@@ -33,7 +32,6 @@ export class GameComponent implements OnInit {
   currentTheme = '';
   endState = false;
   buffer = '';
-  navigator: any;
   rando = false;
   sequenceIdx: number = 0;
   currPos: number[] = [0, 0];
@@ -42,19 +40,17 @@ export class GameComponent implements OnInit {
   nextSequenceUtc: any;
   randomPlay: GameMode = GameMode.RANDOM;
   sequencePlay: GameMode = GameMode.SEQUENCE;
-  successMsg: string[] = ['Good Job!', 'Nice!', 'Satisfactory!', 'Great!', 'Awesome!', 'Fantastic!', '👍'];
-  failMsg: string[] = ['Sad Times.', 'Sans Win.', 'Try Again.', 'Oh no.', 'Nope.', 'Nah.', '😢'];
+  successMsg: string[] = ['Good Job!', 'Nice!', 'Satisfactory!', 'Great!', 'Awesome!', 'Fantastic!', '\u{1F44D}'];
+  failMsg: string[] = ['Sad Times.', 'Sans Win.', 'Try Again.', 'Oh no.', 'Nope.', 'Nah.', '\u{1F622}'];
   private _play: string = '';
   private _soln: boolean = false;
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private wordService: WordService,
-    private themeService: ThemeService,
     private storageService: StorageService,
     private meta: Meta,
     private statsService: StatsService,
-    public ngNavigatorShareService: NgNavigatorShareService,
     public gameService: GameService,
   ) {
     this.activatedRoute.queryParams.subscribe(params => {
@@ -65,7 +61,6 @@ export class GameComponent implements OnInit {
         this.rando = true;
       }
     });
-    this.ngNavigatorShareService = ngNavigatorShareService;
   }
 
   ngOnInit(): void {
@@ -87,7 +82,7 @@ export class GameComponent implements OnInit {
       this.submitRound(this.prevRound, this.play, this.prevRound === 5);
     } else if ($event.code.startsWith('Key')) {
       this.buffer += $event.key.toLowerCase();
-      this.play += $event.key.toLowerCase(); // no numbers, no spaces
+      this.play += $event.key.toLowerCase();
       this.refreshLetters(this.play);
     }
     this.buffer = this.bufferListener(this.buffer);
@@ -102,11 +97,6 @@ export class GameComponent implements OnInit {
     return this.buffer.slice(-5);
   }
 
-
-  /**
-   * Sets Up Game / Resets
-   * only works properly when toggled from desktop (shift + ~), not mouse click ¯\_(ツ)_/¯
-   */
   initGame(): void {
     this.endState = false;
     this.prevRound = 0;
@@ -146,7 +136,6 @@ export class GameComponent implements OnInit {
       }
       if (version !== response.version) {
         this.storageService.set(StorageKey.Version, response.version);
-        // realizing I do a hard refresh and dump them into SEQUENCE here.
         this.gameService.reloadGame(this.sequencePlay);
       }
       if (sequenceIdx !== response.sequence) {
@@ -157,14 +146,9 @@ export class GameComponent implements OnInit {
         this.storageService.set(StorageKey.NextSequenceUtc, `${this.nextSequenceUtc}`);
       }
       this.currentWord = response.word;
-      // this.currentWord = btoa('bowel'); //evoke #68
-      // this.currentWord = btoa('forth'); //trust #87
-      // this.currentWord = btoa('lasso'); //salsa #88
-      // this.currentWord = btoa('motto'); //moody #89
       this.sequenceIdx = response.sequence;
       this.decodedWord = this.wordService.decode(this.currentWord);
       this.alphabetKey = this.wordService.getAlphabetKey(this.decodedWord);
-      // this.indexCode = this.wordService.numberToLetters(response.sequence);
       this.indexCode = `${response.sequence}`;
     });
 
@@ -177,11 +161,11 @@ export class GameComponent implements OnInit {
     return classBoard.map((r: GuessClass[]) => {
       return r.map((c: GuessClass) => {
         if (c === GuessClass.MISMATCH) {
-          return '🟨';
+          return '\u{1F7E8}';
         } else if (c === GuessClass.MATCH) {
-          return '🟩';
+          return '\u{1F7E9}';
         } else if (c === GuessClass.USED) {
-          return '⬛';
+          return '\u2B1B';
         }
         return;
       });
@@ -229,8 +213,7 @@ export class GameComponent implements OnInit {
     } else {
       this.storageService.set(StorageKey.GameState, GameState.PLAYING);
     }
-    // leading GuessAction.ENTER, submit if populated but round hasn't ended
-    if (sequence.startsWith(GuessAction.ENTER) && //check if the row is filled
+    if (sequence.startsWith(GuessAction.ENTER) &&
       this.board[this.prevRound].every(letter => !letter)) {
       return;
     } else if (sequence.startsWith(GuessAction.ENTER)) {
@@ -255,14 +238,6 @@ export class GameComponent implements OnInit {
         this.classBoard[this.prevRound][idx] = GuessClass.DEFAULT;
       }
       return this._play.split('')[idx];
-      // skip over ghosting approach, but was not intuitive
-      // const playArr = this.play.split('');
-      // if (!!letter && !this.play.split('')[idx]) {
-      //   return letter;
-      // } else {
-      //   this.classBoard[this.prevRound][idx] = GuessClass.DEFAULT;
-      //   return this.play.split('')[idx];
-      // }
     });
     this.saveBoard('board', this.board);
   }
@@ -332,18 +307,16 @@ export class GameComponent implements OnInit {
 
   endGame(ended: boolean): void {
     const gameMode = this.storageService.get('gameMode') as GameMode;
-    this.storageService.remove(StorageKey.SequenceIdx); // not needed any longer
+    this.storageService.remove(StorageKey.SequenceIdx);
     this.storageService.set(StorageKey.ShareText, JSON.stringify(this.shareText()));
     this.storageService.set(StorageKey.GameState, GameState.ENDED);
     if (this.storageService.get(StorageKey.GameMode) === GameMode.SEQUENCE) {
       this.storageService.set(StorageKey.CompletedSequenceUtc, new Date().toISOString());
       this.storageService.set(StorageKey.CompletedSequenceIdx, `${this.sequenceIdx}`);
     }
-    // introduce completedGameMode, the end state of the game mode will allow to determine where to pick up
     this.storageService.set(StorageKey.CompletedGameMode, gameMode);
     this.endState = true;
   }
-
 
   incrementRound(prevRound: number): number {
     return prevRound < 6 ? prevRound + 1 : 0;
@@ -369,15 +342,9 @@ export class GameComponent implements OnInit {
   }
 
   showStats(): void {
-    // this.stats = this.storageService.get(StorageKey.Stats);
     this.storageService.set(StorageKey.GameState, GameState.PAUSED);
   }
 
-  /**
-   * Shares game, share board matrix and link
-   *
-   */
-  // TODO: Refactor for testability
   shareText(): any {
     const numerator = (this.soln) ? this.prevRound : `X`;
     return {
@@ -386,39 +353,28 @@ export class GameComponent implements OnInit {
     }
   }
 
-  /**
-   * Shares game
-   */
+  canShare(): boolean {
+    return typeof navigator !== 'undefined' && 'share' in navigator;
+  }
+
   shareGame(): void {
-    // if (!this.ngNavigatorShareService.canShare()) {
-    //   alert(`This service/api is not supported in your Browser`);
-    //   return;
-    // }
-    const sharePls = () => this.ngNavigatorShareService.share(this.shareText())
+    if (!this.canShare()) { return; }
+    const sharePls = () => navigator.share(this.shareText())
       .then(() => { console.log(`Successful share`); })
-      .catch((error) => { console.log(error); });
+      .catch((error: any) => { console.log(error); });
 
     window.plausible('Share', { callback: sharePls, props: { text: this.shareText() } });
   }
 
-  /**
-   * if a MATCH is applied to the board, apply that letter + index to the current round
-   */
   carryForward(char: string, letterClass: GuessClass, pos: GamePosition): void {
     this.ghostBoard[this.prevRound][pos[1]] = char;
     if (letterClass === GuessClass.GHOST || char === '') {
-      this.classBoard[this.prevRound][pos[1]] = GuessClass.DEFAULT; //letterClass;
+      this.classBoard[this.prevRound][pos[1]] = GuessClass.DEFAULT;
     } else {
-      this.classBoard[this.prevRound][pos[1]] = GuessClass.GHOST; //letterClass;
+      this.classBoard[this.prevRound][pos[1]] = GuessClass.GHOST;
     }
-
   }
 
-  /**
-   * Generates final GameStats record and consolidates with existing stats
-   * sets GameState
-   * sets user expectation
-   */
   conclude(): void {
   };
 
@@ -444,16 +400,10 @@ export class GameComponent implements OnInit {
     this._play = sequence;
   }
 
-  /**
-   * Point of this message is to donkey-patch bad gameStates that I introduce in the PWA, whoops
-   * Always target a specific sequenceIdx to timebox the shenanigans
-   */
   private initBandages(): void {
-    // 2022.02.18 @ 07:23:38 hotfix KD, NB could not get daily word, they were frozen out. stuck on LYNCH
     if (this.storageService.get('gameState') === GameState.ENDED && this.storageService.get('sequenceIdx') === `15`) {
       this.storageService.set(StorageKey.Hotfix, '2022.02.18-0015');
       this.gameService.reloadGame(this.sequencePlay);
     }
   }
-
 }
