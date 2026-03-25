@@ -149,12 +149,12 @@ Convert `LetterBlockComponent` to standalone. Replace `@Input()` with signal inp
 
 ### Acceptance Criteria
 
-- [ ] `@Component({ standalone: true, ... })`
-- [ ] All `@Input()` decorators replaced with `input<T>()` signal inputs
-- [ ] Template uses `@if` / `@for` instead of `*ngIf` / `*ngFor` (if applicable)
-- [ ] `letter-block.component.spec.ts` migrated to Vitest; renders correctly for all `GuessClass` values
-- [ ] Coverage for component ts+html logic is 100%
-- [ ] git commit created: `feat: task 8 - letter block component modernization`
+- [x] `@Component({ standalone: true, ... })`
+- [x] All `@Input()` decorators replaced with `input<T>()` signal inputs
+- [x] Template uses `@if` / `@for` instead of `*ngIf` / `*ngFor` (if applicable)
+- [x] `letter-block.component.spec.ts` migrated to Vitest; renders correctly for all `GuessClass` values
+- [x] Coverage for component ts+html logic is 100%
+- [x] git commit created: `feat: task 8 - letter block component modernization`
 
 **Completion signal:** When all acceptance criteria above are satisfied and the git commit exists, output exactly: `<promise>TESTS COMPLETE</promise>`
 
