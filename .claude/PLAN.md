@@ -293,11 +293,81 @@ Run the full test suite with coverage. Fix any gaps. Remove dead code. Update `C
 
 ---
 
+## Task 16 — Playwright E2E Tests + Local Dev Regression Fixes
+
+Establish Playwright as the E2E layer. Fix the local development regressions introduced during the Angular 21 migration. Use the deployed app at https://kurdle.netlify.app/ as the behavioral reference; tests run against the local dev server.
+
+### Background / Root Causes
+
+After the migration, three things are broken locally:
+
+1. **Word API unreachable on `npm start`** — `WordService` calls `/.netlify/functions/word`, but `ng serve` has no proxy config and no Netlify function runner. There has never been a `netlify.toml` or proxy config; the original dev workflow presumably used `netlify dev`. Fix: add `netlify.toml`, a `proxyConfig` in `angular.json`, and an `npm run dev` script that runs `netlify dev`.
+2. **Board renders but game never initialises** — because `decodedWord` is empty (API failed), the solver always returns mismatches and the board never responds correctly to Enter.
+3. **CSS may have regressions** — removing `NgClass` / `CountdownComponent` from `GameComponent` imports without a visual smoke-test left unknown style gaps.
+
+### Test Tag Convention
+
+Use Playwright's `tag` option on each test:
+
+- **`@stopgap`** — temporary baseline tests that prove local parity with the deployed app. May be removed or replaced once regressions are confirmed fixed and the app is stable.
+- **`@continuous`** — permanent regression tests that must always pass. These are the permanent suite.
+
+### Acceptance Criteria
+
+#### Infrastructure
+- [ ] `@playwright/test` and `playwright-chromium` (or `@playwright/browser-chromium`) added to `devDependencies`
+- [ ] `playwright.config.ts` at project root; points `baseURL` at `http://localhost:4200` (Angular dev server); uses Chromium only for now
+- [ ] `npm run e2e` script added to `package.json`; starts Angular dev server automatically via `webServer` config (or documents that `npm run dev` must be running)
+- [ ] `e2e/` directory created for all Playwright specs
+- [ ] `npm run e2e` runs cleanly and exits 0 with all tests passing
+
+#### Local dev fixes
+- [ ] `netlify.toml` created with `[dev]` block pointing to `ng serve` and `functions = "netlify/functions"`
+- [ ] `angular.json` `serve` target updated with `proxyConfig` pointing to a `proxy.conf.json` that forwards `/.netlify/functions/*` → `http://localhost:9999` (Netlify dev functions port)
+- [ ] `npm run dev` script added: runs `netlify dev` (serves Angular + functions together)
+- [ ] `npm start` still works as plain `ng serve` (no proxy, no functions — for non-Netlify-aware environments)
+- [ ] Confirmed: running `npm run dev` and opening the app loads a valid word, shows the board, accepts typed letters, and submits a guess on Enter
+
+#### `@stopgap` tests (baseline parity with deployed app)
+These tests verify that the migrated app behaves like https://kurdle.netlify.app/. They use `page.route()` to mock `/.netlify/functions/word` so they don't require `netlify dev` to be running — just `npm start`.
+
+- [ ] **App shell loads**: `<header>`, `<main>`, `<app-keyboard>` present; page title/h1 contains "Kurdle"
+- [ ] **Board renders**: 6 rows × 5 letter tiles visible; tiles start empty
+- [ ] **Typing populates tiles**: typing 5 letters fills the current row's tiles
+- [ ] **Backspace clears a tile**: typing 3 letters then Backspace leaves 2 filled tiles
+- [ ] **Short guess rejected**: typing 3 letters and pressing Enter does not advance the round
+- [ ] **Unknown word rejected**: typing a 5-letter non-word and pressing Enter shows the "not the dictionary" notice
+- [ ] **Correct guess wins**: mocking the word to `frame`, typing `frame` and pressing Enter shows success notice and reveals the word in the header
+- [ ] **Wrong guess advances row**: typing a valid 5-letter word (not the answer) and pressing Enter moves to row 2
+- [ ] **6 wrong guesses loses**: exhausting all 6 rows shows the fail notice
+- [ ] **Share button appears on game end** (if `navigator.share` is available in the test browser)
+- [ ] **Theme toggle**: clicking the theme toggle in the menu changes the `data-theme` attribute on `<html>`
+- [ ] **Keyboard reflects letter states**: after a guess, keyboard keys for used letters show the correct colour class (match/mismatch/used)
+
+#### `@continuous` tests (permanent regression suite)
+These tests stay in the suite indefinitely and must pass on every build.
+
+- [ ] **App loads without JS errors**: no uncaught console errors on startup (excluding known benign warnings)
+- [ ] **Typing and submission flow** (same as stopgap typing/submission tests, promoted to permanent after fixes verified)
+- [ ] **Correct-word win flow** (same as stopgap win test, permanent)
+- [ ] **6-round loss flow** (same as stopgap loss test, permanent)
+- [ ] **Router**: navigating to `/` loads the game; navigating to an unknown path redirects to `/`
+- [ ] **Keyboard on-screen click**: clicking an on-screen keyboard key appends the letter (not just physical keyboard)
+- [ ] **Debug mode**: typing `josie` on the keyboard reveals the answer word in the header
+
+#### Git commit
+- [ ] git commit created: `feat: task 16 - playwright e2e tests & local dev regression fixes`
+
+**Completion signal:** When all acceptance criteria above are satisfied and the git commit exists, output exactly: `<promise>TESTS COMPLETE</promise>`
+
+---
+
 ## Running Order for Ralph Loop
 
 ```
 Task 0 → Task 1 → Task 2 → Task 3 → Task 4 → Task 5 → Task 6 → Task 7
 → Task 8 → Task 9 → Task 10 → Task 11 → Task 12 → Task 13 → Task 14 → Task 15
+→ Task 16
 ```
 
 Each task: implement → write/migrate tests → verify coverage → commit → next.
