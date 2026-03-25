@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-
-declare const window: any;
+import { RouterOutlet } from '@angular/router';
 
 @Component({
-  standalone: false,
+  standalone: true,
+  imports: [RouterOutlet],
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']

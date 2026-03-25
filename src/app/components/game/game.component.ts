@@ -1,7 +1,6 @@
 import { Component, OnInit, HostListener, inject, signal, computed } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Meta } from '@angular/platform-browser';
-import { NgClass } from '@angular/common';
 import { FuncWord, WordService } from 'src/app/services/word.service';
 import { GamePosition, GameState, GameMode } from 'src/app/models/game';
 import { GuessClass, GuessAction, AlphaDict } from 'src/app/models/guess';
@@ -18,7 +17,7 @@ declare var window: any;
 
 @Component({
   standalone: true,
-  imports: [RouterModule, NgClass, LetterBlockComponent, KeyboardComponent, CountdownComponent, MenuComponent],
+  imports: [RouterModule, LetterBlockComponent, KeyboardComponent, MenuComponent],
   selector: 'app-game',
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.scss']
