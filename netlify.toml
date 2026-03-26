@@ -7,3 +7,6 @@
   command = "ng serve"
   port = 8888
   targetPort = 4200
+
+[build.environment]
+  NODE_VERSION = "24.3.0"
