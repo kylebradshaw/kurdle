@@ -1,4 +1,4 @@
-import { nextRoundTime, forceRefresh, LocationLike, repeatedCharacters, solveGuess } from './utils';
+import { nextRoundTime, forceRefresh, LocationLike, repeatedCharacters, solveGuess, sample } from './utils';
 import { GameMode } from 'src/app/models/game';
 import { GuessClass } from 'src/app/models/guess';
 
@@ -88,6 +88,42 @@ describe('Helpers', () => {
       forceRefresh('' as GameMode, loc);
       expect(loc.href).toBe('http://localhost:4200');
       expect(loc.reload).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('sample', () => {
+    it('returns an element from the array', () => {
+      const arr = ['a', 'b', 'c'];
+      const result = sample(arr);
+      expect(arr).toContain(result);
+    });
+
+    it('returns undefined for empty array', () => {
+      const result = sample([]);
+      expect(result).toBeUndefined();
+    });
+
+    it('returns the only element for single-element array', () => {
+      const result = sample(['only']);
+      expect(result).toBe('only');
+    });
+
+    it('returns elements with roughly equal probability over many samples', () => {
+      const arr = ['a', 'b', 'c', 'd'];
+      const counts: Record<string, number> = { a: 0, b: 0, c: 0, d: 0 };
+      const iterations = 4000;
+
+      for (let i = 0; i < iterations; i++) {
+        const result = sample(arr);
+        if (result) counts[result]++;
+      }
+
+      // Each element should be sampled roughly 1000 times (1/4 of 4000)
+      // Allow 30% variance (700-1300)
+      Object.values(counts).forEach(count => {
+        expect(count).toBeGreaterThan(700);
+        expect(count).toBeLessThan(1300);
+      });
     });
   });
 

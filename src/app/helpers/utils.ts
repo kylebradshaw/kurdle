@@ -2,6 +2,15 @@ import { GameMode, GameTime } from "src/app/models/game";
 import { GuessClass } from "src/app/models/guess";
 
 /**
+ * Returns a random element from an array
+ * @param arr - the array to sample from
+ * @returns a random element from the array, or undefined if the array is empty
+ */
+export function sample<T>(arr: T[]): T | undefined {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+/**
  * Returns an array of characters that appear more than once in the string.
  */
 export function repeatedCharacters(str: string): string[] {

@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, ChangeDetectorRef, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, HostListener, ChangeDetectorRef, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Meta } from '@angular/platform-browser';
 import { FuncWord, WordService } from 'src/app/services/word.service';
@@ -10,10 +10,8 @@ import { StatsService } from 'src/app/services/stats.service';
 import { GameService } from 'src/app/services/game.service';
 import { LetterBlockComponent } from 'src/app/components/letter-block/letter-block.component';
 import { KeyboardComponent } from 'src/app/components/keyboard/keyboard.component';
-import { CountdownComponent } from 'src/app/components/countdown/countdown.component';
 import { MenuComponent } from 'src/app/components/menu/menu.component';
-import { sample } from 'lodash';
-declare var window: any;
+import { sample } from 'src/app/helpers';
 
 @Component({
   standalone: true,
