@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "name": "refactor-angular",
+  "owner": "snakeo",
+  "repo": "claude-debug-and-refactor-skills-plugin",
+  "path": "plugins/debug-and-refactor/skills/refactor-angular",
+  "branch": "master",
+  "sha": "a0bffb761486f11fd55b1df7f297a52c9a1ba5d5",
+  "source": "manual"
+}

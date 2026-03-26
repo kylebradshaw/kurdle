@@ -434,7 +434,7 @@ Screenshots in `tmp/` document the regressions side-by-side (local dev vs produc
 - [x] Visual spot-check confirms local dev matches production across all documented states
 
 #### Git commit
-- [ ] git commit created: `feat: task 18 - visual design parity & playwright visual regression tests`
+- [x] git commit created: `feat: task 18 - visual design parity & playwright visual regression tests`
 
 **Completion signal:** When all acceptance criteria above are satisfied and the git commit exists, output exactly: `<promise>TESTS COMPLETE</promise>`
 

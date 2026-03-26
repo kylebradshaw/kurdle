@@ -1,0 +1,327 @@
+7:37:06 PM: Build ready to start
+7:37:07 PM: buildbot version: 4eb552cf97517bc57f136e719a1cf73a7f3cefbb
+7:37:07 PM: build-image version: 235a96ed6c11cbdf942eed7e70e6802956f9b464 (focal)
+7:37:08 PM: Fetching cached dependencies
+7:37:18 PM: Failed to fetch cache, continuing with build
+7:37:18 PM: Starting to prepare the repo for build
+7:37:18 PM: No cached dependencies found. Cloning fresh repo
+7:37:18 PM: git clone --filter=blob:none https://github.com/kylebradshaw/kurdle
+7:37:18 PM: Preparing Git Reference refs/heads/main
+7:37:30 PM: Starting to install dependencies
+7:37:30 PM: mise WARN  deprecated [idiomatic_version_file_enable_tools]:
+7:37:30 PM: Idiomatic version files like /opt/build/repo/.nvmrc are currently enabled by default. However, this will change in mise 2025.10.0 to instead default to disabled.
+7:37:30 PM: You can remove this warning by explicitly enabling idiomatic version files for node with:
+7:37:30 PM:     mise settings add idiomatic_version_file_enable_tools node
+7:37:30 PM: You can disable idiomatic version files with:
+7:37:30 PM:     mise settings add idiomatic_version_file_enable_tools "[]"
+7:37:30 PM: See https://github.com/jdx/mise/discussions/4345 for more information.
+7:37:31 PM: mise python@3.13.11  install
+7:37:31 PM: mise python@3.13.11  download cpython-3.13.11+20251217-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+7:37:31 PM: mise python@3.13.11  extract cpython-3.13.11+20251217-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+7:37:32 PM: mise python@3.13.11  python --version
+7:37:32 PM: mise python@3.13.11  Python 3.13.11
+7:37:32 PM: mise python@3.13.11 ✓ installed
+7:37:32 PM: Python version set to 3.13
+7:37:32 PM: mise WARN  deprecated [idiomatic_version_file_enable_tools]:
+7:37:32 PM: Idiomatic version files like /opt/build/repo/.nvmrc are currently enabled by default. However, this will change in mise 2025.10.0 to instead default to disabled.
+7:37:32 PM: You can remove this warning by explicitly enabling idiomatic version files for node with:
+7:37:32 PM:     mise settings add idiomatic_version_file_enable_tools node
+7:37:32 PM: You can disable idiomatic version files with:
+7:37:32 PM:     mise settings add idiomatic_version_file_enable_tools "[]"
+7:37:32 PM: See https://github.com/jdx/mise/discussions/4345 for more information.
+7:37:34 PM: Collecting pipenv
+7:37:34 PM:   Downloading pipenv-2026.0.3-py3-none-any.whl.metadata (17 kB)
+7:37:34 PM: Collecting certifi (from pipenv)
+7:37:34 PM:   Downloading certifi-2026.1.4-py3-none-any.whl.metadata (2.5 kB)
+7:37:34 PM: Collecting packaging>=22 (from pipenv)
+7:37:34 PM:   Downloading packaging-25.0-py3-none-any.whl.metadata (3.3 kB)
+7:37:34 PM: Collecting setuptools>=67 (from pipenv)
+7:37:34 PM:   Downloading setuptools-80.9.0-py3-none-any.whl.metadata (6.6 kB)
+7:37:34 PM: Collecting virtualenv>=20.24.2 (from pipenv)
+7:37:34 PM:   Downloading virtualenv-20.35.4-py3-none-any.whl.metadata (4.6 kB)
+7:37:34 PM: Collecting distlib<1,>=0.3.7 (from virtualenv>=20.24.2->pipenv)
+7:37:34 PM:   Downloading distlib-0.4.0-py2.py3-none-any.whl.metadata (5.2 kB)
+7:37:34 PM: Collecting filelock<4,>=3.12.2 (from virtualenv>=20.24.2->pipenv)
+7:37:35 PM:   Downloading filelock-3.20.2-py3-none-any.whl.metadata (2.1 kB)
+7:37:35 PM: Collecting platformdirs<5,>=3.9.1 (from virtualenv>=20.24.2->pipenv)
+7:37:35 PM:   Downloading platformdirs-4.5.1-py3-none-any.whl.metadata (12 kB)
+7:37:35 PM: Downloading pipenv-2026.0.3-py3-none-any.whl (2.4 MB)
+7:37:35 PM:    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.4/2.4 MB 45.8 MB/s  0:00:00
+7:37:35 PM: Downloading packaging-25.0-py3-none-any.whl (66 kB)
+7:37:35 PM: Downloading setuptools-80.9.0-py3-none-any.whl (1.2 MB)
+7:37:35 PM:    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 47.1 MB/s  0:00:00
+7:37:35 PM: Downloading virtualenv-20.35.4-py3-none-any.whl (6.0 MB)
+7:37:35 PM:    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.0/6.0 MB 106.4 MB/s  0:00:00
+7:37:35 PM: Downloading distlib-0.4.0-py2.py3-none-any.whl (469 kB)
+7:37:35 PM: Downloading filelock-3.20.2-py3-none-any.whl (16 kB)
+7:37:35 PM: Downloading platformdirs-4.5.1-py3-none-any.whl (18 kB)
+7:37:35 PM: Downloading certifi-2026.1.4-py3-none-any.whl (152 kB)
+7:37:35 PM: Installing collected packages: distlib, setuptools, platformdirs, packaging, filelock, certifi, virtualenv, pipenv
+7:37:38 PM: Successfully installed certifi-2026.1.4 distlib-0.4.0 filelock-3.20.2 packaging-25.0 pipenv-2026.0.3 platformdirs-4.5.1 setuptools-80.9.0 virtualenv-20.35.4
+7:37:38 PM: mise WARN  deprecated [idiomatic_version_file_enable_tools]:
+7:37:38 PM: Idiomatic version files like /opt/build/repo/.nvmrc are currently enabled by default. However, this will change in mise 2025.10.0 to instead default to disabled.
+7:37:38 PM: You can remove this warning by explicitly enabling idiomatic version files for node with:
+7:37:38 PM:     mise settings add idiomatic_version_file_enable_tools node
+7:37:38 PM: You can disable idiomatic version files with:
+7:37:38 PM:     mise settings add idiomatic_version_file_enable_tools "[]"
+7:37:38 PM: See https://github.com/jdx/mise/discussions/4345 for more information.
+7:37:38 PM: Attempting Ruby version 2.7.2, read from environment
+7:37:39 PM: Using Ruby version 2.7.2
+7:37:40 PM: mise WARN  deprecated [idiomatic_version_file_enable_tools]:
+7:37:40 PM: Idiomatic version files like /opt/build/repo/.nvmrc are currently enabled by default. However, this will change in mise 2025.10.0 to instead default to disabled.
+7:37:40 PM: You can remove this warning by explicitly enabling idiomatic version files for node with:
+7:37:40 PM:     mise settings add idiomatic_version_file_enable_tools node
+7:37:40 PM: You can disable idiomatic version files with:
+7:37:40 PM:     mise settings add idiomatic_version_file_enable_tools "[]"
+7:37:40 PM: See https://github.com/jdx/mise/discussions/4345 for more information.
+7:37:40 PM: Started restoring cached go cache
+7:37:40 PM: Finished restoring cached go cache
+7:37:40 PM: go version go1.19.13 linux/amd64
+7:37:40 PM: mise WARN  deprecated [idiomatic_version_file_enable_tools]:
+7:37:40 PM: Idiomatic version files like /opt/build/repo/.nvmrc are currently enabled by default. However, this will change in mise 2025.10.0 to instead default to disabled.
+7:37:40 PM: You can remove this warning by explicitly enabling idiomatic version files for node with:
+7:37:40 PM:     mise settings add idiomatic_version_file_enable_tools node
+7:37:40 PM: You can disable idiomatic version files with:
+7:37:40 PM:     mise settings add idiomatic_version_file_enable_tools "[]"
+7:37:40 PM: See https://github.com/jdx/mise/discussions/4345 for more information.
+7:37:40 PM: mise WARN  deprecated [idiomatic_version_file_enable_tools]:
+7:37:40 PM: Idiomatic version files like /opt/build/repo/.nvmrc are currently enabled by default. However, this will change in mise 2025.10.0 to instead default to disabled.
+7:37:40 PM: You can remove this warning by explicitly enabling idiomatic version files for node with:
+7:37:40 PM:     mise settings add idiomatic_version_file_enable_tools node
+7:37:40 PM: You can disable idiomatic version files with:
+7:37:40 PM:     mise settings add idiomatic_version_file_enable_tools "[]"
+7:37:40 PM: See https://github.com/jdx/mise/discussions/4345 for more information.
+7:37:40 PM: mise WARN  deprecated [idiomatic_version_file_enable_tools]:
+7:37:40 PM: Idiomatic version files like /opt/build/repo/.nvmrc are currently enabled by default. However, this will change in mise 2025.10.0 to instead default to disabled.
+7:37:40 PM: You can remove this warning by explicitly enabling idiomatic version files for node with:
+7:37:40 PM:     mise settings add idiomatic_version_file_enable_tools node
+7:37:40 PM: You can disable idiomatic version files with:
+7:37:40 PM:     mise settings add idiomatic_version_file_enable_tools "[]"
+7:37:40 PM: See https://github.com/jdx/mise/discussions/4345 for more information.
+7:37:40 PM: mise WARN  deprecated [idiomatic_version_file_enable_tools]:
+7:37:40 PM: Idiomatic version files like /opt/build/repo/.nvmrc are currently enabled by default. However, this will change in mise 2025.10.0 to instead default to disabled.
+7:37:40 PM: You can remove this warning by explicitly enabling idiomatic version files for node with:
+7:37:40 PM:     mise settings add idiomatic_version_file_enable_tools node
+7:37:40 PM: You can disable idiomatic version files with:
+7:37:40 PM:     mise settings add idiomatic_version_file_enable_tools "[]"
+7:37:40 PM: See https://github.com/jdx/mise/discussions/4345 for more information.
+7:37:40 PM: Using PHP version 8.0
+7:37:40 PM: mise WARN  deprecated [idiomatic_version_file_enable_tools]:
+7:37:40 PM: Idiomatic version files like /opt/build/repo/.nvmrc are currently enabled by default. However, this will change in mise 2025.10.0 to instead default to disabled.
+7:37:40 PM: You can remove this warning by explicitly enabling idiomatic version files for node with:
+7:37:40 PM:     mise settings add idiomatic_version_file_enable_tools node
+7:37:40 PM: You can disable idiomatic version files with:
+7:37:40 PM:     mise settings add idiomatic_version_file_enable_tools "[]"
+7:37:40 PM: See https://github.com/jdx/mise/discussions/4345 for more information.
+7:37:41 PM: mise WARN  deprecated [idiomatic_version_file_enable_tools]:
+7:37:41 PM: Idiomatic version files like /opt/build/repo/.nvmrc are currently enabled by default. However, this will change in mise 2025.10.0 to instead default to disabled.
+7:37:41 PM: You can remove this warning by explicitly enabling idiomatic version files for node with:
+7:37:41 PM:     mise settings add idiomatic_version_file_enable_tools node
+7:37:41 PM: You can disable idiomatic version files with:
+7:37:41 PM:     mise settings add idiomatic_version_file_enable_tools "[]"
+7:37:41 PM: See https://github.com/jdx/mise/discussions/4345 for more information.
+7:37:41 PM: mise WARN  deprecated [idiomatic_version_file_enable_tools]:
+7:37:41 PM: Idiomatic version files like /opt/build/repo/.nvmrc are currently enabled by default. However, this will change in mise 2025.10.0 to instead default to disabled.
+7:37:41 PM: You can remove this warning by explicitly enabling idiomatic version files for node with:
+7:37:41 PM:     mise settings add idiomatic_version_file_enable_tools node
+7:37:41 PM: You can disable idiomatic version files with:
+7:37:41 PM:     mise settings add idiomatic_version_file_enable_tools "[]"
+7:37:41 PM: See https://github.com/jdx/mise/discussions/4345 for more information.
+7:37:41 PM: mise WARN  deprecated [idiomatic_version_file_enable_tools]:
+7:37:41 PM: Idiomatic version files like /opt/build/repo/.nvmrc are currently enabled by default. However, this will change in mise 2025.10.0 to instead default to disabled.
+7:37:41 PM: You can remove this warning by explicitly enabling idiomatic version files for node with:
+7:37:41 PM:     mise settings add idiomatic_version_file_enable_tools node
+7:37:41 PM: You can disable idiomatic version files with:
+7:37:41 PM:     mise settings add idiomatic_version_file_enable_tools "[]"
+7:37:41 PM: See https://github.com/jdx/mise/discussions/4345 for more information.
+7:37:41 PM: mise WARN  deprecated [idiomatic_version_file_enable_tools]:
+7:37:41 PM: Idiomatic version files like /opt/build/repo/.nvmrc are currently enabled by default. However, this will change in mise 2025.10.0 to instead default to disabled.
+7:37:41 PM: You can remove this warning by explicitly enabling idiomatic version files for node with:
+7:37:41 PM:     mise settings add idiomatic_version_file_enable_tools node
+7:37:41 PM: You can disable idiomatic version files with:
+7:37:41 PM:     mise settings add idiomatic_version_file_enable_tools "[]"
+7:37:41 PM: See https://github.com/jdx/mise/discussions/4345 for more information.
+7:37:42 PM: Attempting Node.js version '16.10.0' from .nvmrc
+7:37:42 PM: Downloading and installing node v16.10.0...
+7:37:42 PM: Downloading https://nodejs.org/dist/v16.10.0/node-v16.10.0-linux-x64.tar.xz...
+7:37:43 PM: Computing checksum with sha256sum
+7:37:43 PM: Checksums matched!
+7:37:45 PM: Now using node v16.10.0 (npm v7.24.0)
+7:37:45 PM: Enabling Node.js Corepack
+7:37:46 PM: Started restoring cached build plugins
+7:37:46 PM: Finished restoring cached build plugins
+7:37:46 PM: Started restoring cached corepack dependencies
+7:37:46 PM: Finished restoring cached corepack dependencies
+7:37:46 PM: No npm workspaces detected
+7:37:46 PM: Started restoring cached node modules
+7:37:46 PM: Finished restoring cached node modules
+7:37:46 PM: Installing npm packages using npm version 7.24.0
+7:37:52 PM: npm WARN deprecated source-map-resolve@0.6.0: See https://github.com/lydell/source-map-resolve#deprecated
+7:37:58 PM: npm WARN deprecated @npmcli/fs@1.1.0: this version had an improper engines field added, update to 1.1.1
+7:38:20 PM: added 906 packages, and audited 907 packages in 34s
+7:38:20 PM: 95 packages are looking for funding
+7:38:20 PM:   run `npm fund` for details
+7:38:20 PM: 63 vulnerabilities (9 low, 13 moderate, 35 high, 6 critical)
+7:38:20 PM: To address issues that do not require attention, run:
+7:38:20 PM:   npm audit fix
+7:38:20 PM: To address all issues (including breaking changes), run:
+7:38:20 PM:   npm audit fix --force
+7:38:20 PM: Run `npm audit` for details.
+7:38:20 PM: npm packages installed
+7:38:21 PM: Successfully installed dependencies
+7:38:21 PM: Detected 1 framework(s)
+7:38:21 PM: "angular" at version "13.2.2"
+7:38:21 PM: Starting build script
+7:38:21 PM: mise WARN  deprecated [idiomatic_version_file_enable_tools]:
+7:38:21 PM: Idiomatic version files like /opt/build/repo/.nvmrc are currently enabled by default. However, this will change in mise 2025.10.0 to instead default to disabled.
+7:38:21 PM: You can remove this warning by explicitly enabling idiomatic version files for node with:
+7:38:21 PM:     mise settings add idiomatic_version_file_enable_tools node
+7:38:21 PM: You can disable idiomatic version files with:
+7:38:21 PM:     mise settings add idiomatic_version_file_enable_tools "[]"
+7:38:21 PM: See https://github.com/jdx/mise/discussions/4345 for more information.
+7:38:22 PM: mise WARN  deprecated [idiomatic_version_file_enable_tools]:
+7:38:22 PM: Idiomatic version files like /opt/build/repo/.nvmrc are currently enabled by default. However, this will change in mise 2025.10.0 to instead default to disabled.
+7:38:22 PM: You can remove this warning by explicitly enabling idiomatic version files for node with:
+7:38:22 PM:     mise settings add idiomatic_version_file_enable_tools node
+7:38:22 PM: You can disable idiomatic version files with:
+7:38:22 PM:     mise settings add idiomatic_version_file_enable_tools "[]"
+7:38:22 PM: See https://github.com/jdx/mise/discussions/4345 for more information.
+7:38:22 PM: Section completed: initializing
+7:38:24 PM: ​
+7:38:24 PM: Netlify Build
+7:38:24 PM: ────────────────────────────────────────────────────────────────
+7:38:24 PM: ​
+7:38:24 PM: ❯ Version
+7:38:24 PM:   @netlify/build 35.5.9
+7:38:24 PM: ​
+7:38:24 PM: ❯ Flags
+7:38:24 PM:   accountId: 5a69fac0df99533ec517a8f7
+7:38:24 PM:   baseRelDir: true
+7:38:24 PM:   buildId: 695b07b255abca00087af0f8
+7:38:24 PM:   deployId: 695b07b255abca00087af0fa
+7:38:24 PM: ​
+7:38:24 PM: ❯ Current directory
+7:38:24 PM:   /opt/build/repo
+7:38:24 PM: ​
+7:38:24 PM: ❯ Config file
+7:38:24 PM:   No config file was defined: using default values.
+7:38:24 PM: ​
+7:38:24 PM: ❯ Context
+7:38:24 PM:   production
+7:38:24 PM: ​
+7:38:24 PM: ❯ Installing extensions
+7:38:24 PM:    - neon
+7:38:45 PM: ​
+7:38:45 PM: ❯ Loading extensions
+7:38:45 PM:    - neon
+7:38:46 PM: ​
+7:38:46 PM: Build command from Netlify app
+7:38:46 PM: ────────────────────────────────────────────────────────────────
+7:38:46 PM: ​
+7:38:46 PM: $ ng build
+7:38:49 PM: - Generating browser application bundles (phase: setup)...
+7:38:50 PM: Processing legacy "View Engine" libraries:
+7:38:51 PM: - @bcodes/ngx-theme-service [es2015/esm2015] (git+https://github.com/briancodes/ngx-theme-service)
+7:38:51 PM: - ng-navigator-share [es2015/esm2015] (git+https://github.com/ShankyTiwari/ng-navigator-share.git)
+7:38:52 PM: Encourage the library authors to publish an Ivy distribution.
+7:39:16 PM: ✔ Browser application bundle generation complete.
+7:39:16 PM: ✔ Browser application bundle generation complete.
+7:39:16 PM: - Copying assets...
+7:39:16 PM: ✔ Copying assets complete.
+7:39:16 PM: - Generating index html...
+7:39:16 PM: ✔ Index html generation complete.
+7:39:16 PM: Initial Chunk Files           | Names         |  Raw Size | Estimated Transfer Size
+7:39:16 PM: main.3d1685a3c2ba4821.js      | main          | 413.48 kB |               112.62 kB
+7:39:16 PM: styles.0833a8ac93993242.css   | styles        |  70.06 kB |                 3.93 kB
+7:39:16 PM: polyfills.8afdb460cbaf50ef.js | polyfills     |  36.22 kB |                11.47 kB
+7:39:16 PM: themes.862eca5b8487ba27.css   | themes        |   1.30 kB |               306 bytes
+7:39:16 PM: runtime.f3529904e6d52066.js   | runtime       |   1.14 kB |               641 bytes
+7:39:16 PM:
+7:39:16 PM:                               | Initial Total | 522.20 kB |               128.94 kB
+7:39:16 PM:
+7:39:16 PM: Build at: 2026-01-05T00:39:16.535Z - Hash: 0704d68c47b011ce - Time: 27142ms
+7:39:16 PM:
+7:39:16 PM: Warning: /opt/build/repo/src/app/components/game/game.component.scss exceeded maximum budget. Budget 2.00 kB was not met by 893 bytes with a total of 2.87 kB.
+7:39:16 PM:
+7:39:16 PM: Warning: /opt/build/repo/src/app/components/keyboard/keyboard.component.scss exceeded maximum budget. Budget 2.00 kB was not met by 1.60 kB with a total of 3.60 kB.
+7:39:16 PM:
+7:39:16 PM: Warning: /opt/build/repo/src/app/components/letter-block/letter-block.component.scss exceeded maximum budget. Budget 2.00 kB was not met by 1.20 kB with a total of 3.20 kB.
+7:39:16 PM:
+7:39:16 PM: Warning: /opt/build/repo/src/app/components/menu/menu.component.scss exceeded maximum budget. Budget 2.00 kB was not met by 501 bytes with a total of 2.49 kB.
+7:39:16 PM:
+7:39:16 PM: Warning: bundle initial exceeded maximum budget. Budget 500.00 kB was not met by 22.20 kB with a total of 522.20 kB.
+7:39:16 PM:
+7:39:16 PM:
+7:39:16 PM: ​
+7:39:16 PM: (build.command completed in 30s)
+7:39:16 PM: ​
+7:39:16 PM: Functions bundling
+7:39:16 PM: ────────────────────────────────────────────────────────────────
+7:39:16 PM: ​
+7:39:16 PM: Packaging Functions from netlify/functions directory:
+7:39:16 PM:  - dict.ts
+7:39:16 PM:  - heavy-dict.ts
+7:39:16 PM:  - past-dict.ts
+7:39:16 PM:  - plural-dict.ts
+7:39:16 PM:  - plural-past-dict.ts
+7:39:16 PM:  - word.ts
+7:39:16 PM: ​
+7:39:17 PM: ​
+7:39:17 PM: (Functions bundling completed in 619ms)
+7:39:17 PM: ​
+7:39:17 PM: Deploy site
+7:39:17 PM: ────────────────────────────────────────────────────────────────
+7:39:17 PM: ​
+7:39:17 PM: Starting to deploy site from 'dist/ng-kurdle'
+7:39:17 PM: Calculating files to upload
+7:39:17 PM: 0 new file(s) to upload
+7:39:17 PM: 6 new function(s) to upload
+7:39:24 PM: Starting post processing
+7:39:24 PM: Skipping form detection
+7:39:24 PM: Post processing - header rules
+7:39:24 PM: Post processing done
+7:39:24 PM: Section completed: postprocessing
+7:39:24 PM: Post processing - redirect rules
+7:39:24 PM: Section completed: deploying
+7:39:24 PM: Site deploy was successfully initiated
+7:39:24 PM: ​
+7:39:24 PM: (Deploy site completed in 7.1s)
+7:39:25 PM: Site is live ✨
+7:39:25 PM: ​
+7:39:25 PM: Netlify Build Complete
+7:39:25 PM: ────────────────────────────────────────────────────────────────
+7:39:25 PM: ​
+7:39:25 PM: (Netlify Build completed in 1m 0.5s)
+7:39:25 PM: mise WARN  deprecated [idiomatic_version_file_enable_tools]:
+7:39:25 PM: Idiomatic version files like /opt/build/repo/.nvmrc are currently enabled by default. However, this will change in mise 2025.10.0 to instead default to disabled.
+7:39:25 PM: You can remove this warning by explicitly enabling idiomatic version files for node with:
+7:39:25 PM:     mise settings add idiomatic_version_file_enable_tools node
+7:39:25 PM: You can disable idiomatic version files with:
+7:39:25 PM:     mise settings add idiomatic_version_file_enable_tools "[]"
+7:39:25 PM: See https://github.com/jdx/mise/discussions/4345 for more information.
+7:39:25 PM: Caching artifacts
+7:39:25 PM: Started saving node modules
+7:39:25 PM: Finished saving node modules
+7:39:25 PM: Started saving build plugins
+7:39:25 PM: Finished saving build plugins
+7:39:25 PM: Started saving mise cache
+7:39:27 PM: Finished saving mise cache
+7:39:27 PM: Started saving corepack cache
+7:39:27 PM: Finished saving corepack cache
+7:39:27 PM: Started saving pip cache
+7:39:27 PM: Finished saving pip cache
+7:39:27 PM: Started saving emacs cask dependencies
+7:39:27 PM: Finished saving emacs cask dependencies
+7:39:27 PM: Started saving maven dependencies
+7:39:27 PM: Finished saving maven dependencies
+7:39:27 PM: Started saving boot dependencies
+7:39:27 PM: Finished saving boot dependencies
+7:39:27 PM: Started saving rust rustup cache
+7:39:27 PM: Finished saving rust rustup cache
+7:39:27 PM: Started saving go dependencies
+7:39:27 PM: Finished saving go dependencies
+7:39:38 PM: Build script success
+7:39:38 PM: Section completed: building
+7:40:23 PM: Uploading Cache of size 262.7MB
+7:40:30 PM: Section completed: cleanup
+7:40:30 PM: Finished processing build request in 3m22.231s
