@@ -347,6 +347,38 @@ describe('GameComponent', () => {
       expect(component.endState()).toBe(true);
     });
 
+    it('shows victory notice on correct guess', async () => {
+      createComponent();
+      component.decodedWord = 'frame';
+      vi.spyOn(wordService, 'inDict').mockReturnValue(true);
+
+      component.submitRound(0, 'frame', false);
+      await new Promise(resolve => setTimeout(resolve, 10));
+
+      expect(component.notice().message).toBeTruthy();
+      expect(component.notice().type).toBe('good');
+      expect(component.notice().again).toBe(true);
+    });
+
+    it('preserves victory notice when user presses key after winning', async () => {
+      createComponent();
+      component.decodedWord = 'frame';
+      vi.spyOn(wordService, 'inDict').mockReturnValue(true);
+      const originalMessage = component.notice().message;
+
+      component.submitRound(0, 'frame', false);
+      await new Promise(resolve => setTimeout(resolve, 10));
+
+      const victoryMessage = component.notice().message;
+      expect(victoryMessage).toBeTruthy();
+
+      // Simulate user pressing a key after winning
+      component.refreshLetters('a');
+      expect(component.notice().message).toBe(victoryMessage);
+      expect(component.notice().type).toBe('good');
+      expect(component.notice().again).toBe(true);
+    });
+
     it('ends game on final round failure', async () => {
       createComponent();
       component.decodedWord = 'frame';

@@ -74,7 +74,9 @@ export class GameComponent implements OnInit {
   @HostListener('window:keyup', ['$event'])
   keyEvent($event: KeyboardEvent): void {
     if (this.storageService.get('gameState') === GameState.ENDED) {
-      this.toggleNotice('Game Over. Wait or try Random Play.', 'warn', true, 36e6);
+      if (!this._soln) {
+        this.toggleNotice('Game Over. Wait or try Random Play.', 'warn', true, 36e6);
+      }
       return;
     }
     if ($event.code === 'Backquote' && $event.shiftKey === true) {
@@ -212,7 +214,9 @@ export class GameComponent implements OnInit {
 
   refreshLetters(sequence: string): void {
     if (this.storageService.get('gameState') === GameState.ENDED) {
-      this.toggleNotice('Game Over. Wait or try Random Play.', 'warn');
+      if (!this._soln) {
+        this.toggleNotice('Game Over. Wait or try Random Play.', 'warn', true, 36e6);
+      }
       return;
     } else {
       this.storageService.set(StorageKey.GameState, GameState.PLAYING);
