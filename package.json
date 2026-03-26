@@ -11,7 +11,8 @@
     "test:coverage": "vitest run --coverage",
     "start-pwa": "ng build && http-server -p 8080 -c-1 dist/ng-kurdle/browser",
     "dev": "netlify dev",
-    "e2e": "playwright test"
+    "e2e": "playwright test --ignore-snapshots",
+    "e2e:visual": "playwright test e2e/visual/ --ignore-snapshots"
   },
   "private": true,
   "dependencies": {

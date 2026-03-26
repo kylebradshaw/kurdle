@@ -41,7 +41,7 @@
   &__key {
     margin: 0.05rem;
     text-transform: uppercase;
-    color: #333;
+    color: theme-var($theme-on-default);
     cursor: pointer;
     -webkit-touch-callout: none;
     -webkit-user-select: none;

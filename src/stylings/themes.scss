@@ -8,10 +8,10 @@
   transition-delay: 0s !important;
 }
 
-:root.light {
+:root[data-theme="light"] {
   @include spread-map($theme-map-light);
 }
-:root.dark {
+:root[data-theme="dark"] {
   @include spread-map($theme-map-dark);
 }
 

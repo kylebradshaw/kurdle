@@ -13,7 +13,7 @@
   margin: 2px 1px;
   display: flex;
   font-weight: bold;
-  border: 1px solid rgba(0, 0, 0, 0.8);
+  border: 1px solid theme-var($theme-on-default);
   text-transform: uppercase;
   max-width: 120px;
   max-height: 120px;

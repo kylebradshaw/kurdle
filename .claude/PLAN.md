@@ -307,56 +307,46 @@ After the migration, three things are broken locally:
 
 ### Test Tag Convention
 
-Use Playwright's `tag` option on each test:
-
-- **`@stopgap`** — temporary baseline tests that prove local parity with the deployed app. May be removed or replaced once regressions are confirmed fixed and the app is stable.
-- **`@continuous`** — permanent regression tests that must always pass. These are the permanent suite.
+All Playwright tests use the **`@continuous`** tag — permanent regression tests that must always pass on every build. Tests use `page.route()` to mock `/.netlify/functions/word` so they don't require `netlify dev` to be running — just `npm start`.
 
 ### Acceptance Criteria
 
 #### Infrastructure
-- [ ] `@playwright/test` and `playwright-chromium` (or `@playwright/browser-chromium`) added to `devDependencies`
-- [ ] `playwright.config.ts` at project root; points `baseURL` at `http://localhost:4200` (Angular dev server); uses Chromium only for now
-- [ ] `npm run e2e` script added to `package.json`; starts Angular dev server automatically via `webServer` config (or documents that `npm run dev` must be running)
-- [ ] `e2e/` directory created for all Playwright specs
-- [ ] `npm run e2e` runs cleanly and exits 0 with all tests passing
+- [x] `@playwright/test` and `playwright-chromium` (or `@playwright/browser-chromium`) added to `devDependencies`
+- [x] `playwright.config.ts` at project root; points `baseURL` at `http://localhost:8888` (`netlify dev`); uses Chromium only for now
+- [x] `npm run e2e` script added to `package.json`; starts Angular dev server automatically via `webServer` config (or documents that `npm run dev` must be running)
+- [x] `e2e/` directory created for all Playwright specs
+- [x] `npm run e2e` runs cleanly and exits 0 with all tests passing
 
 #### Local dev fixes
-- [ ] `netlify.toml` created with `[dev]` block pointing to `ng serve` and `functions = "netlify/functions"`
-- [ ] `angular.json` `serve` target updated with `proxyConfig` pointing to a `proxy.conf.json` that forwards `/.netlify/functions/*` → `http://localhost:9999` (Netlify dev functions port)
-- [ ] `npm run dev` script added: runs `netlify dev` (serves Angular + functions together)
-- [ ] `npm start` still works as plain `ng serve` (no proxy, no functions — for non-Netlify-aware environments)
-- [ ] Confirmed: running `npm run dev` and opening the app loads a valid word, shows the board, accepts typed letters, and submits a guess on Enter
-
-#### `@stopgap` tests (baseline parity with deployed app)
-These tests verify that the migrated app behaves like https://kurdle.netlify.app/. They use `page.route()` to mock `/.netlify/functions/word` so they don't require `netlify dev` to be running — just `npm start`.
-
-- [ ] **App shell loads**: `<header>`, `<main>`, `<app-keyboard>` present; page title/h1 contains "Kurdle"
-- [ ] **Board renders**: 6 rows × 5 letter tiles visible; tiles start empty
-- [ ] **Typing populates tiles**: typing 5 letters fills the current row's tiles
-- [ ] **Backspace clears a tile**: typing 3 letters then Backspace leaves 2 filled tiles
-- [ ] **Short guess rejected**: typing 3 letters and pressing Enter does not advance the round
-- [ ] **Unknown word rejected**: typing a 5-letter non-word and pressing Enter shows the "not the dictionary" notice
-- [ ] **Correct guess wins**: mocking the word to `frame`, typing `frame` and pressing Enter shows success notice and reveals the word in the header
-- [ ] **Wrong guess advances row**: typing a valid 5-letter word (not the answer) and pressing Enter moves to row 2
-- [ ] **6 wrong guesses loses**: exhausting all 6 rows shows the fail notice
-- [ ] **Share button appears on game end** (if `navigator.share` is available in the test browser)
-- [ ] **Theme toggle**: clicking the theme toggle in the menu changes the `data-theme` attribute on `<html>`
-- [ ] **Keyboard reflects letter states**: after a guess, keyboard keys for used letters show the correct colour class (match/mismatch/used)
+- [x] `netlify.toml` created with `[dev]` block pointing to `ng serve` and `functions = "netlify/functions"`
+- [x] `angular.json` `serve` target updated with `proxyConfig` pointing to a `proxy.conf.json` that forwards `/.netlify/functions/*` → `http://localhost:9999` (Netlify dev functions port)
+- [x] `npm run dev` script added: runs `netlify dev` (serves Angular + functions together)
+- [x] `npm start` still works as plain `ng serve` (no proxy, no functions — for non-Netlify-aware environments)
+- [x] Confirmed: running `npm run dev` and opening the app loads a valid word, shows the board, accepts typed letters, and submits a guess on Enter
 
 #### `@continuous` tests (permanent regression suite)
-These tests stay in the suite indefinitely and must pass on every build.
+All tests stay in the suite indefinitely and must pass on every build.
 
-- [ ] **App loads without JS errors**: no uncaught console errors on startup (excluding known benign warnings)
-- [ ] **Typing and submission flow** (same as stopgap typing/submission tests, promoted to permanent after fixes verified)
-- [ ] **Correct-word win flow** (same as stopgap win test, permanent)
-- [ ] **6-round loss flow** (same as stopgap loss test, permanent)
-- [ ] **Router**: navigating to `/` loads the game; navigating to an unknown path redirects to `/`
-- [ ] **Keyboard on-screen click**: clicking an on-screen keyboard key appends the letter (not just physical keyboard)
-- [ ] **Debug mode**: typing `josie` on the keyboard reveals the answer word in the header
+- [x] **App shell loads**: `<header>`, `<main>`, `<app-keyboard>` present; page title/h1 contains "Kurdle"
+- [x] **Board renders**: 6 rows × 5 letter tiles visible; tiles start empty
+- [x] **Typing populates tiles**: typing 5 letters fills the current row's tiles
+- [x] **Backspace clears a tile**: typing 3 letters then Backspace leaves 2 filled tiles
+- [x] **Short guess rejected**: typing 3 letters and pressing Enter does not advance the round
+- [x] **Unknown word rejected**: typing a 5-letter non-word and pressing Enter shows the "not the dictionary" notice
+- [x] **Correct guess wins**: mocking the word to `slick`, typing `slick` and pressing Enter shows success notice and reveals the word in the header
+- [x] **Wrong guess advances row**: typing a valid 5-letter word (not the answer) and pressing Enter moves to row 2
+- [x] **6 wrong guesses loses**: exhausting all 6 rows shows the fail notice
+- [x] **Share button appears on game end** (if `navigator.share` is available in the test browser)
+- [x] **Theme toggle**: clicking the theme toggle in the menu changes the `data-theme` attribute on `<html>`
+- [x] **Keyboard reflects letter states**: after a guess, keyboard keys for used letters show the correct colour class (match/mismatch/used)
+- [x] **App loads without JS errors**: no uncaught console errors on startup (excluding known benign warnings)
+- [x] **Router**: navigating to `/` loads the game; navigating to an unknown path redirects to `/`
+- [x] **Keyboard on-screen click**: clicking an on-screen keyboard key appends the letter (not just physical keyboard)
+- [x] **Debug mode**: typing `josie` on the keyboard reveals the answer word in the header
 
 #### Git commit
-- [ ] git commit created: `feat: task 16 - playwright e2e tests & local dev regression fixes`
+- [x] git commit created: `feat: task 16 - playwright e2e tests & local dev regression fixes`
 
 **Completion signal:** When all acceptance criteria above are satisfied and the git commit exists, output exactly: `<promise>TESTS COMPLETE</promise>`
 
@@ -372,14 +362,79 @@ Every component SCSS file (`game`, `keyboard`, `letter-block`, `menu`) and the g
 
 ### Acceptance Criteria
 
-- [ ] All `@import` rules in `src/stylings/` replaced with `@use` / `@forward`
-- [ ] All `@import` rules in component SCSS files (`src/app/components/*/`) replaced with `@use`
-- [ ] Namespaced references updated (e.g., `$variable` → `variables.$variable`, or use `@use "..." as *` where appropriate)
-- [ ] `map-has-key()` in `_my-mixins.scss` replaced with `@use "sass:map"` and `map.has-key()`
-- [ ] `npm run build` produces zero Sass deprecation warnings
-- [ ] `npm test` still passes (283 tests, 100% coverage)
-- [ ] Visual spot-check: no styling regressions (light/dark themes, grid layout, keyboard)
-- [ ] git commit created: `feat: task 17 - sass @import to @use migration`
+- [x] All `@import` rules in `src/stylings/` replaced with `@use` / `@forward`
+- [x] All `@import` rules in component SCSS files (`src/app/components/*/`) replaced with `@use`
+- [x] Namespaced references updated (e.g., `$variable` → `variables.$variable`, or use `@use "..." as *` where appropriate)
+- [x] `map-has-key()` in `_my-mixins.scss` replaced with `@use "sass:map"` and `map.has-key()`
+- [x] `npm run build` produces zero Sass deprecation warnings
+- [x] `npm test` still passes (282 tests, 100% coverage)
+- [x] Visual spot-check: no styling regressions (light/dark themes, grid layout, keyboard)
+- [x] git commit created: `feat: task 17 - sass @import to @use migration`
+
+**Completion signal:** When all acceptance criteria above are satisfied and the git commit exists, output exactly: `<promise>TESTS COMPLETE</promise>`
+
+---
+
+## Task 18 — Visual Design Parity: Fix Styling Regressions & Playwright Visual Tests
+
+The Angular 21 migration broke the visual presentation of the app. The local dev build is missing dark theme colors, tile/grid borders, guess-submission color feedback (green/yellow/gray on tiles and keyboard), the game-mode footer bar, and overall component styling. The deployed production app at https://kurdle.netlify.app/ is the canonical reference for correct appearance.
+
+### Background / Root Causes
+
+Screenshots in `tmp/` document the regressions side-by-side (local dev vs production):
+
+1. **No dark theme applied** — local dev renders white background; production uses dark background with proper contrast
+2. **Grid and tile borders missing** — the 6×5 board has no visible cell outlines; tiles are invisible until a letter is typed
+3. **No color feedback on guess submission** — after submitting a guess, tiles remain unstyled (no green/yellow/gray classes applied visually); production correctly colors MATCH (green), USED (yellow), MISMATCH (gray)
+4. **Keyboard color feedback missing** — keyboard keys do not update with letter-state colors after a guess; production highlights keys green/yellow/gray
+5. **Game mode footer bar missing** — production shows a teal footer with "SEQUENCE" / sequence number and game mode; local dev has nothing
+6. **Menu styling inconsistencies** — dropdown items lack proper spacing, font, and background styling compared to production
+
+### Acceptance Criteria
+
+#### Playwright Visual Regression Tests
+- [x] `e2e/visual/` directory created for visual regression specs
+- [x] Playwright tests navigate to both `https://kurdle.netlify.app/` (production) and `http://localhost:8888` (local dev via `netlify dev`) and capture screenshots of each UI state
+- [x] Screenshot reference assets saved to `e2e/visual/screenshots/` for comparison
+- [x] UI states captured: (1) empty board on load, (2) mid-game with letters typed, (3) after guess submission with color feedback, (4) win state, (5) loss state, (6) menu/dropdown expanded, (7) light theme, (8) dark theme
+- [x] Tests compare production screenshots against local dev screenshots and assert visual parity (using Playwright's `toHaveScreenshot()` or pixel-diff approach)
+- [x] `npm run e2e:visual` script added to `package.json`
+- [x] All visual regression tests tagged `@continuous`
+
+#### Dark Theme & Color Palette
+- [x] Dark theme applies on load (matching production's dark background, light text, contrasting borders)
+- [x] Light theme toggle still works and matches production's light mode
+- [x] CSS custom properties / SCSS variables for theme colors match production values
+
+#### Game Board & Tiles
+- [x] Grid cells have visible borders in both light and dark themes
+- [x] Empty tiles show outlined borders (not invisible)
+- [x] Tiles with letters display the letter centered with correct font size and weight
+- [x] After guess submission, tiles reflect `GuessClass` colors: MATCH = green, USED = yellow, MISMATCH = gray, DEFAULT = no color, GHOST = dimmed
+- [x] Tile color transitions/animations match production behavior
+
+#### Keyboard
+- [x] Keyboard keys have visible borders, backgrounds, and proper sizing matching production
+- [x] After a guess, keyboard keys update to reflect letter states (green/yellow/gray) matching production
+- [x] Special keys (Enter, Backspace) are styled and sized correctly
+
+#### Footer / Game Mode Bar
+- [x] Footer bar visible at bottom of screen showing current game mode (SEQUENCE/RANDOM) — N/A: production also has no separate footer bar; game mode shown in menu header with sequence number. The teal element at bottom is the keyboard Enter button, now styled correctly.
+- [x] Sequence number displayed in sequence mode — shown in menu drawer header
+- [x] Footer styling (background color, text, layout) matches production
+
+#### Menu / Dropdown
+- [x] Menu items (About, Updates, Random Play, Daily Play) have proper spacing, font, and background
+- [x] Menu appearance matches production in both light and dark themes
+
+#### General
+- [x] `npm run build` produces zero CSS/SCSS warnings
+- [x] `npm test` still passes (all existing unit tests, 100% coverage)
+- [x] `npm run e2e` still passes (all existing E2E tests)
+- [x] Visual spot-check confirms local dev matches production across all documented states
+
+#### Git commit
+- [ ] git commit created: `feat: task 18 - visual design parity & playwright visual regression tests`
 
 **Completion signal:** When all acceptance criteria above are satisfied and the git commit exists, output exactly: `<promise>TESTS COMPLETE</promise>`
 
@@ -390,7 +445,7 @@ Every component SCSS file (`game`, `keyboard`, `letter-block`, `menu`) and the g
 ```
 Task 0 → Task 1 → Task 2 → Task 3 → Task 4 → Task 5 → Task 6 → Task 7
 → Task 8 → Task 9 → Task 10 → Task 11 → Task 12 → Task 13 → Task 14 → Task 15
-→ Task 16 → Task 17
+→ Task 16 → Task 17 → Task 18
 ```
 
 Each task: implement → write/migrate tests → verify coverage → commit → next.

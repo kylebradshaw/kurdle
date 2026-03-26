@@ -8,7 +8,7 @@ export default defineConfig({
   workers: 1,
   reporter: 'list',
   use: {
-    baseURL: 'http://localhost:4200',
+    baseURL: 'http://localhost:8888',
     trace: 'on-first-retry',
   },
   projects: [
@@ -18,8 +18,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm start',
-    url: 'http://localhost:4200',
+    command: 'npx netlify dev',
+    url: 'http://localhost:8888',
     reuseExistingServer: !process.env['CI'],
     timeout: 120_000,
   },
